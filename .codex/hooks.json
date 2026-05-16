@@ -1,0 +1,43 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cmd=$(jq -r '.tool_input.command // empty'); case \"$cmd\" in *\"git commit\"*|*\"git push\"*|*\"gh pr create\"*) branch=$(git -C /Users/jeongchanho/Documents/Android/Twix branch --show-current); case \"$branch\" in main|master|develop) echo \"Blocked: run commit/push/PR from a work branch, not $branch\"; exit 1 ;; esac ;; esac",
+            "timeout": 30
+          },
+          {
+            "type": "command",
+            "command": "cmd=$(jq -r '.tool_input.command // empty'); case \"$cmd\" in *\"git commit\"*) cd /Users/jeongchanho/Documents/Android/Twix && ./gradlew ktlintCheck 2>&1 | tail -20 ;; esac",
+            "timeout": 120
+          },
+          {
+            "type": "command",
+            "command": "cmd=$(jq -r '.tool_input.command // empty'); case \"$cmd\" in *\"compileDebugKotlin\"*) cd /Users/jeongchanho/Documents/Android/Twix && ./gradlew ktlintFormat 2>&1 | tail -20 ;; esac",
+            "timeout": 120
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "f=$(jq -r '.tool_input.file_path // empty'); case \"$f\" in *.kt) cd /Users/jeongchanho/Documents/Android/Twix && ./gradlew ktlintFormat 2>&1 | tail -5 ;; esac",
+            "timeout": 120
+          },
+          {
+            "type": "command",
+            "command": "cmd=$(jq -r '.tool_input.command // empty'); case \"$cmd\" in *\"compileDebugKotlin\"*) cd /Users/jeongchanho/Documents/Android/Twix && ./gradlew ktlintFormat 2>&1 | tail -20 ;; esac",
+            "timeout": 120
+          }
+        ]
+      }
+    ]
+  }
+}
