@@ -79,6 +79,25 @@ reasoning_effort: high
 
 ## 분석 영역
 
+### 0. Agent / Workflow 문서 분석
+
+에이전트 오케스트레이션 문서를 분석할 때는 다음 항목을 우선 점검합니다:
+
+**체크 항목:**
+- [ ] `AGENTS.md`, `.codex/docs/routing-rules.md`, `.codex/docs/workflows.md`의 정책이 충돌하지 않는가?
+- [ ] quick command, skill, agent 문서의 실행 순서가 같은가?
+- [ ] 커밋, push, PR 생성 전에 사용자 승인 게이트가 명시되어 있는가?
+- [ ] READ-ONLY agent에 Write/Edit/Bash 실행이 요구되지 않는가?
+- [ ] planner → tester → implementer handoff 산출물이 고정되어 있는가?
+- [ ] 같은 Screen/ViewModel/contract 파일을 병렬 수정하도록 안내하지 않는가?
+
+**보고 원칙:**
+- READ-ONLY 모드에서는 수정 제안만 작성하고 파일을 수정하지 않는다
+- 불일치는 source of truth 파일과 어긋난 파일을 함께 제시한다
+- 실행 가능한 수정 범위를 우선순위와 함께 제안한다
+
+---
+
 ### 1. 아키텍처 분석
 
 **체크 항목:**

@@ -45,7 +45,7 @@ reasoning_effort: medium
 ### 1. 브랜치 검증 및 준비
 현재 브랜치가 적절한 작업용 브랜치인지 확인:
 - `git branch --show-current`로 현재 브랜치 확인
-- **작업용 브랜치 조건**: `feature/` 또는 `refactor/`로 시작하는 브랜치
+- **작업용 브랜치 조건**: `feature/`, `refactor/`, `fix/`, `chore/`, `docs/`, `test/`, `codex/`로 시작하는 브랜치
 - **작업 불가 브랜치**: `main`, `develop`, `master` 등 메인 브랜치
 
 **작업용 브랜치가 아닌 경우:**
@@ -53,7 +53,14 @@ reasoning_effort: medium
    - **Small**: 파일 1~2개, 영향 범위 명확, 기존 패턴 재사용
    - **Medium/Large**: 여러 파일, 상태/레이어 변경, 추적 필요
 
-2. **GitHub Issue 생성** (필요 시, gh CLI 사용)
+2. **준비 정책 판단**
+   - 메인 브랜치(`main`, `master`, `develop`)이면 새 작업 브랜치 생성 필수
+   - 기존 작업 브랜치이면 재사용 가능
+   - GitHub Issue 생성은 새 기능, 독립 리팩토링, 긴 작업일 때 권장
+   - Small 작업이나 기존 브랜치의 연속 작업이면 Issue 생성 생략 가능
+   - Issue 생성/브랜치 생성이 필요한 경우 사용자에게 먼저 보고하고 승인 후 실행
+
+3. **GitHub Issue 생성** (필요 시, 사용자 승인 후 gh CLI 사용)
     - 제목: 구현할 기능을 한 문장으로 요약
     - 본문: 프로젝트의 Issue 템플릿 형식에 맞춰 작성
       ```
@@ -88,10 +95,10 @@ reasoning_effort: medium
       )"
       ```
 
-3. **브랜치 생성**
+4. **브랜치 생성** (필요 시, 사용자 승인 후)
     - Issue 번호 확인 (생성된 Issue의 번호)
-    - 브랜치 네이밍 규칙: `{type}/#{issue_number}-{brief-description}`
-        - `type`: `feature` (신규 기능) 또는 `refactor` (리팩토링)
+    - 브랜치 네이밍 규칙: `{type}/#{issue_number}-{brief-description}` 또는 이슈가 없으면 `{type}/{brief-description}`
+        - `type`: `feature`, `refactor`, `fix`, `chore`, `docs`, `test`, `codex`
         - `brief-description`: 2~4단어로 간단히 (케밥-케이스)
     - 예시:
       ```bash
@@ -106,9 +113,11 @@ reasoning_effort: medium
 - 바로 2단계(구현)로 진행
 
 ### 2. 구현
-1. **파악**: 관련 기존 코드, 패턴, 의존성 먼저 읽기
-2. **구현**: Domain → Data → Presentation → UI 순서
-3. **검증**: `./gradlew ktlintFormat && ./gradlew ktlintCheck` — 오류 잔존 시 수동 수정 후 재실행
+1. **handoff 확인**: planner/tester가 전달한 테스트 명세, 실패 명령, 구현 메모를 먼저 읽기
+2. **파악**: 관련 기존 코드, 패턴, 의존성 먼저 읽기
+3. **선행 테스트 확인**: tester가 작성한 테스트가 있으면 먼저 실행하고 기대한 실패인지 확인
+4. **구현**: Domain → Data → Presentation → UI 순서
+5. **검증**: `./gradlew ktlintFormat && ./gradlew ktlintCheck` — 오류 잔존 시 수동 수정 후 재실행
 
 ### 3. 작업 회고 (선택적)
 - `.codex/agents/tier2/retrospective.md` 참조

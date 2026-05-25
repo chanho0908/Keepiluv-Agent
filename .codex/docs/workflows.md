@@ -124,9 +124,20 @@ description: 자주 쓰는 agent 조합 워크플로우 요약
 ## 승인 포인트
 
 - 계획 문서가 필요한 작업: `planner` 뒤 승인
+- 테스트 선행 구현: `planner` 승인 후 `tester → implementer`
 - 커밋이 필요한 작업: `committer` 전 승인
+- 커밋 승인 범위에는 stage 대상 파일과 커밋 메시지 후보가 포함된다
 - PR이 필요한 작업: `pr-creator` 전 상태 확인
+- PR 승인 범위에는 push 여부, base 브랜치, 제목, 본문 초안이 포함된다
 - 회고는 사용자의 명시적 요청이 있을 때만 시작, 시작 후 diary 기록과 skill 추출은 자동 진행
+
+## Handoff 표준
+
+| From | To | 전달 내용 |
+|------|----|-----------|
+| `planner` | `tester` | 테스트 파일 후보, 기대 동작/실패 조건, 실행 명령, Mock/Fake 기준 |
+| `planner` | `implementer` | 레이어별 변경 범위, 구현 순서, strings/DI/navigation/build 변경, 충돌 위험 |
+| `tester` | `implementer` | 작성/수정 테스트 파일, 현재 실패 이유, 통과 조건, 최소 구현 메모 |
 
 ## 운영 메모
 

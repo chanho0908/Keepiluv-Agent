@@ -207,6 +207,22 @@ reasoning_effort: high
 
 ---
 
+## Handoff
+
+### handoff_to_tester
+- 먼저 작성/수정할 테스트 파일
+- 고정할 기대 동작 또는 재현할 실패 조건
+- 실행할 Gradle test task
+- Mock/Fake 사용 기준
+
+### handoff_to_implementer
+- tester가 작성한 테스트를 먼저 실행해야 함
+- 구현 순서와 레이어별 변경 범위
+- strings.xml 키, DI, navigation, build.gradle.kts 변경 사항
+- 건드리지 말아야 할 파일과 병렬 작업 충돌 위험
+
+---
+
 ## 다음 단계
 
 **0단계: 구현 전 준비 (조건부)**

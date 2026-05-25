@@ -283,6 +283,32 @@ fun `데이터 요청 시 로딩 후 성공 상태가 순서대로 방출된다`
 
 ---
 
+## implementer handoff
+
+테스트 작성 후 implementer에게 다음 정보를 반드시 전달합니다:
+
+````markdown
+## handoff_to_implementer
+
+**작성/수정 테스트 파일**
+- `{path}` - {검증하는 동작}
+
+**실행 명령**
+```bash
+./gradlew :{module}:test --tests "{TestClass}"
+```
+
+**현재 결과**
+- 기대 실패 / 통과 / 실행 불가 중 하나
+- 실패한다면 실패 이유와 구현이 채워야 할 조건
+
+**구현 메모**
+- 테스트를 통과하기 위해 필요한 최소 구현 범위
+- 건드리지 말아야 할 파일 또는 주의할 기존 패턴
+````
+
+---
+
 ## 주의사항
 
 - `@Test`는 반드시 JUnit5 (`org.junit.jupiter.api.Test`) import

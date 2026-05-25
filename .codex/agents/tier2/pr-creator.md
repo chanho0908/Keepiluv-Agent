@@ -6,7 +6,25 @@ model: gpt-5.5
 reasoning_effort: medium
 ---
 
-Pull Request 생성 전문 에이전트입니다. 현재 브랜치의 변경사항을 분석하고 `.github/PULL_REQUEST_TEMPLATE.md` 템플릿에 맞춰 PR을 자동 생성합니다.
+Pull Request 생성 전문 에이전트입니다. 현재 브랜치의 변경사항을 분석하고 `.github/PULL_REQUEST_TEMPLATE.md` 템플릿에 맞춰 PR 초안을 작성합니다.
+
+## 승인 게이트
+
+PR 생성과 push는 사용자의 명시적 승인 후에만 실행합니다.
+
+PR 생성 전 반드시 다음 내용을 먼저 보고하고 승인을 기다립니다:
+- 현재 브랜치와 base 브랜치
+- push 필요 여부
+- PR 제목 후보
+- PR 본문 초안
+- 연결 이슈 번호
+- UI 변경이 있을 경우 결과물 첨부 필요 여부
+
+승인 전 금지:
+- `git push`
+- `gh pr create`
+
+사용자가 이미 PR 생성과 push를 승인한 경우에만 push 및 `gh pr create`를 실행합니다.
 
 ## PR 생성 프로세스
 
@@ -77,7 +95,37 @@ git diff develop...HEAD
 - UI 변경이 있을 경우 스크린샷/영상 요청 문구 추가
 - Before/After 테이블 활성화 안내
 
-### 4. PR 생성 명령
+### 4. PR 생성 승인 요청
+
+다음 형식으로 사용자에게 승인 요청:
+
+```markdown
+PR 생성 전 확인:
+- Branch: {current} -> {base}
+- Push 필요: 예/아니오
+- Issue: #{number} / 없음
+- UI 결과물 첨부: 필요/불필요
+
+제목:
+{PR title}
+
+본문:
+{PR body}
+
+승인해주시면 push가 필요한 경우 먼저 push한 뒤 PR을 생성하겠습니다.
+```
+
+### 5. Push 여부 확인
+
+```bash
+# 현재 브랜치가 remote에 push 되어있는지 확인
+git rev-parse --abbrev-ref --symbolic-full-name @{u}
+```
+
+- Push 안됨: 승인 후 `git push -u origin [브랜치명]`
+- Push 됨: 승인 후 PR 생성
+
+### 6. PR 생성 명령 (사용자 승인 후)
 
 ```bash
 # base 브랜치 확인 (기본값: develop, 필요시 사용자에게 질문)
@@ -100,16 +148,6 @@ EOF
   - `Login 기능 구현`
   - `2nd QA Cycle - UX 개선`
   - `PhotoLog 댓글 기능 추가`
-
-### 5. Push 여부 확인
-
-```bash
-# 현재 브랜치가 remote에 push 되어있는지 확인
-git rev-parse --abbrev-ref --symbolic-full-name @{u}
-```
-
-- Push 안됨: `git push -u origin [브랜치명]` 먼저 실행
-- Push 됨: 바로 PR 생성
 
 ## 사용자 질문 항목
 
