@@ -11,221 +11,47 @@ description: Kotlin/Android 코드 컨벤션 및 아키텍처 원칙 (Keepiluv/T
 
 ## 기본 원칙
 
-### 기존 코드베이스 우선
-새로운 코드 작성 전, 반드시 기존 코드베이스의 패턴과 컨벤션을 먼저 파악하고 준수
-
-### 필요한 것만 구현
-과도한 추상화나 미래를 위한 설계 지양. 현재 필요한 기능만 구현
-
-### 불필요한 주석 금지
-코드로 의도를 드러내는 것을 우선. 코드만으로 이해 불가능한 경우에만 주석 작성
-
-### 매직 넘버 금지
-명확한 의미를 담은 상수화
-```kotlin
-// ❌
-if (count > 5) { ... }
-
-// ✅
-private const val MAX_RETRY_COUNT = 5
-if (count > MAX_RETRY_COUNT) { ... }
-```
-
-### 들여쓰기 1단계
-중첩 2단계 이상이면 메서드 추출
-```kotlin
-// ❌
-fun process() {
-    if (condition1) {
-        if (condition2) {
-            if (condition3) {
-                // 너무 깊은 중첩
-            }
-        }
-    }
-}
-
-// ✅
-fun process() {
-    if (!condition1) return
-    processCondition2And3()
-}
-
-private fun processCondition2And3() {
-    if (!condition2) return
-    handleCondition3()
-}
-```
-
-### else 금지
-early return 또는 `when`으로 대체
-```kotlin
-// ❌
-fun getStatus(code: Int): String {
-    if (code == 200) {
-        return "Success"
-    } else {
-        return "Error"
-    }
-}
-
-// ✅
-fun getStatus(code: Int): String {
-    if (code == 200) return "Success"
-    return "Error"
-}
-
-// ✅ (복잡한 경우)
-fun getStatus(code: Int): String = when (code) {
-    200 -> "Success"
-    404 -> "Not Found"
-    else -> "Error"
-}
-```
-
-### 원시값 포장
-의미 있는 도메인 값은 `value class`로 래핑
-```kotlin
-// ❌
-fun sendEmail(email: String) { ... }
-
-// ✅
-@JvmInline
-value class Email(val value: String)
-
-fun sendEmail(email: Email) { ... }
-```
-
-### 일급 컬렉션
-컬렉션 포함 클래스는 해당 컬렉션 외 다른 필드 금지
-```kotlin
-// ❌
-data class Goals(
-    val items: List<Goal>,
-    val userId: String  // 다른 필드 존재
-)
-
-// ✅
-data class Goals(val items: List<Goal>) {
-    val size: Int get() = items.size
-    fun filter(predicate: (Goal) -> Boolean) = Goals(items.filter(predicate))
-}
-```
-
-### 축약 금지
-의도를 명확히 드러내는 이름
-```kotlin
-// ❌
-val cnt = 5
-fun calc() { ... }
-val usrId = "123"
-
-// ✅
-val retryCount = 5
-fun calculateTotalPrice() { ... }
-val userId = "123"
-```
-
-### 계산식 분해
-중첩된 계산식은 의미 단위로 변수에 분리하여 가독성 확보
-```kotlin
-// ❌
-return (COOLDOWN_MS - (System.currentTimeMillis() - pokedAt)).coerceAtLeast(0L)
-
-// ✅
-val elapsedMs = currentTime - pokedAt
-val remainingMs = COOLDOWN_MS - elapsedMs
-return remainingMs.coerceAtLeast(0L)
-```
-
-```kotlin
-// ❌
-val overflow = min((speed - dragVelocityThreshold) / dragVelocityThreshold, 1f)
-
-// ✅
-val excessSpeed = speed - dragVelocityThreshold
-val overflowRatio = excessSpeed / dragVelocityThreshold
-val overflow = min(overflowRatio, 1f)
-```
+- **기존 코드베이스 우선**: 새로운 코드 작성 전, 반드시 기존 코드베이스의 패턴과 컨벤션을 먼저 파악하고 준수
+- **필요한 것만 구현**: 과도한 추상화나 미래를 위한 설계 지양. 현재 필요한 기능만 구현
+- **불필요한 주석 금지**: 코드로 의도를 드러내는 것을 우선. 코드만으로 이해 불가능한 경우에만 주석 작성
+- 명확한 의미를 담은 상수로 분리. 상수명은 값의 목적과 정책을 드러내야 함
+- 중첩 2단계 이상이면 guard clause, early return, 함수 추출로 분리
+- 단순 분기는 early return, 복잡한 분기는 `when`으로 대체
+- 의미 있는 도메인 값은 `value class`로 래핑. ID, Email, Title, Count처럼 검증/의미가 있는 값에 우선 적용
+- 컬렉션 포함 클래스는 해당 컬렉션 외 다른 필드 금지. 컬렉션 관련 행위는 컬렉션 래퍼 내부로 이동
+- 의도를 명확히 드러내는 이름 사용. `cnt`, `calc`, `usrId`처럼 축약된 이름 금지
+- 중첩된 계산식은 의미 단위 변수로 분리. 특히 시간, 비율, 임계값, 보간값 계산은 중간 이름을 부여
 
 ---
 
 ## 함수 설계
+
 - 메서드 15줄 초과 시 분리
 - 의미 단위로 함수 추출
+- 상태 변경, 데이터 호출, 결과 처리는 각각 별도 함수로 분리
+- 하나의 함수는 하나의 의도만 표현
+
+### get / set 접두사 절대 금지
+- 조회: `fetch`, `load`, `find`, `search`
+- 변경: `update`, `change`, `save`
+- Boolean: `is`, `has`, `can`, `should`
+
+### 이름 선택 기준
+- 함수명은 동작과 결과를 함께 드러냄
+- 변수명은 단위와 의미를 드러냄 (`elapsedMs`, `remainingRatio`, `retryCount`)
+- Repository 우회 호출이라도 단순 `get...` 대신 프로젝트 동사 규칙을 따름
+
 
 ### onEvent 위임
-분기에서 로직 직접 작성 금지, 반드시 별도 함수로 위임
-```kotlin
-// ❌
-fun onEvent(event: UiEvent) {
-    when (event) {
-        is UiEvent.LoadData -> {
-            viewModelScope.launch {
-                _uiState.value = UiState.Loading
-                val result = repository.loadData()
-                _uiState.value = when (result) {
-                    is Success -> UiState.Success(result.data)
-                    is Failure -> UiState.Error(result.error)
-                }
-            }
-        }
-    }
-}
+분기에서 로직 직접 작성 금지. `onEvent`는 이벤트 라우팅만 담당하고 실제 처리는 `handle...` 함수로 위임
 
-// ✅
+```kotlin
 fun onEvent(event: UiEvent) {
     when (event) {
         is UiEvent.LoadData -> handleLoadData()
     }
 }
-
-private fun handleLoadData() {
-    viewModelScope.launch {
-        updateLoadingState()
-        val result = fetchData()
-        handleDataResult(result)
-    }
-}
 ```
-
-### 함수 단일 책임
-상태 변경 / 데이터 호출 / 결과 처리 각각 별도 함수로 분리
-```kotlin
-// ❌
-fun loadUser() {
-    _uiState.value = UiState.Loading
-    viewModelScope.launch {
-        val user = repository.getUser()
-        _uiState.value = UiState.Success(user)
-    }
-}
-
-// ✅
-fun loadUser() {
-    updateLoadingState()
-    fetchUserAndUpdateState()
-}
-
-private fun updateLoadingState() {
-    _uiState.value = UiState.Loading
-}
-
-private fun fetchUserAndUpdateState() {
-    viewModelScope.launch {
-        val user = fetchUser()
-        updateSuccessState(user)
-    }
-}
-
-private suspend fun fetchUser() = repository.getUser()
-
-private fun updateSuccessState(user: User) {
-    _uiState.value = UiState.Success(user)
-}
-```
-
----
 
 ## SOLID 원칙
 
@@ -238,10 +64,10 @@ private fun updateSuccessState(user: User) {
 - **생략**: 단순 Repository 위임(bypass)은 ViewModel에서 직접 호출
 
 ### ISP (Interface Segregation Principle)
-- Repository는 역할별로 인터페이스 분리
+Repository는 역할별로 인터페이스 분리
 
 ### DIP (Dependency Inversion Principle)
-- 인터페이스에 의존, Koin DI로 주입
+인터페이스에 의존, Koin DI로 주입
 
 ---
 
@@ -250,55 +76,19 @@ private fun updateSuccessState(user: User) {
 ### 모듈 구조
 각 feature 패키지 하위에 `di` 패키지를 두고 `{FeatureName}Module.kt`에 ViewModel을 등록
 
-```
+```text
 feature/
   login/
     di/
-      LoginModule.kt    ← viewModel { LoginViewModel(...) }
+      LoginModule.kt
     LoginViewModel.kt
     LoginScreen.kt
 di/
-  AppModule.kt          ← includes(loginModule, ...)
+  AppModule.kt
 ```
 
 ### AppModule 역할
-**각 feature 모듈을 `includes()`로 통합만 함** — ViewModel을 직접 등록하지 않음
-
----
-
-## 네이밍 규칙
-
-### get / set 접두사 절대 금지
-```kotlin
-// ❌
-fun getUser(): User
-fun setName(name: String)
-
-// ✅
-fun fetchUser(): User
-fun loadUser(): User
-fun updateName(name: String)
-```
-
-### 동사 선택
-- **조회**: `fetch` `load` `find` `search`
-- **변경**: `update` `change` `save`
-- **Boolean**: `is` `has` `can` `should`
-
-```kotlin
-// ✅
-suspend fun fetchGoals(): List<Goal>
-suspend fun loadUserProfile(): User
-fun findGoalById(id: String): Goal?
-fun searchGoals(query: String): List<Goal>
-
-fun updateGoalTitle(id: String, title: String)
-fun saveGoal(goal: Goal)
-
-fun isCompleted(): Boolean
-fun hasPermission(): Boolean
-fun canEdit(): Boolean
-```
+**각 feature 모듈을 `includes()`로 통합만 함**. ViewModel을 직접 등록하지 않음
 
 ---
 
@@ -310,18 +100,6 @@ fun canEdit(): Boolean
 ### 하드코딩 금지
 매직 넘버, UI에 노출되지 않는 디버깅용 에러 메시지는 `companion object` 상수로 분리
 
-```kotlin
-// ❌
-throw IllegalArgumentException("User ID cannot be empty")
-
-// ✅
-companion object {
-    private const val ERROR_EMPTY_USER_ID = "User ID cannot be empty"
-}
-
-throw IllegalArgumentException(ERROR_EMPTY_USER_ID)
-```
-
 ---
 
 ## 레이어별 코딩 가이드
@@ -331,113 +109,51 @@ throw IllegalArgumentException(ERROR_EMPTY_USER_ID)
 **원칙:**
 - Pure Kotlin만 사용 (UI/Android 의존성 절대 금지)
 - 비즈니스 로직 계산만 수행
+- 문자열 포맷팅, 리소스 접근, Compose 의존 금지
 
 **권장 패턴:**
 - 팩토리 메서드: `companion object { fun from(...) }`
-
-**예시:**
-```kotlin
-// ✅ Domain Layer
-data class RelativeTime(
-    val days: Long,
-    val hours: Long,
-    val minutes: Long
-) {
-    companion object {
-        fun from(uploadedAt: Instant): RelativeTime {
-            val now = Clock.System.now()
-            val duration = now - uploadedAt
-            // 시간 계산만 수행 (포맷팅 X)
-            return RelativeTime(
-                days = duration.inWholeDays,
-                hours = duration.inWholeHours % 24,
-                minutes = duration.inWholeMinutes % 60
-            )
-        }
-    }
-}
-```
-
----
+- 계산 결과는 UI가 표현하기 쉬운 값 객체로 반환
+- 시간 계산은 가능하지만 "n분 전" 같은 표시 문자열 생성은 금지
 
 ### UI Layer
 
 **원칙:**
-- **포맷팅은 UI의 책임**
+- 포맷팅은 UI의 책임
 - `stringResource`로 문자열 포맷팅
 - Domain 모델을 UI에 맞게 변환
 
 **권장 패턴:**
 - Composable 함수에서 포맷팅
 - `remember` / `derivedStateOf` 활용
-
-**예시:**
-```kotlin
-@Composable
-fun PhotoCard(uploadedAt: Instant) {
-    val relativeTime = remember(uploadedAt) {
-        RelativeTime.from(uploadedAt)
-    }
-    val formattedTime = formatRelativeTime(relativeTime)
-    Text(formattedTime)
-}
-
-@Composable
-fun formatRelativeTime(relativeTime: RelativeTime): String {
-    return stringResource(R.string.days_ago, relativeTime.days)
-}
-```
-
----
+- Domain 값 객체를 받아 화면 표시 문자열로 변환
 
 ### Presentation Layer (ViewModel)
 
 **원칙:**
 - BaseViewModel 상속
-- onEvent는 별도 함수로 위임 (이미 "onEvent 위임" 섹션 참조)
-
----
+- onEvent는 별도 함수로 위임
+- UI 상태 변경과 SideEffect 발행만 담당
+- Android/Compose UI 객체를 상태에 직접 보관하지 않음
 
 ### Data Layer
 
 **원칙:**
 - Repository 인터페이스는 `domain/` 모듈에 정의
 - 구현체는 `data/` 모듈에 위치
-- Mapper: `ResponseDto.toDomain()` 확장 함수 패턴
-
-**예시:**
-```kotlin
-// domain/repository/GoalRepository.kt
-interface GoalRepository {
-    suspend fun getGoals(): AppResult<List<Goal>>
-}
-
-// data/repository/GoalRepositoryImpl.kt
-class GoalRepositoryImpl(
-    private val api: GoalApi
-) : GoalRepository {
-    override suspend fun getGoals(): AppResult<List<Goal>> = runCatchingAppError {
-        api.getGoals().toDomain()
-    }
-}
-
-// data/mapper/GoalMapper.kt
-fun GoalResponse.toDomain(): Goal = Goal(
-    id = this.id,
-    title = this.title,
-    // ...
-)
-```
+- Mapper는 `ResponseDto.toDomain()` 확장 함수 패턴 사용
+- API 응답 모델을 UI/Presentation으로 직접 전달하지 않음
 
 ---
 
 ## 절대 금지 사항
+
 - Singleton 객체에 Context 전달
   - **문제:** 메모리 누수 위험
 - util/core 모듈에 비즈니스 로직
-  -**문제:** 레이어 책임 위반
+  - **문제:** 레이어 책임 위반
 - Domain에서 문자열 포맷팅
-  -**문제:** UI 관심사가 Domain에 침투
+  - **문제:** UI 관심사가 Domain에 침투
 
 ---
 
