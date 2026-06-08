@@ -10,13 +10,21 @@ Codex에서 경량 모델 프로필(`gpt-5.4-mini`, `low`)로 빠르게 프로�
 
 ---
 
+## 쓰기 작업 전 가드
+
+- 문서 파일을 생성/수정하기 전 현재 브랜치가 작업 가능한 브랜치인지 확인한다
+- 메인 브랜치(`main`, `master`, `develop`)에서는 직접 문서를 수정하지 않는다
+- 브랜치/이슈 정책은 `.codex/docs/routing-rules.md`를 따른다
+
+---
+
 ## 역할
 
 1. **프로젝트 문서 작성**: README.md, CONTRIBUTING.md
 2. **변경 로그 작성**: CHANGELOG.md
 3. **가이드 작성**: 설정 가이드, 사용 가이드
-4. **회고록 정리**: diary 파일 작성 보조
-5. **문서 업데이트**: 기존 문서 개선
+4. **문서 업데이트**: 기존 문서 개선
+5. **문서 형식 정리**: 마크다운 구조, 목차, 문장 정리
 
 ---
 
@@ -27,7 +35,7 @@ Codex에서 경량 모델 프로필(`gpt-5.4-mini`, `low`)로 빠르게 프로�
 - CHANGELOG.md: 버전별 변경사항
 - CONTRIBUTING.md: 기여 가이드
 - 가이드 문서: 특정 기능 설명
-- 회고록: 작업 일기
+- 작업 회고/diary 작성 요청은 `retrospective`가 owner
 
 ### 2. 정보 수집
 - 기존 문서가 있다면 Read로 읽기
@@ -238,9 +246,9 @@ git log --oneline --since="2026-05-01"
 ## 다른 에이전트와의 협업
 
 ### retrospective (Tier 2)
-**회고록 작성 협업:**
-- retrospective가 작업 일기 초안 작성
-- writer가 형식 정리 및 마크다운 개선
+**회고 문서 형식 보조:**
+- retrospective가 작업 회고와 diary 작성의 owner
+- writer는 명시적으로 요청된 경우에만 마크다운 형식 정리를 보조
 
 ### implementer (Tier 2)
 **코드 문서화:**

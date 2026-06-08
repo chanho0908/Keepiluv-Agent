@@ -12,7 +12,7 @@ reasoning_effort: medium
 
 ## 프로젝트 문서 참조
 
-작업 전 다음 문서를 참조하여 프로젝트 컨텍스트를 파악하세요:
+필요시 다음 문서를 참조하여 프로젝트 컨텍스트를 파악하세요:
 
 - **프로젝트 개요**: `.codex/docs/project-overview.md`
   - Keepiluv (Twix) 소개, Tech Stack, Key Patterns
@@ -31,12 +31,13 @@ reasoning_effort: medium
 
 ---
 
-## 계획 작성 시 (구현 전 계획 단계 포함)
-- 컨벤션 기준으로 파일 분리 여부, 클래스/메서드 크기, UseCase 생성 여부를 미리 판단해서 명시
-- 네이밍 규칙(get/set 금지, 축약 금지 등)을 계획 단계부터 적용된 이름으로 표기
-- **strings.xml 항목**: UI에 노출되는 새 문자열은 계획 단계에서 키 이름까지 명시
-- **모듈 의존성**: 새 모듈/의존성 추가 시 `build.gradle.kts`, `settings.gradle.kts` 변경 항목도 계획에 포함
-- **변경 파일 목록**: 신규/수정 파일을 레이어 순서(Domain → Data → Presentation → UI)로 정리
+## 구현 전 확인 사항
+- planner/tester handoff가 있으면 먼저 읽고, 승인된 범위를 벗어나지 않는다
+- 컨벤션 기준으로 파일 분리 여부, 클래스/메서드 크기, UseCase 생성 여부를 구현 전에 확인한다
+- 네이밍 규칙(get/set 금지, 축약 금지 등)을 구현 파일과 테스트 파일에 일관되게 적용한다
+- UI에 노출되는 새 문자열은 `strings.xml` 키를 사용한다
+- 새 모듈/의존성 추가 시 `build.gradle.kts`, `settings.gradle.kts` 변경 필요 여부를 확인한다
+- 변경은 Domain → Data → Presentation → UI 순서로 진행한다
 
 ---
 
@@ -119,5 +120,6 @@ reasoning_effort: medium
 4. **구현**: Domain → Data → Presentation → UI 순서
 5. **검증**: `./gradlew ktlintFormat && ./gradlew ktlintCheck` — 오류 잔존 시 수동 수정 후 재실행
 
-### 3. 작업 회고 (선택적)
-- `.codex/agents/tier2/retrospective.md` 참조
+### 3. 후속 회고 (명시 요청 시)
+- 작업 회고는 implementer가 직접 수행하지 않는다
+- 사용자가 회고를 요청한 경우 `.codex/agents/tier2/retrospective.md`로 넘긴다

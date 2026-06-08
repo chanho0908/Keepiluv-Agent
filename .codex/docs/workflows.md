@@ -13,6 +13,8 @@ description: 자주 쓰는 agent 조합 워크플로우 요약
 
 | 이름 | 흐름 | 사용할 때 |
 |------|------|-----------|
+| 요구사항 인터뷰 후 설계 | `interviewer → planner` | 목표, 범위, 성공 기준이 불명확해 바로 계획하면 추측이 섞일 때 |
+| 요구사항 인터뷰 후 테스트 선행 구현 | `interviewer → planner → tester → implementer` | 모호한 기능 요청을 Feature Spec으로 고정한 뒤 구현해야 할 때 |
 | 설계 후 테스트 선행 구현 | `planner → tester → implementer` | 구현 전에 파일/레이어 계획과 성공 기준 정리가 필요할 때 |
 | 설계 후 테스트 선행 구현 후 리뷰 | `planner → tester → implementer → code-reviewer` | 복잡한 기능, 품질 우선 작업 |
 | 탐색 후 테스트 선행 구현 | `explore → tester → implementer` | 위치 파악 후 바로 재현 테스트나 기대 동작 테스트를 먼저 만들 수 있을 때 |
@@ -28,7 +30,21 @@ description: 자주 쓰는 agent 조합 워크플로우 요약
 
 ## 추천 워크플로우
 
-### 1. 일반 기능 추가
+### 1. 모호한 요구사항 정리
+
+`interviewer → planner`
+
+언제:
+- 사용자의 요청이 추상적이어서 목표, 범위, 완료 기준이 열려 있을 때
+- planner가 계획을 세우려면 중요한 제품/정책 판단을 추측해야 할 때
+- "개선", "고도화", "편하게", "정리"처럼 해석 범위가 넓은 표현이 중심일 때
+
+규칙:
+- interviewer는 최대 3개 질문으로 Feature Spec만 작성한다
+- 구현 계획은 planner가 작성한다
+- 질문 없이 합리적으로 판단한 내용은 Feature Spec의 `가정`에 남긴다
+
+### 2. 일반 기능 추가
 
 `planner → tester → implementer`
 
@@ -37,7 +53,7 @@ description: 자주 쓰는 agent 조합 워크플로우 요약
 - ViewModel, state, navigation, UI를 함께 수정할 때
 - 기대 동작을 테스트로 먼저 고정하고 싶을 때
 
-### 2. 빠른 버그 수정
+### 3. 빠른 버그 수정
 
 `explore → tester → implementer`
 
@@ -48,7 +64,7 @@ description: 자주 쓰는 agent 조합 워크플로우 요약
 
 단, 테스트 작성이 현실적으로 어렵다면 예외적으로 `implementer → tester`로 축약 가능
 
-### 3. 대규모 리팩토링
+### 4. 대규모 리팩토링
 
 `analyst → planner → tester → implementer`
 
@@ -56,14 +72,14 @@ description: 자주 쓰는 agent 조합 워크플로우 요약
 - 여러 feature나 모듈에 같은 패턴을 적용할 때
 - 순서, 영향 범위, 병렬 가능 여부가 중요할 때
 
-### 4. 품질 우선 작업
+### 5. 품질 우선 작업
 
 `planner → tester → implementer → code-reviewer`
 
 언제:
 - UI 안정성, Compose 패턴, 아키텍처 준수가 중요할 때
 
-### 5. 문서 기반 작업
+### 6. 문서 기반 작업
 
 `writer → planner → tester → implementer`
 
@@ -71,7 +87,7 @@ description: 자주 쓰는 agent 조합 워크플로우 요약
 - 먼저 스펙/가이드가 필요할 때
 - 문서와 구현을 같이 남겨야 할 때
 
-### 6. 작업 완료 후 회고
+### 7. 작업 완료 후 회고
 
 `retrospective`
 
@@ -107,12 +123,14 @@ description: 자주 쓰는 agent 조합 워크플로우 요약
 |------|------|------|
 | 비용 우선 | `explore`를 먼저 활용 | 빠르고 저렴, 깊은 판단은 약함 |
 | 균형형 | `planner → tester → implementer` | 대부분의 기능 작업에 적합 |
+| 의도 우선 | `interviewer → planner → tester → implementer` | 모호한 요청을 Feature Spec으로 먼저 고정 |
 | 품질 우선 | `analyst/planner → tester → implementer → code-reviewer` | 느리지만 안정적 |
 
 ## 작업 유형별 추천
 
 | 작업 | 추천 흐름 |
 |------|-----------|
+| 모호한 기능 요청 정리 | `interviewer → planner` |
 | 파일 위치 찾기 후 수정 | `explore → tester → implementer` |
 | 구조 문제 찾고 개선 | `analyst → planner → tester → implementer` |
 | 새 화면 추가 | `planner → tester → implementer` |
@@ -124,6 +142,9 @@ description: 자주 쓰는 agent 조합 워크플로우 요약
 ## 승인 포인트
 
 - 계획 문서가 필요한 작업: `planner` 뒤 승인
+- 요구사항 인터뷰가 필요한 작업: `interviewer`가 Feature Spec을 작성한 뒤 planner로 전달
+- 계획 문서는 코드 레벨 설계서가 아니라 승인 가능한 작업 흐름 문서로 작성한다
+- 파일명, 함수명, API명은 필요한 경우에만 기술 메모나 handoff 항목으로 분리한다
 - 테스트 선행 구현: `planner` 승인 후 `tester → implementer`
 - 커밋이 필요한 작업: `committer` 전 승인
 - 커밋 승인 범위에는 stage 대상 파일과 커밋 메시지 후보가 포함된다
@@ -131,10 +152,44 @@ description: 자주 쓰는 agent 조합 워크플로우 요약
 - PR 승인 범위에는 push 여부, base 브랜치, 제목, 본문 초안이 포함된다
 - 회고는 사용자의 명시적 요청이 있을 때만 시작, 시작 후 diary 기록과 skill 추출은 자동 진행
 
+## 실행 단계
+
+이 섹션은 계획 승인 이후 어떤 agent를 어떤 순서로 호출할지 정하는 작업 워크플로우입니다.
+`planner`는 이 흐름을 직접 실행하지 않고, 계획서에 추천 후속 흐름과 승인 지점만 남깁니다.
+
+### 0단계: 구현 전 준비 (조건부)
+
+파일을 변경할 수 있는 agent를 호출하기 전에 브랜치 상태를 확인합니다.
+브랜치/이슈 정책의 source of truth는 `.codex/docs/routing-rules.md`와 각 Write 가능 agent의 작업 프로세스입니다.
+
+준비 작업 예시:
+
+1. **GitHub Issue 생성** (필요 시)
+2. **작업 브랜치 생성** (필요 시)
+
+### 1단계: 테스트 선행 구현 (단일 작업)
+
+1. `tester`에게 선행 테스트 작성을 위임한다
+2. `implementer`에게 테스트를 만족하는 구현을 위임한다
+3. 품질 확인이 필요한 경우 `code-reviewer`로 리뷰한다
+
+### 1단계: 테스트 선행 구현 (여러 작업)
+
+1. 병렬 가능한 작업인지 먼저 확인한다
+2. 서로 다른 파일/feature라면 가능한 범위에서 `tester`를 병렬 호출한다
+3. 각 테스트 기준이 고정되면 `implementer`로 구현을 위임한다
+4. 모든 작업이 합쳐진 뒤 필요 시 `code-reviewer`로 통합 리뷰한다
+
+### 2단계: 커밋 & PR
+
+1. 사용자 승인 후 `committer`로 커밋을 생성한다
+2. 사용자 승인 후 `pr-creator`로 Pull Request를 생성한다
+
 ## Handoff 표준
 
 | From | To | 전달 내용 |
 |------|----|-----------|
+| `interviewer` | `planner` | Feature Spec, 목적/범위/제외/완료 기준, 가정, 미해결 질문 |
 | `planner` | `tester` | 테스트 파일 후보, 기대 동작/실패 조건, 실행 명령, Mock/Fake 기준 |
 | `planner` | `implementer` | 레이어별 변경 범위, 구현 순서, strings/DI/navigation/build 변경, 충돌 위험 |
 | `tester` | `implementer` | 작성/수정 테스트 파일, 현재 실패 이유, 통과 조건, 최소 구현 메모 |
