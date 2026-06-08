@@ -26,7 +26,7 @@ Codex는 직접 구현하지 않고, 요청을 적절한 agent로 라우팅합�
 | Tier | 목적 | 대표 agent |
 |------|------|------------|
 | 1 | 빠른 탐색, 문서 | `explore`, `writer` |
-| 2 | 구현, 테스트, 리뷰, 설계 | `implementer`, `tester`, `planner`, `analyst`, `code-reviewer` |
+| 2 | 구현, 테스트, 리뷰, 설계 | `interviewer`, `implementer`, `tester`, `planner`, `analyst`, `code-reviewer` |
 
 ## 1차 라우팅 표
 
@@ -38,6 +38,7 @@ Codex는 직접 구현하지 않고, 요청을 적절한 agent로 라우팅합�
 | 테스트 작성, 회귀 테스트 추가 | `tester` |
 | 코드 리뷰, Dove Letter 리뷰 | `code-reviewer` |
 | 구조 분석, 의존성 분석, 문제점 도출 | `analyst` |
+| 요구사항 의도 정리, 모호한 요청 인터뷰 | `interviewer` |
 | 구현 계획 수립, 작업 분해 | `planner` |
 | 커밋 생성 | `committer` |
 | PR 생성 | `pr-creator` |
@@ -54,6 +55,7 @@ Codex는 직접 구현하지 않고, 요청을 적절한 agent로 라우팅합�
 ### 1. 명시적 요청 우선
 
 - `"리뷰해줘"` → `code-reviewer`
+- `"의도 정리해줘"` → `interviewer`
 - `"계획 세워줘"` → `planner`
 - `"테스트 추가해줘"` → `tester`
 
@@ -62,6 +64,7 @@ Codex는 직접 구현하지 않고, 요청을 적절한 agent로 라우팅합�
 | 사용자 의도 | 라우팅 |
 |------|------|
 | 위치, 사용처, 패턴 찾기 | `explore` |
+| 의도 확인, 요구사항 명확화, Feature Spec 작성 | `interviewer` |
 | 구조 해석, 설계 판단, 문제 진단 | `analyst` |
 | 구현 순서, 영향 범위, 작업 분해 | `planner` |
 | 실제 코드 변경 | `implementer` |
@@ -73,18 +76,35 @@ Codex는 직접 구현하지 않고, 요청을 적절한 agent로 라우팅합�
 |------|------|
 | 단일 구현 작업 | `implementer` |
 | 구현 + 후속 커밋 | `implementer` → `committer` |
+| 모호한 요구사항 정리 후 계획 | `interviewer` → `planner` |
 | 계획 후 테스트 선행 구현 | `planner` → `tester` → `implementer` |
-| 독립적인 복수 구현 | Team Lead 성격으로 분할 후 병렬 위임 |
+| 독립적인 복수 구현 | 오케스트레이터가 작업을 분할한 뒤 병렬 위임 |
 
-### 4. 모호하면 범위부터 명확화
+### 4. 모호하면 Clarity Gate
+
+요청이 모호하더라도 바로 구현하거나 과도한 계획을 작성하지 않습니다.
+먼저 모호성의 성격을 분류합니다.
+
+| 분류 | 의미 | 라우팅 |
+|------|------|------|
+| 위치/사용처가 모호함 | 어떤 파일/패턴을 봐야 할지 모름 | `explore` |
+| 구조 판단이 모호함 | 설계 문제인지 구현 문제인지 판단 필요 | `analyst` |
+| 요구사항 의도가 모호함 | 목표, 범위, 성공 기준이 열려 있음 | `interviewer` |
+| 구현 세부사항만 모호함 | 기존 패턴으로 구현자가 판단 가능 | `implementer` handoff에 가정 명시 |
+
+요구사항 의도가 모호한 요청은 `interviewer`가 처리합니다.
+`interviewer`는 구현 계획을 작성하지 않고, 최대 3개 질문으로 `Feature Spec`만 작성합니다.
+세부 판정 기준과 출력 형식의 source of truth는 `.codex/agents/tier2/interviewer.md`입니다.
 
 예:
 
-| 모호한 요청 | 먼저 확인할 것 |
-|------|------|
-| `"UI 개선해줘"` | 화면 수, 범위, 계획 선행 여부 |
-| `"분석해줘"` | 단순 검색인지 구조 분석인지 |
-| `"리팩토링해줘"` | 대상 feature 수, 동시 작업 가능 여부 |
+| 모호한 요청 | 먼저 판단할 것 | 권장 라우팅 |
+|------|------|------|
+| `"UI 개선해줘"` | 대상 화면, 개선 목적, 완료 기준 | `interviewer` |
+| `"분석해줘"` | 단순 검색인지 구조 분석인지 | `explore` 또는 `analyst` |
+| `"리팩토링해줘"` | 구조 문제인지, 대상 feature 수, 변경 금지 영역 | `analyst` 또는 `planner` |
+| `"삭제 기능 추가해줘"` | soft delete / hard delete 정책, 복구 가능 여부 | `interviewer` |
+| `"버튼 색 바꿔줘"` | 디자인 시스템으로 가정 가능한지 | Small이면 `implementer` |
 
 ## 대표 패턴
 
@@ -120,6 +140,15 @@ Codex는 직접 구현하지 않고, 요청을 적절한 agent로 라우팅합�
 - 화면, 상태, 네비게이션, 데이터 흐름이 함께 바뀌는 작업
 - 파일 여러 개를 건드리는 작업
 - 영향 범위가 불명확한 작업
+
+계획서 작성 원칙:
+- 계획 전 요구사항이 충분히 명확한지 Clarity Gate로 확인한다
+- 차단 수준의 모호성이 있으면 `interviewer`에게 위임한다
+- `interviewer`의 Feature Spec을 계획 입력으로 사용한다
+- 계획 본문은 사용자/기획자/리뷰어가 이해할 수 있는 작업 흐름 중심으로 작성한다
+- 클래스명, 함수명, Android API명, 파일 경로는 필요한 경우에만 기술 메모로 분리한다
+- “무엇을 만들고, 사용자는 어떤 흐름을 겪고, 어떤 기준으로 검증하는지”를 먼저 설명한다
+- 코드 레벨 함수 단위 설계는 승인 이후 tester/implementer handoff에서 구체화한다
 
 ### 탐색 후 구현
 
@@ -200,6 +229,7 @@ Codex는 직접 구현하지 않고, 요청을 적절한 agent로 라우팅합�
 
 ## 브랜치/이슈 규칙
 
+- Write/Edit/Bash로 파일을 변경할 수 있는 agent는 작업 전 브랜치 상태를 확인한다
 - 메인 브랜치(`main`, `master`, `develop`)에서는 직접 구현/커밋하지 않는다
 - 기존 작업 브랜치가 있으면 재사용 가능
 - 작업 브랜치 prefix는 `feature/`, `refactor/`, `fix/`, `chore/`, `docs/`, `test/`, `codex/`를 허용한다
@@ -211,7 +241,9 @@ Codex는 직접 구현하지 않고, 요청을 적절한 agent로 라우팅합�
 
 ## Handoff 규칙
 
+- interviewer는 `Feature Spec`을 작성해 planner에게 전달한다
 - planner는 `handoff_to_tester`와 `handoff_to_implementer`를 계획에 포함한다
+- planner의 사용자-facing 계획서는 작업 흐름 중심으로 작성하고, 코드 레벨 세부사항은 handoff에 분리한다
 - tester는 작성/수정 테스트 파일, 실행 명령, 기대 실패 이유, 구현 메모를 implementer에게 전달한다
 - implementer는 전달받은 테스트 명세를 먼저 실행하거나 확인한 뒤 구현한다
 
@@ -230,6 +262,7 @@ Codex는 직접 구현하지 않고, 요청을 적절한 agent로 라우팅합�
 | 상황 | 선택 |
 |------|------|
 | 어디 있는지 모르겠다 | `explore` |
+| 요구사항 의도가 흐릿하다 | `interviewer` |
 | 구조가 맞는지 모르겠다 | `analyst` |
 | 어떻게 구현할지 모르겠다 | `planner` |
 | 바로 고칠 수 있다 | `implementer` |

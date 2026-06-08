@@ -10,6 +10,14 @@ reasoning_effort: medium
 
 ---
 
+## 쓰기 작업 전 가드
+
+- diary, skill, agent 문서를 생성/수정하기 전 현재 브랜치가 작업 가능한 브랜치인지 확인한다
+- 메인 브랜치(`main`, `master`, `develop`)에서는 직접 파일을 수정하지 않는다
+- 브랜치/이슈 정책은 `.codex/docs/routing-rules.md`를 따른다
+
+---
+
 ## 역할
 
 1. **작업 회고 분석**: 소통 과정에서 발생한 문제점 파악

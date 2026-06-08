@@ -32,6 +32,7 @@ Keepiluv (Twix) 프로젝트의 Agent 인덱스입니다.
 | `retrospective` | 작업 회고 작성, 시행착오 분석, 스킬 자동 추출, 에이전트 문서 개선 제안 | `.codex/agents/tier2/retrospective.md` |
 | `code-reviewer` | Dove Letter 기반 전문 코드 리뷰, Compose 내부 동작 분석, 아키텍처 위반 탐지, 성능 이슈 확인 | `.codex/agents/tier2/code-reviewer.md` |
 | `analyst` | 전체 프로젝트 구조 분석, 아키텍처 패턴 평가, 의존성 분석, 문제점 도출 | `.codex/agents/tier2/analyst.md` |
+| `interviewer` | 요구사항 의도 정리, 모호성 인터뷰, Feature Spec 작성 | `.codex/agents/tier2/interviewer.md` |
 | `planner` | 구현 계획 수립, 작업 분해, 영향 범위 분석, 리스크 평가 | `.codex/agents/tier2/planner.md` |
 
 ---

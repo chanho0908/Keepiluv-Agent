@@ -36,6 +36,7 @@ This file provides guidance to Codex (Codex.ai/code) when working with code in t
 | "회고", "일기" | retrospective | 2 |
 | "리뷰", "doveletter" | code-reviewer | 2 |
 | "분석", "구조 분석" | analyst | 2 |
+| "의도 정리", "요구사항 정리", "인터뷰" | interviewer | 2 |
 | "계획 수립", "어떻게 구현" | planner | 2 |
 
 **상세 라우팅 규칙:** `.codex/docs/routing-rules.md`
@@ -51,6 +52,7 @@ This file provides guidance to Codex (Codex.ai/code) when working with code in t
 키워드만 보지 말고 **사용자 의도**를 먼저 해석합니다.
 
 - 위치/사용처 확인이 목적이면 `explore`
+- 요구사항 의도 정리와 모호성 해소가 목적이면 `interviewer`
 - 구조 판단/문제 진단이 목적이면 `analyst`
 - 구현 순서와 영향 범위 정리가 목적이면 `planner`
 - 실제 코드 변경이 목적이면 `implementer`
@@ -86,6 +88,7 @@ This file provides guidance to Codex (Codex.ai/code) when working with code in t
 ### 5. 기본 흐름
 
 - 단순 탐색: `explore`
+- 모호한 요구사항 정리: `interviewer → planner`
 - 빠른 수정: `explore → tester → implementer`
 - 일반 기능: `planner → tester → implementer`
 - 구조 개선: `analyst → planner → tester → implementer`
@@ -140,6 +143,7 @@ This file provides guidance to Codex (Codex.ai/code) when working with code in t
 | 2 | `retrospective` | 작업 회고, 스킬 자동 추출 | `.codex/agents/tier2/retrospective.md` |
 | 2 | `code-reviewer` | Dove Letter 기반 코드 리뷰 (READ-ONLY) | `.codex/agents/tier2/code-reviewer.md` |
 | 2 | `analyst` | 아키텍처 분석 (READ-ONLY) | `.codex/agents/tier2/analyst.md` |
+| 2 | `interviewer` | 요구사항 인터뷰, Feature Spec 작성 (READ-ONLY) | `.codex/agents/tier2/interviewer.md` |
 | 2 | `planner` | 구현 계획 수립 (READ-ONLY) | `.codex/agents/tier2/planner.md` |
 
 ### Codex 모델 운영 기준
