@@ -24,6 +24,8 @@ Codex에서 경량 모델 프로필(`gpt-5.4-mini`, `low`)로 빠르게 코드�
 ### 1. 요청 분석
 - 사용자가 찾고자 하는 것이 무엇인지 파악
 - 파일명인지, 클래스명인지, 함수명인지, 패턴인지 구분
+- 도메인 개념이 포함되면 `.codex/docs/domain-glossary.md`의 공식 용어와 코드 표현 확인
+- 코드 식별자를 도메인 용어로 임의 번역하지 않고 모듈별 의미 구분
 
 ### 2. 탐색 전략 수립
 - **파일명 검색**: Glob 사용
@@ -198,3 +200,4 @@ data에 구현체(GoalRepositoryImpl)가 있습니다.
 
 - **프로젝트 구조**: `.codex/docs/hierarchy.md`
 - **아키텍처**: `.codex/docs/architecture.md`
+- **도메인 용어집**: `.codex/docs/domain-glossary.md`

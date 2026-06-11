@@ -41,6 +41,8 @@ reasoning_effort: high
 - 먼저 `Clarity Gate`로 무엇이 부족한지 분류한다
 - 차단 수준의 모호성이 있으면 직접 인터뷰하지 않고 `interviewer`로 넘긴다
 - `interviewer`가 작성한 `Feature Spec`을 기반으로 계획을 작성한다
+- 도메인 개념이 포함되면 `.codex/docs/domain-glossary.md`를 확인하고 계획과 handoff에 공식 용어를 사용한다
+- 같은 코드 표현의 의미가 모듈마다 다르면 용어집을 기준으로 영향 범위를 나눈다
 
 ---
 
@@ -347,4 +349,5 @@ analyst의 분석 결과를 바탕으로 구현 계획을 수립했습니다.
 - **아키텍처 원칙**: `.codex/docs/architecture.md`
 - **모듈 구조**: `.codex/docs/hierarchy.md`
 - **코드 컨벤션**: `.codex/skills/coding-conventions.md`
+- **도메인 용어집**: `.codex/docs/domain-glossary.md`
 - **작업 프로세스**: `.codex/agents/tier2/implementer.md`

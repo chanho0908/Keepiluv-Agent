@@ -363,3 +363,6 @@ Dove Letter에서 관련 주제를 더 학습하고 싶다면:
 - **프로젝트 아키텍처**: `.codex/docs/architecture.md`
 - **모듈 구조**: `.codex/docs/hierarchy.md`
 - **코드 컨벤션**: `.codex/skills/coding-conventions.md`
+- **도메인 용어집**: `.codex/docs/domain-glossary.md`
+
+리뷰 시 테스트명, 상태와 행위의 의미, 사용자-facing 설명이 공식 도메인 용어와 일치하는지 확인합니다. 코드와 용어집이 충돌하면 코드명만으로 의미를 단정하지 않고 정책 확인이 필요한 문제로 보고합니다.

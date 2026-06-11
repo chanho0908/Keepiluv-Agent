@@ -199,6 +199,8 @@ description: 자주 쓰는 agent 조합 워크플로우 요약
 - 워크플로우는 강제 순서가 아니라 기본값이다
 - 작은 작업은 과도한 계획 단계를 줄일 수 있다
 - 기본 원칙은 테스트 선행이지만, 테스트 작성이 구조적으로 어렵다면 예외적으로 후행 보강을 허용한다
+- 모든 handoff와 산출물은 `.codex/docs/domain-glossary.md`의 공식 용어를 사용한다
+- 코드 표현의 의미가 문맥별로 다르면 용어집을 확인하고, 정의되지 않은 의미는 사용자에게 확인한다
 
 ## 참고 문서
 
@@ -207,3 +209,4 @@ description: 자주 쓰는 agent 조합 워크플로우 요약
 | 라우팅 규칙 | `.codex/docs/routing-rules.md` |
 | 에이전트 목록 | `.codex/docs/agent-list.md` |
 | 프로젝트 개요 | `.codex/docs/project-overview.md` |
+| 도메인 용어집 | `.codex/docs/domain-glossary.md` |
