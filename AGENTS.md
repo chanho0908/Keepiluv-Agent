@@ -102,6 +102,13 @@ This file provides guidance to Codex (Codex.ai/code) when working with code in t
 - 파일 1~2개 수준의 명확한 수정은 `planner`를 생략할 수 있음
 - 단, 커밋 승인 규칙은 항상 유지
 
+### 7. 도메인 용어 기준
+
+- 도메인 개념이 포함된 작업은 `.codex/docs/domain-glossary.md`를 먼저 확인합니다.
+- 요구사항, 계획, 테스트명, 코드 설명, 리뷰, 커밋 메시지, PR 본문에는 용어집의 공식 용어를 사용합니다.
+- 같은 코드 표현이라도 모듈별 의미가 다를 수 있으므로 코드 식별자만 보고 도메인 의미를 추측하지 않습니다.
+- 코드와 용어집이 충돌하거나 필요한 개념이 정의되지 않았다면 임의의 용어를 만들지 않고 사용자에게 확인합니다.
+
 ---
 
 ## Quick Commands
@@ -121,6 +128,8 @@ This file provides guidance to Codex (Codex.ai/code) when working with code in t
 | Core | 프로젝트 개요 | `.codex/docs/project-overview.md` | Keepiluv 소개, Tech Stack, Key Patterns |
 | Core | 아키텍처 | `.codex/docs/architecture.md` | MVI, Clean Architecture, 레이어별 책임 |
 | Core | 모듈 구조 | `.codex/docs/hierarchy.md` | Layer Hierarchy, Core Modules, Feature Structure |
+| Core | 도메인 용어집 | `.codex/docs/domain-glossary.md` | 공식 도메인 용어, 코드 표현 매핑, 테스트명 기준 |
+| Core | 테스트 전략 | `.codex/docs/test-strategy.md` | 리스크 기반 테스트 포트폴리오, 레벨 선택과 완료 기준 |
 | Orchestration | 라우팅 규칙 | `.codex/docs/routing-rules.md` | 단일 작업, 여러 작업, Tier별 자동 라우팅 |
 | Orchestration | 워크플로우 | `.codex/docs/workflows.md` | 복합 워크플로우 패턴, Tier 조합 전략 |
 | Orchestration | 에이전트 목록 | `.codex/docs/agent-list.md` | Agent 인덱스 |

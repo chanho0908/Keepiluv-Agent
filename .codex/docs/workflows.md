@@ -8,6 +8,7 @@ description: 자주 쓰는 agent 조합 워크플로우 요약
 이 문서는 "어떤 agent를 어떤 순서로 조합할지"를 빠르게 결정하기 위한 요약본입니다.
 
 정책 원본은 `AGENTS.md`와 `.codex/docs/routing-rules.md`를 따릅니다.
+테스트 레벨 선택과 완료 기준은 `.codex/docs/test-strategy.md`를 따릅니다.
 
 ## 기본 조합
 
@@ -162,11 +163,6 @@ description: 자주 쓰는 agent 조합 워크플로우 요약
 파일을 변경할 수 있는 agent를 호출하기 전에 브랜치 상태를 확인합니다.
 브랜치/이슈 정책의 source of truth는 `.codex/docs/routing-rules.md`와 각 Write 가능 agent의 작업 프로세스입니다.
 
-준비 작업 예시:
-
-1. **GitHub Issue 생성** (필요 시)
-2. **작업 브랜치 생성** (필요 시)
-
 ### 1단계: 테스트 선행 구현 (단일 작업)
 
 1. `tester`에게 선행 테스트 작성을 위임한다
@@ -199,6 +195,8 @@ description: 자주 쓰는 agent 조합 워크플로우 요약
 - 워크플로우는 강제 순서가 아니라 기본값이다
 - 작은 작업은 과도한 계획 단계를 줄일 수 있다
 - 기본 원칙은 테스트 선행이지만, 테스트 작성이 구조적으로 어렵다면 예외적으로 후행 보강을 허용한다
+- 모든 handoff와 산출물은 `.codex/docs/domain-glossary.md`의 공식 용어를 사용한다
+- 코드 표현의 의미가 문맥별로 다르면 용어집의 모듈별 매핑을 확인하고, 정의되지 않은 의미는 사용자에게 확인한다
 
 ## 참고 문서
 
@@ -207,3 +205,5 @@ description: 자주 쓰는 agent 조합 워크플로우 요약
 | 라우팅 규칙 | `.codex/docs/routing-rules.md` |
 | 에이전트 목록 | `.codex/docs/agent-list.md` |
 | 프로젝트 개요 | `.codex/docs/project-overview.md` |
+| 도메인 용어집 | `.codex/docs/domain-glossary.md` |
+| 테스트 전략 | `.codex/docs/test-strategy.md` |

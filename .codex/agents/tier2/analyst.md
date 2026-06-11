@@ -35,6 +35,7 @@ reasoning_effort: high
 - `.codex/docs/project-overview.md` - 프로젝트 개요
 - `.codex/docs/architecture.md` - 아키텍처 원칙
 - `.codex/docs/hierarchy.md` - 모듈 구조
+- `.codex/docs/domain-glossary.md` - 공식 도메인 용어와 코드 표현의 문맥별 의미
 
 **코드베이스 탐색:**
 - `Glob("**/*.kt")` - 전체 Kotlin 파일 목록
@@ -356,3 +357,4 @@ code-reviewer 에이전트로 심층 리뷰하시겠습니까?
 - **아키텍처 원칙**: `.codex/docs/architecture.md`
 - **모듈 구조**: `.codex/docs/hierarchy.md`
 - **코드 컨벤션**: `.codex/skills/coding-conventions.md`
+- **도메인 용어집**: `.codex/docs/domain-glossary.md`

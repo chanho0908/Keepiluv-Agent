@@ -16,10 +16,28 @@ Codex는 직접 구현하지 않고, 요청을 적절한 agent로 라우팅합�
 - 키워드보다 **사용자 의도**를 우선 해석
 - 구현 전: 필요한 경우 탐색, 분석, 계획을 먼저 수행
 - 가능하면 **구현 전에 테스트를 먼저 설계/작성**하여 성공 기준을 고정
+- 테스트 레벨과 완료 기준은 `.codex/docs/test-strategy.md`를 공통 source of truth로 사용
 - 구현 후: 사용자 승인 전 커밋 금지
 - 단일 작업은 단일 owner agent에 위임
 - 독립적인 여러 작업만 병렬 위임
 - 실제 모델/도구 정보는 각 agent 파일이 source of truth
+
+## 도메인 용어 공통 규칙
+
+모든 Agent는 도메인 개념을 다루기 전에 `.codex/docs/domain-glossary.md`를 확인합니다.
+
+- `interviewer`, `planner`: 요구사항과 계획에서 공식 용어를 사용하고 서로 다른 개념을 분리한다.
+- `tester`: 테스트명과 시나리오를 코드 필드명이 아닌 공식 도메인 용어로 작성한다.
+- `implementer`: 상태, 행위, 날짜, 횟수의 의미를 용어집과 대조하고 코드 식별자만으로 의미를 추측하지 않는다.
+- `analyst`, `code-reviewer`, `performance-optimizer`: 분석과 리뷰에서 도메인 의미 변경 또는 용어 충돌을 확인한다.
+- `explore`, `writer`, `retrospective`: 코드 표현을 새로운 도메인 용어로 번역하지 않고 공식 용어로 설명한다.
+- `committer`, `pr-creator`: 커밋 메시지와 PR 설명에 공식 용어를 사용한다.
+
+코드와 용어집이 충돌하거나 필요한 개념이 정의되지 않은 경우:
+
+1. 코드의 실제 동작과 사용 맥락을 확인한다.
+2. 임의의 용어를 만들거나 기존 용어에 억지로 포함하지 않는다.
+3. 사용자에게 정책을 확인하고, 확정 후 용어집 보강이 필요한지 보고한다.
 
 ## Tier 요약
 
@@ -277,3 +295,4 @@ Codex는 직접 구현하지 않고, 요청을 적절한 agent로 라우팅합�
 | 에이전트 목록 | `.codex/docs/agent-list.md` |
 | 워크플로우 | `.codex/docs/workflows.md` |
 | 프로젝트 개요 | `.codex/docs/project-overview.md` |
+| 테스트 전략 | `.codex/docs/test-strategy.md` |

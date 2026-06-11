@@ -44,3 +44,4 @@ Keepiluv (Twix) 프로젝트의 Agent 인덱스입니다.
 | 라우팅 규칙 | `.codex/docs/routing-rules.md` |
 | 워크플로우 | `.codex/docs/workflows.md` |
 | 프로젝트 개요 | `.codex/docs/project-overview.md` |
+| 도메인 용어집 | `.codex/docs/domain-glossary.md` |

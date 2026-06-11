@@ -41,6 +41,9 @@ reasoning_effort: high
 - 먼저 `Clarity Gate`로 무엇이 부족한지 분류한다
 - 차단 수준의 모호성이 있으면 직접 인터뷰하지 않고 `interviewer`로 넘긴다
 - `interviewer`가 작성한 `Feature Spec`을 기반으로 계획을 작성한다
+- 도메인 개념이 포함되면 `.codex/docs/domain-glossary.md`를 확인하고 계획과 handoff에 공식 용어를 사용한다
+- 테스트 계획은 `.codex/docs/test-strategy.md`를 공통 source of truth로 사용하고, 리스크에 맞는 테스트 레벨과 제외 범위를 명시한다
+- 같은 코드 표현의 의미가 모듈마다 다르면 용어집의 문맥별 매핑을 기준으로 영향 범위를 나눈다
 
 ---
 
@@ -48,7 +51,7 @@ reasoning_effort: high
 
 ### 1. Clarity Gate
 
-계획 작성 전, 요청이 계획 가능한 상태인지 얇게 판정합니다.
+계획 작성 전, 요청이 계획 가능한 상태인지 판정합니다.
 
 - 이미 `Feature Spec`이 있으면 그 내용을 기준으로 계획한다
 - 목표, 범위, 완료 기준이 명확하면 바로 계획한다
@@ -325,20 +328,6 @@ analyst의 분석 결과를 바탕으로 구현 계획을 수립했습니다.
 승인하시면 tester로 선행 테스트를 작성한 뒤 implementer로 구현하겠습니다.
 ```
 
-## 제약 사항
-
-### ✅ 할 수 있는 것
-- 파일 읽기 (Read)
-- 파일 검색 (Glob, Grep)
-- 작업 분해
-- 구현 순서 결정
-- 영향 범위 분석
-
-### ❌ 할 수 없는 것
-- 파일 수정 (implementer에게 위임)
-- 코드 실행 (Bash 금지)
-- 구현 직접 실행
-
 ---
 
 ## 참고 문서
@@ -347,4 +336,6 @@ analyst의 분석 결과를 바탕으로 구현 계획을 수립했습니다.
 - **아키텍처 원칙**: `.codex/docs/architecture.md`
 - **모듈 구조**: `.codex/docs/hierarchy.md`
 - **코드 컨벤션**: `.codex/skills/coding-conventions.md`
+- **도메인 용어집**: `.codex/docs/domain-glossary.md`
+- **테스트 전략**: `.codex/docs/test-strategy.md`
 - **작업 프로세스**: `.codex/agents/tier2/implementer.md`

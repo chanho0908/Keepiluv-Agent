@@ -5,9 +5,20 @@ description: Keepiluv (Twix) 핵심 스택과 자주 쓰는 패턴 요약
 
 # Project Overview
 
-## 서비스
+## 서비스 개요
 
-Keepiluv (formerly Twix)는 커플이 서로의 목표를 공유하고 동기부여하는 Android 앱입니다.
+Keepiluv는 커플이 함께 목표를 만들고, 날짜별로 목표를 인증하며, 서로의 인증샷에 반응하거나 아직 인증하지 않은 상대를 찔러 참여를 독려하는 서비스입니다.
+목표 수행 기록은 스탬프와 통계로 확인할 수 있습니다.
+
+주요 사용자 흐름은 다음과 같습니다.
+
+1. 로그인 후 짝꿍과 연결한다.
+2. 프로필과 기념일을 설정한다.
+3. 함께 수행할 목표와 반복 주기를 만든다.
+4. 날짜를 선택해 그날의 목표를 확인한다.
+5. 목표 수행 후 인증샷을 등록한다.
+6. 짝꿍의 인증샷에 리액션을 남기거나, 미인증 상태라면 찌르기를 보낸다.
+7. 날짜와 목표별 달성 기록을 통계에서 확인한다.
 
 ## 핵심 스택
 
@@ -37,19 +48,13 @@ Keepiluv (formerly Twix)는 커플이 서로의 목표를 공유하고 동기부
 | Cross-Feature Sync | Event Bus 사용 가능                              |
 | Route Design | type-safe route 선호                           |
 
-## 구현 순서
-
-1. `domain`
-2. `data`
-3. `feature` ViewModel / contract
-4. `feature` UI / navigation
-
 ## 자주 보는 위치
 
 | 목적 | 위치 |
 |------|------|
 | 전체 아키텍처 원칙 | `.codex/docs/architecture.md` |
 | 모듈 / 디렉터리 구조 | `.codex/docs/hierarchy.md` |
+| 테스트 전략 / 레벨 선택 | `.codex/docs/test-strategy.md` |
 | 라우팅 / 에이전트 선택 | `.codex/docs/routing-rules.md` |
 | 복합 작업 흐름 | `.codex/docs/workflows.md` |
 | 코드 컨벤션 | `.codex/skills/coding-conventions.md` |

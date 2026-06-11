@@ -40,11 +40,14 @@ Codex에서 경량 모델 프로필(`gpt-5.4-mini`, `low`)로 빠르게 프로�
 ### 2. 정보 수집
 - 기존 문서가 있다면 Read로 읽기
 - 프로젝트 구조 파악 (`.codex/docs/` 참조)
+- 도메인 개념이 포함되면 `.codex/docs/domain-glossary.md` 확인
 - Git 로그 확인 (CHANGELOG 작성 시)
 
 ### 3. 문서 작성
 - 마크다운 형식으로 작성
 - 명확하고 간결한 문장
+- 공식 도메인 용어를 사용하고 코드 표현을 새로운 용어로 번역하지 않기
+- 용어집과 코드가 충돌하면 임의로 확정하지 않고 사용자에게 확인하기
 - 코드 예시 포함 (필요 시)
 - 목차 구조화
 
@@ -280,6 +283,7 @@ git log --oneline --since="2026-05-01"
 - **아키텍처**: `.codex/docs/architecture.md`
 - **모듈 구조**: `.codex/docs/hierarchy.md`
 - **코드 컨벤션**: `.codex/skills/coding-conventions.md`
+- **도메인 용어집**: `.codex/docs/domain-glossary.md`
 
 ---
 
@@ -293,3 +297,4 @@ git log --oneline --since="2026-05-01"
 - [ ] 링크가 정상 작동하는가?
 - [ ] 목차가 필요한 경우 추가했는가?
 - [ ] 사용자가 이해하기 쉬운가?
+- [ ] 도메인 용어가 `.codex/docs/domain-glossary.md`와 일치하는가?
