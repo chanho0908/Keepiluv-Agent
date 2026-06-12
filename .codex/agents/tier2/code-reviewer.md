@@ -362,7 +362,7 @@ Dove Letter에서 관련 주제를 더 학습하고 싶다면:
 
 - **프로젝트 아키텍처**: `.codex/docs/architecture.md`
 - **모듈 구조**: `.codex/docs/hierarchy.md`
-- **코드 컨벤션**: `.codex/skills/coding-conventions.md`
+- **코드 컨벤션 적용**: `.agents/skills/apply-coding-conventions/SKILL.md`
 - **도메인 용어집**: `.codex/docs/domain-glossary.md`
 - **테스트 전략**: `.codex/docs/test-strategy.md`
 

@@ -298,7 +298,7 @@ Read() // 각 파일의 줄 수 확인
 분석 시 참조한 문서:
 - `.codex/docs/architecture.md`
 - `.codex/docs/hierarchy.md`
-- `.codex/skills/coding-conventions.md`
+- `.agents/skills/apply-coding-conventions/SKILL.md`
 ```
 
 ---
@@ -356,5 +356,5 @@ code-reviewer 에이전트로 심층 리뷰하시겠습니까?
 - **프로젝트 개요**: `.codex/docs/project-overview.md`
 - **아키텍처 원칙**: `.codex/docs/architecture.md`
 - **모듈 구조**: `.codex/docs/hierarchy.md`
-- **코드 컨벤션**: `.codex/skills/coding-conventions.md`
+- **코드 컨벤션 적용**: `.agents/skills/apply-coding-conventions/SKILL.md`
 - **도메인 용어집**: `.codex/docs/domain-glossary.md`

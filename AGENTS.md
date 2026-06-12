@@ -109,6 +109,12 @@ This file provides guidance to Codex (Codex.ai/code) when working with code in t
 - 같은 코드 표현이라도 모듈별 의미가 다를 수 있으므로 코드 식별자만 보고 도메인 의미를 추측하지 않습니다.
 - 코드와 용어집이 충돌하거나 필요한 개념이 정의되지 않았다면 임의의 용어를 만들지 않고 사용자에게 확인합니다.
 
+### 8. 사용자 설명 기준
+
+- 사용자에게 설명할 때는 비개발자도 이해할 수 있는 쉬운 한국어를 사용합니다.
+- 전문 용어가 필요하면 먼저 쉬운 말로 설명한 뒤 괄호 안에 전문 용어를 함께 적습니다.
+- 코드 구조보다 사용자가 겪는 변화, 이유, 결과를 먼저 설명합니다.
+
 ---
 
 ## Quick Commands
@@ -130,11 +136,13 @@ This file provides guidance to Codex (Codex.ai/code) when working with code in t
 | Core | 모듈 구조 | `.codex/docs/hierarchy.md` | Layer Hierarchy, Core Modules, Feature Structure |
 | Core | 도메인 용어집 | `.codex/docs/domain-glossary.md` | 공식 도메인 용어, 코드 표현 매핑, 테스트명 기준 |
 | Core | 테스트 전략 | `.codex/docs/test-strategy.md` | 리스크 기반 테스트 포트폴리오, 레벨 선택과 완료 기준 |
+| Skill | 테스트 작업 절차 | `.agents/skills/test-workflow/SKILL.md` | tester의 테스트 작성, 검증, implementer handoff 절차 |
+| Skill | 코드 컨벤션 적용 | `.agents/skills/apply-coding-conventions/SKILL.md` | Kotlin/Android 코드와 아키텍처 규칙 적용 절차 |
+| Skill | working fence 적용 | `.agents/skills/apply-working-fence/SKILL.md` | 가정, 단순성, 변경 범위, 검증 기준 관리 |
+| Skill | 로딩 UI 상태 모델링 | `.agents/skills/model-loadable-ui-state/SKILL.md` | 로딩, 오류, 재시도 UI 상태 경계 |
 | Orchestration | 라우팅 규칙 | `.codex/docs/routing-rules.md` | 단일 작업, 여러 작업, Tier별 자동 라우팅 |
 | Orchestration | 워크플로우 | `.codex/docs/workflows.md` | 복합 워크플로우 패턴, Tier 조합 전략 |
 | Orchestration | 에이전트 목록 | `.codex/docs/agent-list.md` | Agent 인덱스 |
-| Guideline | 코드 컨벤션 | `.codex/skills/coding-conventions.md` | SOLID, Koin, 네이밍 규칙, 문자열 관리 |
-| Guideline | working fence | `.codex/skills/andrej-karpathy-skills.md` | Think Before Coding, Simplicity First, Surgical Changes |
 
 ### Agents
 

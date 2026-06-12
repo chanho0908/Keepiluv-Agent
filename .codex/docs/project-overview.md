@@ -57,4 +57,5 @@ Keepiluv는 커플이 함께 목표를 만들고, 날짜별로 목표를 인증�
 | 테스트 전략 / 레벨 선택 | `.codex/docs/test-strategy.md` |
 | 라우팅 / 에이전트 선택 | `.codex/docs/routing-rules.md` |
 | 복합 작업 흐름 | `.codex/docs/workflows.md` |
-| 코드 컨벤션 | `.codex/skills/coding-conventions.md` |
+| 코드 컨벤션 적용 | `.agents/skills/apply-coding-conventions/SKILL.md` |
+| 로딩·오류 UI 상태 모델링 | `.agents/skills/model-loadable-ui-state/SKILL.md` |

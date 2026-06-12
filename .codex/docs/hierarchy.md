@@ -80,4 +80,5 @@ description: 모듈 구조와 feature 표준 형태 요약
 |------|------|
 | 프로젝트 개요 | `.codex/docs/project-overview.md` |
 | 아키텍처 원칙 | `.codex/docs/architecture.md` |
-| 코드 컨벤션 | `.codex/skills/coding-conventions.md` |
+| 코드 컨벤션 적용 | `.agents/skills/apply-coding-conventions/SKILL.md` |
+| 로딩 UI 상태 모델링 | `.agents/skills/model-loadable-ui-state/SKILL.md` |

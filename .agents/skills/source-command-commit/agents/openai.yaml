@@ -1,0 +1,4 @@
+interface:
+  display_name: "Source Command Commit"
+  short_description: "사용자가 승인한 파일과 메시지로만 Git 커밋 생성"
+  default_prompt: "Use $source-command-commit to prepare and create a commit after my approval."

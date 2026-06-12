@@ -108,7 +108,8 @@ Feature Spec에 오해 위험이 있으면 계획 본문보다 먼저 `interview
 4. **UI Layer**: Composable, Screen, Navigation
 
 **컨벤션 체크:**
-- `.codex/skills/coding-conventions.md` 참조
+- `.agents/skills/apply-coding-conventions/SKILL.md` 참조
+- 로딩, 오류, 재시도 UI 작업이면 `.agents/skills/model-loadable-ui-state/SKILL.md` 참조
 
 ### 6. 순서 결정
 **구현 순서:**
@@ -335,7 +336,8 @@ analyst의 분석 결과를 바탕으로 구현 계획을 수립했습니다.
 - **프로젝트 개요**: `.codex/docs/project-overview.md`
 - **아키텍처 원칙**: `.codex/docs/architecture.md`
 - **모듈 구조**: `.codex/docs/hierarchy.md`
-- **코드 컨벤션**: `.codex/skills/coding-conventions.md`
+- **코드 컨벤션 적용**: `.agents/skills/apply-coding-conventions/SKILL.md`
+- **로딩 UI 상태 모델링**: `.agents/skills/model-loadable-ui-state/SKILL.md` (관련 작업일 때만)
 - **도메인 용어집**: `.codex/docs/domain-glossary.md`
 - **테스트 전략**: `.codex/docs/test-strategy.md`
 - **작업 프로세스**: `.codex/agents/tier2/implementer.md`

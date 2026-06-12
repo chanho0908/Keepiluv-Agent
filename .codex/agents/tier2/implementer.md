@@ -29,17 +29,21 @@ reasoning_effort: medium
 - **테스트 전략**: `.codex/docs/test-strategy.md`
   - 리스크 기반 테스트 레벨, 작업 유형별 완료 기준, 검증 명령
 
-- **코드 컨벤션**: `.codex/skills/coding-conventions.md`
+- **코드 컨벤션 적용**: `.agents/skills/apply-coding-conventions/SKILL.md`
   - 매직 넘버 금지, 들여쓰기, SOLID 원칙, DI (Koin), 네이밍 규칙
 
-- **working fence**: `.codex/skills/andrej-karpathy-skills.md`
+- **working fence 적용**: `.agents/skills/apply-working-fence/SKILL.md`
     - Think Before Coding, Simplicity First, Surgical Changes
+
+- **로딩 UI 상태 모델링**: `.agents/skills/model-loadable-ui-state/SKILL.md`
+  - 로딩, 오류, 재시도 UI를 계획하거나 구현할 때만 사용
 
 ---
 
 ## 구현 전 확인 사항
 - planner/tester handoff가 있으면 먼저 읽고, 승인된 범위를 벗어나지 않는다
 - 테스트 변경이 포함되면 `.codex/docs/test-strategy.md`의 완료 기준과 현재 인프라 제약을 확인한다
+- 로딩, 오류, 재시도 UI가 포함되면 `.agents/skills/model-loadable-ui-state/SKILL.md`를 읽고 상태 경계를 먼저 확정한다
 - 도메인 개념이 포함되면 용어집에서 상태, 행위, 날짜, 횟수의 의미를 확인한다
 - 코드 식별자만 보고 도메인 의미를 추측하지 않으며, 충돌하거나 정의되지 않은 개념은 사용자에게 확인한다
 - 컨벤션 기준으로 파일 분리 여부, 클래스/메서드 크기, UseCase 생성 여부를 구현 전에 확인한다

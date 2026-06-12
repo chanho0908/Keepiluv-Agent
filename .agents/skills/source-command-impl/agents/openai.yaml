@@ -1,0 +1,4 @@
+interface:
+  display_name: "Source Command Impl"
+  short_description: "사용자 계획 승인 후 테스트를 먼저 작성하고 구현"
+  default_prompt: "Use $source-command-impl to plan this change, wait for approval, test first, and implement it."

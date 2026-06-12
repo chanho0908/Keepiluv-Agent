@@ -17,6 +17,7 @@ Codex는 직접 구현하지 않고, 요청을 적절한 agent로 라우팅합�
 - 구현 전: 필요한 경우 탐색, 분석, 계획을 먼저 수행
 - 가능하면 **구현 전에 테스트를 먼저 설계/작성**하여 성공 기준을 고정
 - 테스트 레벨과 완료 기준은 `.codex/docs/test-strategy.md`를 공통 source of truth로 사용
+- tester의 구체적인 작성, 검증, 예외 처리 절차는 `.agents/skills/test-workflow/SKILL.md`를 사용
 - 구현 후: 사용자 승인 전 커밋 금지
 - 단일 작업은 단일 owner agent에 위임
 - 독립적인 여러 작업만 병렬 위임
@@ -263,6 +264,7 @@ Codex는 직접 구현하지 않고, 요청을 적절한 agent로 라우팅합�
 - planner는 `handoff_to_tester`와 `handoff_to_implementer`를 계획에 포함한다
 - planner의 사용자-facing 계획서는 작업 흐름 중심으로 작성하고, 코드 레벨 세부사항은 handoff에 분리한다
 - tester는 작성/수정 테스트 파일, 실행 명령, 기대 실패 이유, 구현 메모를 implementer에게 전달한다
+- tester handoff의 상세 형식과 작성 절차는 `.agents/skills/test-workflow/SKILL.md`를 따른다
 - implementer는 전달받은 테스트 명세를 먼저 실행하거나 확인한 뒤 구현한다
 
 ## 회고 규칙
@@ -272,7 +274,9 @@ Codex는 직접 구현하지 않고, 요청을 적절한 agent로 라우팅합�
 - `retrospective`가 시작되면 다음 후속 작업은 자동으로 포함한다
   - 회고 정리
   - `.codex/diary/YYYY-MM-DD-{task-name}.md` 기록
-  - 필요한 경우 `.codex/skills/`에 규칙/패턴 추출
+  - 명확한 사용 시점과 반복 절차가 있는 경우에만 `.agents/skills/<name>/SKILL.md` 생성 또는 갱신
+  - 기존 Skill의 상세 규칙은 해당 Skill의 `references/`에 보강
+- 원본 교훈과 근거는 `.codex/diary/`, 프로젝트의 공식 사실과 정책은 `.codex/docs/`에 둔다
 - 즉, **회고 시작은 수동, 회고 이후 기록과 학습 추출은 자동**으로 처리한다
 
 ## 빠른 선택 가이드
@@ -296,3 +300,4 @@ Codex는 직접 구현하지 않고, 요청을 적절한 agent로 라우팅합�
 | 워크플로우 | `.codex/docs/workflows.md` |
 | 프로젝트 개요 | `.codex/docs/project-overview.md` |
 | 테스트 전략 | `.codex/docs/test-strategy.md` |
+| 테스트 작업 절차 | `.agents/skills/test-workflow/SKILL.md` |

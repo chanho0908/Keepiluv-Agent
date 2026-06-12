@@ -121,6 +121,7 @@ Compose UI 테스트와 앱 전체 E2E 테스트는 전략상 필요한 레벨�
 4. **Review**: 관련 테스트와 정적 검증을 실행하고, 테스트 안정성·누락·과잉 결합을 검토한다.
 
 작은 작업은 planner를 생략할 수 있지만, tester는 테스트 레벨과 제외 이유를 스스로 명시합니다.
+tester의 반복 가능한 작성, 실행, 예외 처리, implementer handoff 절차는 `.agents/skills/test-workflow/SKILL.md`를 따릅니다.
 
 ## 안정성과 검증
 
