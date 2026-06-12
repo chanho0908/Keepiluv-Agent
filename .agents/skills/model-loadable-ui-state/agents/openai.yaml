@@ -1,0 +1,4 @@
+interface:
+  display_name: "Model Loadable UI State"
+  short_description: "로딩, 오류, 재시도 UI 상태를 MVI로 모델링"
+  default_prompt: "Use $model-loadable-ui-state to model loading, error, and retry behavior for this screen."

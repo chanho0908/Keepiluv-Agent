@@ -149,181 +149,65 @@ reasoning_effort: medium
 
 ---
 
-### 4단계: 스킬 자동 추출
+### 4단계: 학습 결과 분류와 필요한 문서 반영
 
-**작업 일기 작성 완료 후, "핵심 교훈"을 스킬 파일로 자동 추출합니다.**
+작업 일기의 모든 교훈을 Skill로 만들지 않는다. 다음 기준으로 저장 위치를 먼저 결정한다.
 
-**추출 프로세스:**
+| 내용 | 저장 위치 |
+|------|-----------|
+| 반복해서 실행할 절차이며 사용 시점이 명확함 | `.agents/skills/<name>/SKILL.md` |
+| 기존 Skill을 수행할 때 필요한 상세 규칙과 예시 | 해당 Skill의 `references/` |
+| 시행착오의 원문, 배경, 근거 | `.codex/diary/` |
+| 프로젝트가 공식적으로 합의한 사실과 정책 | `.codex/docs/` |
+
+새 Skill은 명확한 사용 시점과 반복 가능한 절차가 모두 있을 때만 만든다. 단순 교훈, 일회성 실수, 이미 공식 문서에 있는 내용은 새 Skill로 만들지 않는다.
+
+Skill을 만들거나 수정할 때는 공식 구조를 따른다.
+
+- 폴더와 frontmatter의 `name`을 일치시킨다.
+- `SKILL.md` frontmatter에는 `name`, `description`만 둔다.
+- `description`에 무엇을 하는지와 언제 사용하는지를 함께 적는다.
+- 핵심 절차는 `SKILL.md`, 긴 규칙과 예시는 `references/`에 둔다.
+- `agents/openai.yaml`에는 `display_name`, `short_description`, `$skill-name`이 포함된 `default_prompt`를 둔다.
+
+**분류 프로세스:**
 
 1. **작업 일기 읽기**: `.codex/diary/YYYY-MM-DD-{task-name}.md` 읽기
 2. **핵심 교훈 섹션 파싱**: "## 핵심 교훈" 섹션의 모든 항목 추출
-3. **태그 기반 분류**: 태그를 읽어 스킬 파일명 결정
-4. **스킬 파일 생성/업데이트**: `.codex/skills/{topic}.md` 생성 또는 업데이트
+3. **근거 보존**: 교훈의 원문, 사용자 피드백, 실패 원인은 `.codex/diary/`에 남기기
+4. **공식성 판단**: 프로젝트가 합의한 사실이나 정책이면 `.codex/docs/`의 관련 문서에 반영 제안하기
+5. **기존 Skill 확인**: 기존 Skill의 실행을 돕는 상세 규칙이면 해당 Skill의 `references/`에 반영 제안하기
+6. **새 Skill 판단**: 명확한 사용 시점과 반복 절차를 모두 설명할 수 있을 때만 새 Skill 생성 제안하기
 
-**태그 → 스킬 파일 매핑:**
+태그는 일기를 검색하기 위한 메타데이터일 뿐, Skill 이름이나 저장 위치를 자동으로 결정하지 않는다.
 
-| 태그 | 스킬 파일 |
-|------|-----------|
-| #레이어책임 | `.codex/skills/layer-responsibility.md` |
-| #용어혼동 | `.codex/skills/terminology-clarity.md` |
-| #Domain금지사항 | `.codex/skills/domain-restrictions.md` |
-| #포맷팅 | `.codex/skills/formatting-patterns.md` |
-| #DI | `.codex/skills/dependency-injection.md` |
-| #네이밍 | `.codex/skills/naming-conventions.md` |
-| #모듈구조 | `.codex/skills/module-structure.md` |
-| #컴포넌트위치 | `.codex/skills/component-placement.md` |
-| #아키텍처 | `.codex/skills/architecture-patterns.md` |
+**하나의 교훈 분류 예시:**
 
-**스킬 파일 구조:**
+교훈: "화면용 상대 시간 문자열을 Domain에서 만들었다가 Android 리소스 의존성 때문에 다시 UI로 옮겼다."
 
-```markdown
----
-name: {topic}
-description: {자동 생성된 설명}
-source: diary
----
+| 분류 대상 | 반영 방법 |
+|-----------|-----------|
+| 원본 교훈과 실패 근거 | 시도, 피드백, 수정 결과를 `.codex/diary/`에 보존한다. |
+| 프로젝트 공식 사실과 정책 | 레이어 책임이 합의된 정책이면 `.codex/docs/architecture.md`에 반영하거나 기존 내용을 확인한다. |
+| 기존 Skill의 상세 규칙 | 구현 중 확인할 구체적인 포맷팅 규칙이면 `apply-coding-conventions`의 `references/`에 보완한다. |
+| 새 Skill | 별도의 명확한 사용 시점과 반복 절차가 없다면 만들지 않는다. 둘 다 있다면 `.agents/skills/<name>/SKILL.md` 생성을 제안한다. |
 
-# {Topic Title}
+**새 Skill 생성 절차:**
 
-{간단한 개요}
+새 Skill 조건을 충족하고 사용자가 생성을 승인한 경우 공식 `$skill-creator`를 먼저 읽고 그 절차를 따른다. 경로를 고정하지 말고 설치된 `skill-creator`의 `scripts/`를 사용한다.
 
----
-
-## 교훈 목록
-
-### {교훈 1 제목}
-**출처:** `.codex/diary/YYYY-MM-DD-{task-name}.md`
-**일자:** YYYY-MM-DD
-
-{교훈 내용}
-
----
-
-### {교훈 2 제목}
-**출처:** `.codex/diary/YYYY-MM-DD-{task-name2}.md`
-**일자:** YYYY-MM-DD
-
-{교훈 내용}
-
----
-
-## 적용 방법
-
-1. {적용 가이드 1}
-2. {적용 가이드 2}
-```
-
-**스킬 추출 예시:**
-
-**작업 일기:**
-```markdown
-# 2026-05-13: Layer Responsibility Fix
-
-## 핵심 교훈
-
-1. **UI Layer에서 포맷팅 수행**
-   - Domain Layer는 순수 Kotlin만 사용해야 함
-   - Context, Resources 등 Android 의존성 절대 금지
-   - 포맷팅은 UI Layer의 @Composable에서 stringResource 사용
-
-2. **용어 명확화**
-   - "UI Layer"는 feature 모듈의 Composable 의미
-   - "UI 모듈"은 core:ui 모듈 (BaseViewModel, LoadableState)
-
-## 태그
-#레이어책임 #용어혼동
-```
-
-**자동 생성되는 스킬 파일 1:**
-
-`.codex/skills/layer-responsibility.md`
-```markdown
----
-name: layer-responsibility
-description: Clean Architecture 레이어별 책임 명확화 교훈 모음
-source: diary
----
-
-# Layer Responsibility
-
-Clean Architecture의 레이어별 책임을 실제 작업에서 배운 교훈들입니다.
-
----
-
-## 교훈 목록
-
-### UI Layer에서 포맷팅 수행
-**출처:** `.codex/diary/2026-05-13-layer-responsibility-fix.md`
-**일자:** 2026-05-13
-
-- Domain Layer는 순수 Kotlin만 사용해야 함
-- Context, Resources 등 Android 의존성 절대 금지
-- 포맷팅은 UI Layer의 @Composable에서 stringResource 사용
-
----
-
-## 적용 방법
-
-1. Domain Layer에 Android 의존성이 필요하면 → UI Layer로 이동
-2. 포맷팅 로직은 @Composable 함수에서 처리
-3. Domain은 계산만, UI는 표현만
-```
-
-**자동 생성되는 스킬 파일 2:**
-
-`.codex/skills/terminology-clarity.md`
-```markdown
----
-name: terminology-clarity
-description: 프로젝트 내 용어 명확화 교훈 모음
-source: diary
----
-
-# Terminology Clarity
-
-프로젝트에서 혼동하기 쉬운 용어들을 명확히 정의한 교훈들입니다.
-
----
-
-## 교훈 목록
-
-### "UI Layer" vs "UI 모듈" 구분
-**출처:** `.codex/diary/2026-05-13-layer-responsibility-fix.md`
-**일자:** 2026-05-13
-
-- **"UI Layer"**: feature 모듈의 Composable 파일
-  - 예: `feature/goal-manage/GoalManageScreen.kt`
-- **"UI 모듈"**: core:ui 모듈
-  - 예: `core/ui/BaseViewModel.kt`, `core/ui/LoadableState.kt`
-
----
-
-## 적용 방법
-
-1. "UI Layer"라고 하면 feature/ 모듈의 실제 Composable을 의미
-2. "UI 모듈"은 core:ui의 공통 유틸리티
-3. 요청 시 명확히 구분하여 이해
-```
-
-**스킬 추출 실행:**
-
-작업 일기 작성 완료 후:
-
-```
-작업 일기를 작성했습니다: .codex/diary/2026-05-13-layer-responsibility-fix.md
-
-핵심 교훈을 스킬 파일로 자동 추출했습니다:
-1. `.codex/skills/layer-responsibility.md` (신규 생성)
-2. `.codex/skills/terminology-clarity.md` (신규 생성)
-
-이제 다음 작업부터 이 교훈들이 자동으로 참조됩니다!
-```
+1. 구체적인 사용 예시와 반복 절차를 확정한다.
+2. `init_skill.py`로 `.agents/skills/<name>/`을 초기화한다.
+3. `SKILL.md`와 필요한 `references/`, `scripts/`, `assets/`만 작성한다.
+4. Skill 내용을 기준으로 `generate_openai_yaml.py`를 실행해 `agents/openai.yaml`을 생성하거나 갱신한다.
+5. `quick_validate.py`로 Skill 폴더를 검증하고 실패 항목을 수정한다.
+6. 환경 의존성 때문에 검증 명령을 실행할 수 없으면 실행 불가 이유와 수행한 대체 검증을 작업 결과에 기록한다.
 
 ---
 
 ### 5단계: 에이전트 문서 개선 제안
 
-스킬 추출 후, 사용자에게 에이전트 문서 개선 제안:
+학습 결과를 분류한 후, 사용자에게 에이전트 문서 개선 제안:
 
 ```
 이번 회고에서 발견한 에이전트 개선사항:
@@ -382,7 +266,7 @@ implementer.md (또는 다른 에이전트 문서)에 이 내용을 추가할까
 - **task-name**: 간단한 작업 설명 (kebab-case, 2-4 단어)
 
 **예시:**
-- `2026-05-13-layer-responsibility-fix.md`
+- `2026-05-13-relative-time-formatting.md`
 
 ### 태그 활용
 

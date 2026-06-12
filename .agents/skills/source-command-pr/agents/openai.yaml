@@ -1,0 +1,4 @@
+interface:
+  display_name: "Source Command PR"
+  short_description: "확인된 제목과 본문으로 Pull Request 생성"
+  default_prompt: "Use $source-command-pr to prepare a pull request and create it after my confirmation."

@@ -362,7 +362,9 @@ Dove Letter에서 관련 주제를 더 학습하고 싶다면:
 
 - **프로젝트 아키텍처**: `.codex/docs/architecture.md`
 - **모듈 구조**: `.codex/docs/hierarchy.md`
-- **코드 컨벤션**: `.codex/skills/coding-conventions.md`
+- **코드 컨벤션 적용**: `.agents/skills/apply-coding-conventions/SKILL.md`
 - **도메인 용어집**: `.codex/docs/domain-glossary.md`
+- **테스트 전략**: `.codex/docs/test-strategy.md`
 
 리뷰 시 테스트명, 상태와 행위의 의미, 사용자-facing 설명이 공식 도메인 용어와 일치하는지 확인합니다. 코드와 용어집이 충돌하면 코드명만으로 의미를 단정하지 않고 정책 확인이 필요한 문제로 보고합니다.
+테스트 리뷰는 테스트 전략을 기준으로 레벨 선택의 적절성, 핵심 위험 누락, 반복 실행 안정성, 구현 세부사항에 대한 과도한 결합을 확인합니다.

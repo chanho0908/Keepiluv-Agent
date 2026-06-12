@@ -246,7 +246,7 @@ flowchart TD
     R --> AG
     W --> AG
 
-    AG --> S[".codex/skills/**<br/>코딩/작업 스킬"]
+    AG --> S[".agents/skills/**<br/>공식 코딩/작업 Skill"]
     AG --> H[".codex/hooks.json<br/>가드레일"]
 ```
 

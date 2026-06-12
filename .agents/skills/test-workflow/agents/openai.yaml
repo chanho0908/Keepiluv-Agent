@@ -1,0 +1,4 @@
+interface:
+  display_name: "Test Workflow"
+  short_description: "Keepiluv 테스트 작성, 검증, 구현 handoff 절차"
+  default_prompt: "Use $test-workflow to write and verify the smallest effective tests for this change."

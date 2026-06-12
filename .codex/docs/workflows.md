@@ -8,6 +8,8 @@ description: 자주 쓰는 agent 조합 워크플로우 요약
 이 문서는 "어떤 agent를 어떤 순서로 조합할지"를 빠르게 결정하기 위한 요약본입니다.
 
 정책 원본은 `AGENTS.md`와 `.codex/docs/routing-rules.md`를 따릅니다.
+테스트 레벨 선택과 완료 기준은 `.codex/docs/test-strategy.md`를 따릅니다.
+tester의 구체적인 테스트 작성과 검증 절차는 `.agents/skills/test-workflow/SKILL.md`를 따릅니다.
 
 ## 기본 조합
 
@@ -100,7 +102,8 @@ description: 자주 쓰는 agent 조합 워크플로우 요약
 - `retrospective`가 시작되면 이후 과정은 자동으로 수행한다:
   1. 회고 내용 정리
   2. `.codex/diary/YYYY-MM-DD-{task-name}.md` 기록
-  3. 반복 학습할 가치가 있는 규칙이 있으면 `.codex/skills/`에 스킬 추출
+  3. 반복 절차와 사용 시점이 모두 명확할 때만 `.agents/skills/<name>/SKILL.md` 생성 또는 갱신
+  4. 기존 Skill의 상세 규칙은 해당 `references/`, 공식 사실과 정책은 `.codex/docs/`에 반영
 
 예:
 - `"이번 작업 회고해줘"`
@@ -150,7 +153,7 @@ description: 자주 쓰는 agent 조합 워크플로우 요약
 - 커밋 승인 범위에는 stage 대상 파일과 커밋 메시지 후보가 포함된다
 - PR이 필요한 작업: `pr-creator` 전 상태 확인
 - PR 승인 범위에는 push 여부, base 브랜치, 제목, 본문 초안이 포함된다
-- 회고는 사용자의 명시적 요청이 있을 때만 시작, 시작 후 diary 기록과 skill 추출은 자동 진행
+- 회고는 사용자의 명시적 요청이 있을 때만 시작하고, 시작 후 diary 기록과 필요한 Skill·문서 갱신은 자동 진행
 
 ## 실행 단계
 
@@ -162,14 +165,10 @@ description: 자주 쓰는 agent 조합 워크플로우 요약
 파일을 변경할 수 있는 agent를 호출하기 전에 브랜치 상태를 확인합니다.
 브랜치/이슈 정책의 source of truth는 `.codex/docs/routing-rules.md`와 각 Write 가능 agent의 작업 프로세스입니다.
 
-준비 작업 예시:
-
-1. **GitHub Issue 생성** (필요 시)
-2. **작업 브랜치 생성** (필요 시)
-
 ### 1단계: 테스트 선행 구현 (단일 작업)
 
 1. `tester`에게 선행 테스트 작성을 위임한다
+   - tester는 `.agents/skills/test-workflow/SKILL.md`에 따라 테스트를 작성, 검증, handoff한다
 2. `implementer`에게 테스트를 만족하는 구현을 위임한다
 3. 품질 확인이 필요한 경우 `code-reviewer`로 리뷰한다
 
@@ -177,6 +176,7 @@ description: 자주 쓰는 agent 조합 워크플로우 요약
 
 1. 병렬 가능한 작업인지 먼저 확인한다
 2. 서로 다른 파일/feature라면 가능한 범위에서 `tester`를 병렬 호출한다
+   - 각 tester는 `.agents/skills/test-workflow/SKILL.md`의 입력, 출력, 예외 규칙을 따른다
 3. 각 테스트 기준이 고정되면 `implementer`로 구현을 위임한다
 4. 모든 작업이 합쳐진 뒤 필요 시 `code-reviewer`로 통합 리뷰한다
 
@@ -200,7 +200,7 @@ description: 자주 쓰는 agent 조합 워크플로우 요약
 - 작은 작업은 과도한 계획 단계를 줄일 수 있다
 - 기본 원칙은 테스트 선행이지만, 테스트 작성이 구조적으로 어렵다면 예외적으로 후행 보강을 허용한다
 - 모든 handoff와 산출물은 `.codex/docs/domain-glossary.md`의 공식 용어를 사용한다
-- 코드 표현의 의미가 문맥별로 다르면 용어집을 확인하고, 정의되지 않은 의미는 사용자에게 확인한다
+- 코드 표현의 의미가 문맥별로 다르면 용어집의 모듈별 매핑을 확인하고, 정의되지 않은 의미는 사용자에게 확인한다
 
 ## 참고 문서
 
@@ -210,3 +210,5 @@ description: 자주 쓰는 agent 조합 워크플로우 요약
 | 에이전트 목록 | `.codex/docs/agent-list.md` |
 | 프로젝트 개요 | `.codex/docs/project-overview.md` |
 | 도메인 용어집 | `.codex/docs/domain-glossary.md` |
+| 테스트 전략 | `.codex/docs/test-strategy.md` |
+| 테스트 작업 절차 | `.agents/skills/test-workflow/SKILL.md` |

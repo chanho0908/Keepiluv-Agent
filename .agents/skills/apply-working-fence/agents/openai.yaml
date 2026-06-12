@@ -1,0 +1,4 @@
+interface:
+  display_name: "Apply Working Fence"
+  short_description: "가정, 범위, 단순성, 검증 기준을 지키는 구현 절차"
+  default_prompt: "Use $apply-working-fence to keep this code change simple, scoped, and verifiable."

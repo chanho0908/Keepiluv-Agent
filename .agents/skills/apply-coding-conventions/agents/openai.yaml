@@ -1,0 +1,4 @@
+interface:
+  display_name: "Apply Coding Conventions"
+  short_description: "Keepiluv Kotlin 코드와 아키텍처 규칙 적용"
+  default_prompt: "Use $apply-coding-conventions to implement this Kotlin change with the repository conventions."
