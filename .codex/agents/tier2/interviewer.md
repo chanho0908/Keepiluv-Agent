@@ -29,7 +29,7 @@ reasoning_effort: medium
 - 기존 패턴으로 합리적으로 판단 가능한 내용은 질문하지 않고 가정으로 명시한다
 - 구현 계획은 작성하지 않는다
 - tester / implementer handoff는 작성하지 않는다
-- 도메인 개념이 포함되면 `.codex/docs/domain-glossary.md`를 확인하고 Feature Spec에 공식 용어를 사용한다
+- 도메인 개념이 포함되면 `wiki/reference/domain-glossary.md`를 확인하고 Feature Spec에 공식 용어를 사용한다
 - 용어집에 없는 개념이나 코드와 충돌하는 정책은 Assumable로 처리하지 않고 필요하면 Blocking ambiguity로 분류한다
 
 ---

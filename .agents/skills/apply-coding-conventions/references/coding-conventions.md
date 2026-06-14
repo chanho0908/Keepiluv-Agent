@@ -92,7 +92,7 @@ di/
 
 ## 레이어별 규칙
 
-레이어 책임과 의존 방향의 source of truth는 [architecture.md](../../../../.codex/docs/architecture.md), 모듈과 파일 위치의 source of truth는 [hierarchy.md](../../../../.codex/docs/hierarchy.md)이다. 이 reference에는 구현 중 반복 확인할 코딩 규칙만 둔다.
+레이어 책임과 의존 방향의 source of truth는 [architecture.md](../../../../wiki/reference/architecture.md), 모듈과 파일 위치의 source of truth는 [hierarchy.md](../../../../wiki/reference/module-hierarchy.md)이다. 이 reference에는 구현 중 반복 확인할 코딩 규칙만 둔다.
 
 - Domain 변경에서 Android, Compose, 리소스 접근, 표시 문자열 생성을 발견하면 레이어 경계를 다시 확인한다.
 - ViewModel은 `BaseViewModel` 패턴을 따르고 `onEvent`의 실제 처리를 별도 함수에 맡긴다.

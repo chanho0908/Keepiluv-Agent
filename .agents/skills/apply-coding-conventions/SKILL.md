@@ -6,7 +6,7 @@ description: Keepiluv(Twix)의 Kotlin/Android 코드를 기존 아키텍처와 �
 # Apply Coding Conventions
 
 1. 변경할 모듈과 같은 영역의 기존 코드를 먼저 읽고 현재 패턴을 확인한다.
-2. `.codex/docs/domain-glossary.md`, `.codex/docs/architecture.md`, `.codex/docs/hierarchy.md`에서 공식 용어와 레이어 책임을 확인한다.
+2. `wiki/reference/domain-glossary.md`, `wiki/reference/architecture.md`, `wiki/reference/module-hierarchy.md`에서 공식 용어와 레이어 책임을 확인한다.
 3. [references/coding-conventions.md](references/coding-conventions.md)에서 작업과 관련된 절만 읽는다.
 4. 필요한 기능만 설계하고 Domain → Data → Presentation → UI 순서로 변경한다.
 5. 이름, 함수 크기, UseCase 필요 여부, DI 위치, UI 문자열, 레이어 의존성을 점검한다.

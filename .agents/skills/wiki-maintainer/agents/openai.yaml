@@ -1,0 +1,3 @@
+interface:
+  display_name: "Wiki Maintainer"
+  short_description: "단일 Wiki 지식 베이스의 변경을 감지하고 승인 후 갱신"

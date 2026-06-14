@@ -6,6 +6,10 @@ model: gpt-5.5
 reasoning_effort: high
 ---
 
+## Wiki 지식 탐색 순서
+
+작업을 시작할 때 `wiki/index.md`를 먼저 읽습니다. 이어서 관련 canonical 문서, 실제 코드와 이 Agent의 행동 규칙 순서로 확인하며, 중요한 판단은 canonical 문서와 코드에서 다시 검증합니다.
+
 **Codex 주력 모델 프로필**(`gpt-5.5`, `high`)로 복잡한 코드베이스를 심층 분석하는 전문가입니다. 아키텍처 패턴, 의존성 구조, 잠재적 문제점을 발견하고 개선 방향을 제시합니다.
 
 ---
@@ -32,10 +36,10 @@ reasoning_effort: high
 
 ### 2. 정보 수집
 **프로젝트 문서 참조:**
-- `.codex/docs/project-overview.md` - 프로젝트 개요
-- `.codex/docs/architecture.md` - 아키텍처 원칙
-- `.codex/docs/hierarchy.md` - 모듈 구조
-- `.codex/docs/domain-glossary.md` - 공식 도메인 용어와 코드 표현의 문맥별 의미
+- `wiki/reference/project-overview.md` - 프로젝트 개요
+- `wiki/reference/architecture.md` - 아키텍처 원칙
+- `wiki/reference/module-hierarchy.md` - 모듈 구조
+- `wiki/reference/domain-glossary.md` - 공식 도메인 용어와 코드 표현의 문맥별 의미
 
 **코드베이스 탐색:**
 - `Glob("**/*.kt")` - 전체 Kotlin 파일 목록
@@ -85,7 +89,7 @@ reasoning_effort: high
 에이전트 오케스트레이션 문서를 분석할 때는 다음 항목을 우선 점검합니다:
 
 **체크 항목:**
-- [ ] `AGENTS.md`, `.codex/docs/routing-rules.md`, `.codex/docs/workflows.md`의 정책이 충돌하지 않는가?
+- [ ] `AGENTS.md`, `wiki/operations/routing-rules.md`, `wiki/operations/workflows.md`의 정책이 충돌하지 않는가?
 - [ ] quick command, skill, agent 문서의 실행 순서가 같은가?
 - [ ] 커밋, push, PR 생성 전에 사용자 승인 게이트가 명시되어 있는가?
 - [ ] READ-ONLY agent에 Write/Edit/Bash 실행이 요구되지 않는가?
@@ -296,8 +300,8 @@ Read() // 각 파일의 줄 수 확인
 ## 📚 참고 문서
 
 분석 시 참조한 문서:
-- `.codex/docs/architecture.md`
-- `.codex/docs/hierarchy.md`
+- `wiki/reference/architecture.md`
+- `wiki/reference/module-hierarchy.md`
 - `.agents/skills/apply-coding-conventions/SKILL.md`
 ```
 
@@ -353,8 +357,8 @@ code-reviewer 에이전트로 심층 리뷰하시겠습니까?
 
 ## 참고 문서
 
-- **프로젝트 개요**: `.codex/docs/project-overview.md`
-- **아키텍처 원칙**: `.codex/docs/architecture.md`
-- **모듈 구조**: `.codex/docs/hierarchy.md`
+- **프로젝트 개요**: `wiki/reference/project-overview.md`
+- **아키텍처 원칙**: `wiki/reference/architecture.md`
+- **모듈 구조**: `wiki/reference/module-hierarchy.md`
 - **코드 컨벤션 적용**: `.agents/skills/apply-coding-conventions/SKILL.md`
-- **도메인 용어집**: `.codex/docs/domain-glossary.md`
+- **도메인 용어집**: `wiki/reference/domain-glossary.md`

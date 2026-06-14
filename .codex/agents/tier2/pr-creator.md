@@ -76,7 +76,7 @@ git diff develop...HEAD
 
 **작성 가이드:**
 
-- 도메인 개념이 포함된 제목과 본문은 `.codex/docs/domain-glossary.md`의 공식 용어를 사용한다
+- 도메인 개념이 포함된 제목과 본문은 `wiki/reference/domain-glossary.md`의 공식 용어를 사용한다
 - 코드 식별자보다 사용자 행위와 도메인 의미를 우선 설명한다
 
 #### 이슈 번호

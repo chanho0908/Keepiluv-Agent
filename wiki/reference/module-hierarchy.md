@@ -1,6 +1,14 @@
 ---
 name: hierarchy
 description: 모듈 구조와 feature 표준 형태 요약
+status: active
+sources:
+- repo:chanho0908/Keepiluv-Agent@14c17aa834575a9422d5e4b33c1191285c575e02:.codex/docs/hierarchy.md
+last_verified: 2026-06-13
+tags:
+- wiki
+- reference
+authority: canonical
 ---
 
 # Module Hierarchy
@@ -78,7 +86,7 @@ description: 모듈 구조와 feature 표준 형태 요약
 
 | 문서 | 파일 |
 |------|------|
-| 프로젝트 개요 | `.codex/docs/project-overview.md` |
-| 아키텍처 원칙 | `.codex/docs/architecture.md` |
+| 프로젝트 개요 | `wiki/reference/project-overview.md` |
+| 아키텍처 원칙 | `wiki/reference/architecture.md` |
 | 코드 컨벤션 적용 | `.agents/skills/apply-coding-conventions/SKILL.md` |
 | 로딩 UI 상태 모델링 | `.agents/skills/model-loadable-ui-state/SKILL.md` |

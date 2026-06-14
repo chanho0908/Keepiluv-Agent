@@ -11,13 +11,13 @@ This file provides guidance to Codex (Codex.ai/code) when working with code in t
 모든 작업은 전문화된 Agent에게 위임합니다. 구현 전에 항상 사용자 컨펌을 받고, 커밋은 승인 후에만 실행합니다.
 
 이 문서는 오케스트레이션 정책의 **최상위 요약본**입니다.
-- 세부 라우팅 규칙: `.codex/docs/routing-rules.md`
-- 복합 워크플로우: `.codex/docs/workflows.md`
+- 세부 라우팅 규칙: `wiki/operations/routing-rules.md`
+- 복합 워크플로우: `wiki/operations/workflows.md`
 - 각 agent의 실제 동작, 모델, 도구 제약: `.codex/agents/**`
 
 정책 충돌 시 우선순위:
 1. 사용자 요청
-2. 이 문서와 `.codex/docs/`의 오케스트레이션 규칙
+2. 이 문서와 `wiki/`의 오케스트레이션 규칙
 3. 각 agent 파일의 세부 지침
 
 ---
@@ -38,10 +38,11 @@ This file provides guidance to Codex (Codex.ai/code) when working with code in t
 | "분석", "구조 분석" | analyst | 2 |
 | "의도 정리", "요구사항 정리", "인터뷰" | interviewer | 2 |
 | "계획 수립", "어떻게 구현" | planner | 2 |
+| "위키 동기화", "지식 갱신", "wiki status" | wiki-maintainer | 2 |
 
-**상세 라우팅 규칙:** `.codex/docs/routing-rules.md`
+**상세 라우팅 규칙:** `wiki/operations/routing-rules.md`
 
-**복합 워크플로우 패턴:** `.codex/docs/workflows.md`
+**복합 워크플로우 패턴:** `wiki/operations/workflows.md`
 
 ---
 
@@ -104,12 +105,19 @@ This file provides guidance to Codex (Codex.ai/code) when working with code in t
 
 ### 7. 도메인 용어 기준
 
-- 도메인 개념이 포함된 작업은 `.codex/docs/domain-glossary.md`를 먼저 확인합니다.
+- 도메인 개념이 포함된 작업은 `wiki/reference/domain-glossary.md`를 먼저 확인합니다.
 - 요구사항, 계획, 테스트명, 코드 설명, 리뷰, 커밋 메시지, PR 본문에는 용어집의 공식 용어를 사용합니다.
 - 같은 코드 표현이라도 모듈별 의미가 다를 수 있으므로 코드 식별자만 보고 도메인 의미를 추측하지 않습니다.
 - 코드와 용어집이 충돌하거나 필요한 개념이 정의되지 않았다면 임의의 용어를 만들지 않고 사용자에게 확인합니다.
 
-### 8. 사용자 설명 기준
+### 8. 단일 지식 베이스 기준
+
+- `wiki/index.md`는 프로젝트 공식 지식의 유일한 시작점입니다.
+- 프로젝트 사실과 운영 정책은 `wiki/reference`, `wiki/operations`, `wiki/schema`에서 관리합니다.
+- 모든 Agent는 Wiki에서 관련 canonical 문서를 먼저 찾고 실제 코드와 행동 규칙으로 재검증합니다.
+- Wiki 의미 변경과 상태 기준 확정은 사용자 승인 후 `wiki-maintainer`가 수행합니다.
+
+### 9. 사용자 설명 기준
 
 - 사용자에게 설명할 때는 비개발자도 이해할 수 있는 쉬운 한국어를 사용합니다.
 - 전문 용어가 필요하면 먼저 쉬운 말로 설명한 뒤 괄호 안에 전문 용어를 함께 적습니다.
@@ -131,22 +139,23 @@ This file provides guidance to Codex (Codex.ai/code) when working with code in t
 
 | 분류 | 문서 | 파일 | 용도 |
 |------|------|------|------|
-| Core | 프로젝트 개요 | `.codex/docs/project-overview.md` | Keepiluv 소개, Tech Stack, Key Patterns |
-| Core | 아키텍처 | `.codex/docs/architecture.md` | MVI, Clean Architecture, 레이어별 책임 |
-| Core | 모듈 구조 | `.codex/docs/hierarchy.md` | Layer Hierarchy, Core Modules, Feature Structure |
-| Core | 도메인 용어집 | `.codex/docs/domain-glossary.md` | 공식 도메인 용어, 코드 표현 매핑, 테스트명 기준 |
-| Core | 테스트 전략 | `.codex/docs/test-strategy.md` | 리스크 기반 테스트 포트폴리오, 레벨 선택과 완료 기준 |
+| Core | 프로젝트 개요 | `wiki/reference/project-overview.md` | Keepiluv 소개, Tech Stack, Key Patterns |
+| Core | 아키텍처 | `wiki/reference/architecture.md` | MVI, Clean Architecture, 레이어별 책임 |
+| Core | 모듈 구조 | `wiki/reference/module-hierarchy.md` | Layer Hierarchy, Core Modules, Feature Structure |
+| Core | 도메인 용어집 | `wiki/reference/domain-glossary.md` | 공식 도메인 용어, 코드 표현 매핑, 테스트명 기준 |
+| Core | 테스트 전략 | `wiki/reference/test-strategy.md` | 리스크 기반 테스트 포트폴리오, 레벨 선택과 완료 기준 |
 | Skill | 테스트 작업 절차 | `.agents/skills/test-workflow/SKILL.md` | tester의 테스트 작성, 검증, implementer handoff 절차 |
 | Skill | 코드 컨벤션 적용 | `.agents/skills/apply-coding-conventions/SKILL.md` | Kotlin/Android 코드와 아키텍처 규칙 적용 절차 |
 | Skill | working fence 적용 | `.agents/skills/apply-working-fence/SKILL.md` | 가정, 단순성, 변경 범위, 검증 기준 관리 |
 | Skill | 로딩 UI 상태 모델링 | `.agents/skills/model-loadable-ui-state/SKILL.md` | 로딩, 오류, 재시도 UI 상태 경계 |
-| Orchestration | 라우팅 규칙 | `.codex/docs/routing-rules.md` | 단일 작업, 여러 작업, Tier별 자동 라우팅 |
-| Orchestration | 워크플로우 | `.codex/docs/workflows.md` | 복합 워크플로우 패턴, Tier 조합 전략 |
-| Orchestration | 에이전트 목록 | `.codex/docs/agent-list.md` | Agent 인덱스 |
+| Orchestration | 라우팅 규칙 | `wiki/operations/routing-rules.md` | 단일 작업, 여러 작업, Tier별 자동 라우팅 |
+| Orchestration | 워크플로우 | `wiki/operations/workflows.md` | 복합 워크플로우 패턴, Tier 조합 전략 |
+| Orchestration | 에이전트 목록 | `wiki/operations/agent-list.md` | Agent 인덱스 |
+| Orchestration | Wiki 유지보수 | `wiki/schema/maintenance.md` | 변경 탐지, 승인, 동기화 절차 |
 
 ### Agents
 
-전체 목록: `.codex/docs/agent-list.md`
+전체 목록: `wiki/operations/agent-list.md`
 
 | Tier | Agent | 역할 | 파일 |
 |------|------|------|------|
@@ -162,6 +171,7 @@ This file provides guidance to Codex (Codex.ai/code) when working with code in t
 | 2 | `analyst` | 아키텍처 분석 (READ-ONLY) | `.codex/agents/tier2/analyst.md` |
 | 2 | `interviewer` | 요구사항 인터뷰, Feature Spec 작성 (READ-ONLY) | `.codex/agents/tier2/interviewer.md` |
 | 2 | `planner` | 구현 계획 수립 (READ-ONLY) | `.codex/agents/tier2/planner.md` |
+| 2 | `wiki-maintainer` | Wiki 변경 감지, 영향 분석, 승인 후 동기화 | `.codex/agents/tier2/wiki-maintainer.md` |
 
 ### Codex 모델 운영 기준
 
