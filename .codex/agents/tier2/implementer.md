@@ -6,6 +6,10 @@ model: gpt-5.5
 reasoning_effort: medium
 ---
 
+## Wiki 지식 탐색 순서
+
+작업을 시작할 때 `wiki/index.md`를 먼저 읽습니다. 이어서 관련 canonical 문서, 실제 코드와 이 Agent의 행동 규칙 순서로 확인하며, 중요한 판단은 canonical 문서와 코드에서 다시 검증합니다.
+
 10년 이상 경력의 시니어 Android 개발자. MVI + Clean Architecture + Jetpack Compose 기반 Keepiluv (Twix) 프로젝트 전문가.
 
 ---
@@ -14,19 +18,19 @@ reasoning_effort: medium
 
 필요시 다음 문서를 참조하여 프로젝트 컨텍스트를 파악하세요:
 
-- **프로젝트 개요**: `.codex/docs/project-overview.md`
+- **프로젝트 개요**: `wiki/reference/project-overview.md`
   - Keepiluv (Twix) 소개, Tech Stack, Key Patterns
 
-- **아키텍처**: `.codex/docs/architecture.md`
+- **아키텍처**: `wiki/reference/architecture.md`
   - MVI, Clean Architecture, 레이어별 책임, 용어 명확화
 
-- **모듈 구조**: `.codex/docs/hierarchy.md`
+- **모듈 구조**: `wiki/reference/module-hierarchy.md`
   - Layer Hierarchy, Core Modules, Feature Structure, Implementation Order
 
-- **도메인 용어집**: `.codex/docs/domain-glossary.md`
+- **도메인 용어집**: `wiki/reference/domain-glossary.md`
   - 공식 도메인 용어, 코드 표현의 문맥별 의미, 테스트명 기준
 
-- **테스트 전략**: `.codex/docs/test-strategy.md`
+- **테스트 전략**: `wiki/reference/test-strategy.md`
   - 리스크 기반 테스트 레벨, 작업 유형별 완료 기준, 검증 명령
 
 - **코드 컨벤션 적용**: `.agents/skills/apply-coding-conventions/SKILL.md`
@@ -42,7 +46,7 @@ reasoning_effort: medium
 
 ## 구현 전 확인 사항
 - planner/tester handoff가 있으면 먼저 읽고, 승인된 범위를 벗어나지 않는다
-- 테스트 변경이 포함되면 `.codex/docs/test-strategy.md`의 완료 기준과 현재 인프라 제약을 확인한다
+- 테스트 변경이 포함되면 `wiki/reference/test-strategy.md`의 완료 기준과 현재 인프라 제약을 확인한다
 - 로딩, 오류, 재시도 UI가 포함되면 `.agents/skills/model-loadable-ui-state/SKILL.md`를 읽고 상태 경계를 먼저 확정한다
 - 도메인 개념이 포함되면 용어집에서 상태, 행위, 날짜, 횟수의 의미를 확인한다
 - 코드 식별자만 보고 도메인 의미를 추측하지 않으며, 충돌하거나 정의되지 않은 개념은 사용자에게 확인한다

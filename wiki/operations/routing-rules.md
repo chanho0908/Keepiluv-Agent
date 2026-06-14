@@ -1,6 +1,14 @@
 ---
 name: routing-rules
 description: Agent 자동 라우팅 규칙 요약
+status: active
+sources:
+- repo:chanho0908/Keepiluv-Agent@14c17aa834575a9422d5e4b33c1191285c575e02:.codex/docs/routing-rules.md
+last_verified: 2026-06-13
+tags:
+- wiki
+- operations
+authority: canonical
 ---
 
 # Agent Routing Rules
@@ -16,7 +24,7 @@ Codex는 직접 구현하지 않고, 요청을 적절한 agent로 라우팅합�
 - 키워드보다 **사용자 의도**를 우선 해석
 - 구현 전: 필요한 경우 탐색, 분석, 계획을 먼저 수행
 - 가능하면 **구현 전에 테스트를 먼저 설계/작성**하여 성공 기준을 고정
-- 테스트 레벨과 완료 기준은 `.codex/docs/test-strategy.md`를 공통 source of truth로 사용
+- 테스트 레벨과 완료 기준은 `wiki/reference/test-strategy.md`를 공통 source of truth로 사용
 - tester의 구체적인 작성, 검증, 예외 처리 절차는 `.agents/skills/test-workflow/SKILL.md`를 사용
 - 구현 후: 사용자 승인 전 커밋 금지
 - 단일 작업은 단일 owner agent에 위임
@@ -25,7 +33,7 @@ Codex는 직접 구현하지 않고, 요청을 적절한 agent로 라우팅합�
 
 ## 도메인 용어 공통 규칙
 
-모든 Agent는 도메인 개념을 다루기 전에 `.codex/docs/domain-glossary.md`를 확인합니다.
+모든 Agent는 도메인 개념을 다루기 전에 `wiki/reference/domain-glossary.md`를 확인합니다.
 
 - `interviewer`, `planner`: 요구사항과 계획에서 공식 용어를 사용하고 서로 다른 개념을 분리한다.
 - `tester`: 테스트명과 시나리오를 코드 필드명이 아닌 공식 도메인 용어로 작성한다.
@@ -276,7 +284,7 @@ Codex는 직접 구현하지 않고, 요청을 적절한 agent로 라우팅합�
   - `.codex/diary/YYYY-MM-DD-{task-name}.md` 기록
   - 명확한 사용 시점과 반복 절차가 있는 경우에만 `.agents/skills/<name>/SKILL.md` 생성 또는 갱신
   - 기존 Skill의 상세 규칙은 해당 Skill의 `references/`에 보강
-- 원본 교훈과 근거는 `.codex/diary/`, 프로젝트의 공식 사실과 정책은 `.codex/docs/`에 둔다
+- 원본 교훈과 근거는 `.codex/diary/`, 프로젝트의 공식 사실과 정책은 `wiki/reference/` 또는 관련 canonical Wiki 문서에 둔다
 - 즉, **회고 시작은 수동, 회고 이후 기록과 학습 추출은 자동**으로 처리한다
 
 ## 빠른 선택 가이드
@@ -296,8 +304,16 @@ Codex는 직접 구현하지 않고, 요청을 적절한 agent로 라우팅합�
 
 | 문서 | 파일 |
 |------|------|
-| 에이전트 목록 | `.codex/docs/agent-list.md` |
-| 워크플로우 | `.codex/docs/workflows.md` |
-| 프로젝트 개요 | `.codex/docs/project-overview.md` |
-| 테스트 전략 | `.codex/docs/test-strategy.md` |
+| 에이전트 목록 | `wiki/operations/agent-list.md` |
+| 워크플로우 | `wiki/operations/workflows.md` |
+| 프로젝트 개요 | `wiki/reference/project-overview.md` |
+| 테스트 전략 | `wiki/reference/test-strategy.md` |
 | 테스트 작업 절차 | `.agents/skills/test-workflow/SKILL.md` |
+
+## Wiki 유지보수 라우팅
+
+| 요청 유형 | 라우팅 |
+|------|------|
+| Wiki 변경 탐지, 지식 동기화, 오래된 문서 정리 | `wiki-maintainer` |
+
+`wiki-maintainer`는 상태 탐지, 변경안 제시, 사용자 승인, Wiki 갱신, 승인된 Manifest 반영, 검증 순서로 작업합니다.

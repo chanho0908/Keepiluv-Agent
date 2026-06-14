@@ -1,14 +1,22 @@
 ---
 name: workflows
 description: 자주 쓰는 agent 조합 워크플로우 요약
+status: active
+sources:
+- repo:chanho0908/Keepiluv-Agent@14c17aa834575a9422d5e4b33c1191285c575e02:.codex/docs/workflows.md
+last_verified: 2026-06-13
+tags:
+- wiki
+- operations
+authority: canonical
 ---
 
 # Complex Workflows
 
 이 문서는 "어떤 agent를 어떤 순서로 조합할지"를 빠르게 결정하기 위한 요약본입니다.
 
-정책 원본은 `AGENTS.md`와 `.codex/docs/routing-rules.md`를 따릅니다.
-테스트 레벨 선택과 완료 기준은 `.codex/docs/test-strategy.md`를 따릅니다.
+정책 원본은 `AGENTS.md`와 `wiki/operations/routing-rules.md`를 따릅니다.
+테스트 레벨 선택과 완료 기준은 `wiki/reference/test-strategy.md`를 따릅니다.
 tester의 구체적인 테스트 작성과 검증 절차는 `.agents/skills/test-workflow/SKILL.md`를 따릅니다.
 
 ## 기본 조합
@@ -103,7 +111,7 @@ tester의 구체적인 테스트 작성과 검증 절차는 `.agents/skills/test
   1. 회고 내용 정리
   2. `.codex/diary/YYYY-MM-DD-{task-name}.md` 기록
   3. 반복 절차와 사용 시점이 모두 명확할 때만 `.agents/skills/<name>/SKILL.md` 생성 또는 갱신
-  4. 기존 Skill의 상세 규칙은 해당 `references/`, 공식 사실과 정책은 `.codex/docs/`에 반영
+  4. 기존 Skill의 상세 규칙은 해당 `references/`, 공식 사실과 정책은 `wiki/reference/` 또는 관련 canonical Wiki 문서에 반영
 
 예:
 - `"이번 작업 회고해줘"`
@@ -163,7 +171,7 @@ tester의 구체적인 테스트 작성과 검증 절차는 `.agents/skills/test
 ### 0단계: 구현 전 준비 (조건부)
 
 파일을 변경할 수 있는 agent를 호출하기 전에 브랜치 상태를 확인합니다.
-브랜치/이슈 정책의 source of truth는 `.codex/docs/routing-rules.md`와 각 Write 가능 agent의 작업 프로세스입니다.
+브랜치/이슈 정책의 source of truth는 `wiki/operations/routing-rules.md`와 각 Write 가능 agent의 작업 프로세스입니다.
 
 ### 1단계: 테스트 선행 구현 (단일 작업)
 
@@ -199,16 +207,29 @@ tester의 구체적인 테스트 작성과 검증 절차는 `.agents/skills/test
 - 워크플로우는 강제 순서가 아니라 기본값이다
 - 작은 작업은 과도한 계획 단계를 줄일 수 있다
 - 기본 원칙은 테스트 선행이지만, 테스트 작성이 구조적으로 어렵다면 예외적으로 후행 보강을 허용한다
-- 모든 handoff와 산출물은 `.codex/docs/domain-glossary.md`의 공식 용어를 사용한다
+- 모든 handoff와 산출물은 `wiki/reference/domain-glossary.md`의 공식 용어를 사용한다
 - 코드 표현의 의미가 문맥별로 다르면 용어집의 모듈별 매핑을 확인하고, 정의되지 않은 의미는 사용자에게 확인한다
 
 ## 참고 문서
 
 | 문서 | 파일 |
 |------|------|
-| 라우팅 규칙 | `.codex/docs/routing-rules.md` |
-| 에이전트 목록 | `.codex/docs/agent-list.md` |
-| 프로젝트 개요 | `.codex/docs/project-overview.md` |
-| 도메인 용어집 | `.codex/docs/domain-glossary.md` |
-| 테스트 전략 | `.codex/docs/test-strategy.md` |
+| 라우팅 규칙 | `wiki/operations/routing-rules.md` |
+| 에이전트 목록 | `wiki/operations/agent-list.md` |
+| 프로젝트 개요 | `wiki/reference/project-overview.md` |
+| 도메인 용어집 | `wiki/reference/domain-glossary.md` |
+| 테스트 전략 | `wiki/reference/test-strategy.md` |
 | 테스트 작업 절차 | `.agents/skills/test-workflow/SKILL.md` |
+
+## Wiki 자동 유지보수
+
+`wiki-maintainer`
+
+1. `./scripts/wiki-status.sh`로 변경을 탐지한다.
+2. 관련 canonical 문서와 `source_paths`로 연결된 종합 문서를 비교한다.
+3. 변경안을 사용자에게 제시한다.
+4. 승인 후 Wiki, Index, Log를 갱신한다.
+5. `./scripts/wiki-status.sh --accept --approved`로 승인된 기준 상태를 기록한다.
+6. Wiki 관련 테스트와 검사를 실행한다.
+
+승인 전에는 Wiki 의미와 Manifest를 변경하지 않는다.

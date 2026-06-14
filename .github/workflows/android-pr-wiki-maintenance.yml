@@ -1,0 +1,203 @@
+name: Android PR Wiki Maintenance
+
+on:
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: "Keepiluv-Android PR number; empty scans recent merged PRs"
+        required: false
+        type: string
+  repository_dispatch:
+    types: [android-pr-merged]
+  schedule:
+    - cron: "17 0 * * *"
+
+concurrency:
+  group: android-pr-wiki-maintenance
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  propose:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    outputs:
+      has_changes: ${{ steps.patch.outputs.has_changes }}
+      pr_numbers: ${{ steps.collect.outputs.pr_numbers }}
+    steps:
+      - name: Check out Wiki repository
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd
+        with:
+          persist-credentials: false
+
+      - name: Collect merged Android PR evidence
+        id: collect
+        env:
+          GH_TOKEN: ${{ github.token }}
+          MANUAL_PR: ${{ inputs.pr_number }}
+          DISPATCH_PR: ${{ github.event.client_payload.pr_number }}
+          SOURCE_REPOSITORY: Keepiluv/Keepiluv-Android
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p .wiki-maintenance/evidence
+
+          requested_pr="${MANUAL_PR:-${DISPATCH_PR:-}}"
+          if [[ -n "$requested_pr" ]]; then
+            [[ "$requested_pr" =~ ^[1-9][0-9]*$ ]] || {
+              echo "PR number must be a positive integer" >&2
+              exit 1
+            }
+            pr_numbers="$requested_pr"
+          else
+            since=$(date -u -d '2 days ago' +%F)
+            pr_numbers=$(gh pr list \
+              --repo "$SOURCE_REPOSITORY" \
+              --state merged \
+              --base develop \
+              --search "merged:>=$since" \
+              --limit 100 \
+              --json number \
+              --jq '.[].number')
+          fi
+
+          pr_numbers=$(printf '%s\n' "$pr_numbers" | sed '/^$/d' | sort -n -u)
+          {
+            echo 'pr_numbers<<EOF'
+            printf '%s\n' "$pr_numbers"
+            echo 'EOF'
+          } >> "$GITHUB_OUTPUT"
+
+          checked_at=$(date -u +%F)
+          while IFS= read -r pr_number; do
+            [[ -n "$pr_number" ]] || continue
+            gh pr view "$pr_number" \
+              --repo "$SOURCE_REPOSITORY" \
+              --json number,title,body,state,baseRefName,mergedAt,mergeCommit,url,files \
+              > ".wiki-maintenance/evidence/pr-$pr_number.json"
+            ./scripts/android-pr-evidence.sh \
+              --input ".wiki-maintenance/evidence/pr-$pr_number.json" \
+              --checked-at "$checked_at" \
+              > ".wiki-maintenance/evidence/pr-$pr_number.md"
+            gh pr diff "$pr_number" --repo "$SOURCE_REPOSITORY" \
+              > ".wiki-maintenance/evidence/pr-$pr_number.full.diff"
+            head -c 500000 ".wiki-maintenance/evidence/pr-$pr_number.full.diff" \
+              > ".wiki-maintenance/evidence/pr-$pr_number.diff"
+            rm ".wiki-maintenance/evidence/pr-$pr_number.full.diff"
+          done <<EOF
+          $pr_numbers
+          EOF
+
+      - name: Stop when no merged PR was found
+        if: steps.collect.outputs.pr_numbers == ''
+        run: echo "No merged Android PR requires inspection."
+
+      - name: Run Codex Wiki maintainer
+        if: steps.collect.outputs.pr_numbers != ''
+        uses: openai/codex-action@e0fdf01220eb9a88167c4898839d273e3f2609d1
+        with:
+          openai-api-key: ${{ secrets.OPENAI_API_KEY }}
+          prompt-file: .github/codex/prompts/maintain-wiki-from-android-pr.md
+          sandbox: workspace-write
+          safety-strategy: drop-sudo
+          output-file: codex-output.md
+
+      - name: Remove temporary evidence
+        if: always()
+        run: rm -rf .wiki-maintenance codex-output.md
+
+      - name: Verify Wiki changes
+        if: steps.collect.outputs.pr_numbers != ''
+        run: |
+          set -euo pipefail
+          ./tests/android-pr-evidence-test.sh
+          ./tests/wiki-automation-test.sh
+          ./tests/wiki-migration-test.sh
+          ./tests/wiki-status-test.sh
+          ./tests/wiki-validator-test.sh
+          ./scripts/validate-wiki.sh
+          git diff --check
+
+      - name: Build patch artifact
+        id: patch
+        if: steps.collect.outputs.pr_numbers != ''
+        shell: bash
+        run: |
+          set -euo pipefail
+          git add -N .
+          if git diff --quiet; then
+            echo "has_changes=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          git diff --binary > wiki-maintenance.patch
+          echo "has_changes=true" >> "$GITHUB_OUTPUT"
+
+      - name: Upload Wiki patch
+        if: steps.patch.outputs.has_changes == 'true'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: wiki-maintenance-patch
+          path: wiki-maintenance.patch
+          if-no-files-found: error
+          retention-days: 7
+
+  open_draft_pr:
+    needs: propose
+    if: needs.propose.outputs.has_changes == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - name: Check out Wiki repository
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd
+
+      - name: Download Wiki patch
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: wiki-maintenance-patch
+
+      - name: Apply and verify patch
+        run: |
+          set -euo pipefail
+          git apply wiki-maintenance.patch
+          rm wiki-maintenance.patch
+          ./scripts/validate-wiki.sh
+          ./tests/android-pr-evidence-test.sh
+          ./tests/wiki-automation-test.sh
+          git diff --check
+
+      - name: Commit and open Draft PR
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SOURCE_PRS: ${{ needs.propose.outputs.pr_numbers }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          branch="bot/wiki-maintenance-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
+          git config user.name "keepiluv-wiki-bot"
+          git config user.email "keepiluv-wiki-bot@users.noreply.github.com"
+          git switch -c "$branch"
+          git add -A
+          git commit -m "docs: Android PR 기반 Wiki 갱신"
+          git push origin "$branch"
+
+          {
+            echo '## 원본 Android PR'
+            printf '%s\n' "$SOURCE_PRS" | sed 's#^#- https://github.com/Keepiluv/Keepiluv-Android/pull/#'
+            echo
+            echo '## 자동 검증'
+            echo '- Wiki validator 통과'
+            echo '- PR evidence 및 automation 테스트 통과'
+            echo
+            echo 'canonical 지식 변경은 내용을 확인한 뒤 병합해 주세요.'
+          } > /tmp/wiki-pr-body.md
+
+          gh pr create --draft \
+            --base main \
+            --head "$branch" \
+            --title "docs: Android PR 기반 Wiki 갱신" \
+            --body-file /tmp/wiki-pr-body.md

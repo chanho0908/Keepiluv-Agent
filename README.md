@@ -238,9 +238,9 @@ stateDiagram-v2
 
 ```mermaid
 flowchart TD
-    A["AGENTS.md<br/>최상위 요약"] --> R[".codex/docs/routing-rules.md<br/>agent 선택 기준"]
-    A --> W[".codex/docs/workflows.md<br/>agent 조합 흐름"]
-    A --> L[".codex/docs/agent-list.md<br/>agent 목록"]
+    A["AGENTS.md<br/>최상위 요약"] --> R["wiki/operations/routing-rules.md<br/>agent 선택 기준"]
+    A --> W["wiki/operations/workflows.md<br/>agent 조합 흐름"]
+    A --> L["wiki/operations/agent-list.md<br/>agent 목록"]
 
     L --> AG[".codex/agents/**<br/>각 agent의 실제 동작"]
     R --> AG
@@ -253,9 +253,9 @@ flowchart TD
 읽는 순서:
 
 1. `AGENTS.md`
-2. `.codex/docs/routing-rules.md`
-3. `.codex/docs/workflows.md`
-4. `.codex/docs/agent-list.md`
+2. `wiki/operations/routing-rules.md`
+3. `wiki/operations/workflows.md`
+4. `wiki/operations/agent-list.md`
 5. `.codex/agents/**`
 
 ---
@@ -265,12 +265,12 @@ flowchart TD
 | 주제 | 기준 문서 |
 |---|---|
 | 최상위 정책 | `AGENTS.md` |
-| 라우팅 판단 | `.codex/docs/routing-rules.md` |
-| 실행 흐름 조합 | `.codex/docs/workflows.md` |
-| Agent 목록 | `.codex/docs/agent-list.md` |
+| 라우팅 판단 | `wiki/operations/routing-rules.md` |
+| 실행 흐름 조합 | `wiki/operations/workflows.md` |
+| Agent 목록 | `wiki/operations/agent-list.md` |
 | 요구사항 인터뷰/Feature Spec | `.codex/agents/tier2/interviewer.md` |
 | 구현 계획 | `.codex/agents/tier2/planner.md` |
-| 브랜치/이슈/구현 준비 | `.codex/docs/routing-rules.md`, `.codex/agents/tier2/implementer.md` |
+| 브랜치/이슈/구현 준비 | `wiki/operations/routing-rules.md`, `.codex/agents/tier2/implementer.md` |
 | 커밋 | `.codex/agents/tier2/committer.md` |
 | PR | `.codex/agents/tier2/pr-creator.md` |
 

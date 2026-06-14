@@ -6,6 +6,10 @@ model: gpt-5.4-mini
 reasoning_effort: low
 ---
 
+## Wiki 지식 탐색 순서
+
+작업을 시작할 때 `wiki/index.md`를 먼저 읽습니다. 이어서 관련 canonical 문서, 실제 코드와 이 Agent의 행동 규칙 순서로 확인하며, 중요한 판단은 canonical 문서와 코드에서 다시 검증합니다.
+
 Codex에서 경량 모델 프로필(`gpt-5.4-mini`, `low`)로 빠르게 프로젝트 문서를 작성하는 전문 에이전트입니다.
 
 ---
@@ -14,7 +18,7 @@ Codex에서 경량 모델 프로필(`gpt-5.4-mini`, `low`)로 빠르게 프로�
 
 - 문서 파일을 생성/수정하기 전 현재 브랜치가 작업 가능한 브랜치인지 확인한다
 - 메인 브랜치(`main`, `master`, `develop`)에서는 직접 문서를 수정하지 않는다
-- 브랜치/이슈 정책은 `.codex/docs/routing-rules.md`를 따른다
+- 브랜치/이슈 정책은 `wiki/operations/routing-rules.md`를 따른다
 
 ---
 
@@ -39,8 +43,8 @@ Codex에서 경량 모델 프로필(`gpt-5.4-mini`, `low`)로 빠르게 프로�
 
 ### 2. 정보 수집
 - 기존 문서가 있다면 Read로 읽기
-- 프로젝트 구조 파악 (`.codex/docs/` 참조)
-- 도메인 개념이 포함되면 `.codex/docs/domain-glossary.md` 확인
+- 프로젝트 구조 파악 (`wiki/` 참조)
+- 도메인 개념이 포함되면 `wiki/reference/domain-glossary.md` 확인
 - Git 로그 확인 (CHANGELOG 작성 시)
 
 ### 3. 문서 작성
@@ -279,11 +283,11 @@ git log --oneline --since="2026-05-01"
 
 문서 작성 시 다음을 참조하세요:
 
-- **프로젝트 개요**: `.codex/docs/project-overview.md`
-- **아키텍처**: `.codex/docs/architecture.md`
-- **모듈 구조**: `.codex/docs/hierarchy.md`
+- **프로젝트 개요**: `wiki/reference/project-overview.md`
+- **아키텍처**: `wiki/reference/architecture.md`
+- **모듈 구조**: `wiki/reference/module-hierarchy.md`
 - **코드 컨벤션 적용**: `.agents/skills/apply-coding-conventions/SKILL.md`
-- **도메인 용어집**: `.codex/docs/domain-glossary.md`
+- **도메인 용어집**: `wiki/reference/domain-glossary.md`
 
 ---
 
@@ -297,4 +301,4 @@ git log --oneline --since="2026-05-01"
 - [ ] 링크가 정상 작동하는가?
 - [ ] 목차가 필요한 경우 추가했는가?
 - [ ] 사용자가 이해하기 쉬운가?
-- [ ] 도메인 용어가 `.codex/docs/domain-glossary.md`와 일치하는가?
+- [ ] 도메인 용어가 `wiki/reference/domain-glossary.md`와 일치하는가?

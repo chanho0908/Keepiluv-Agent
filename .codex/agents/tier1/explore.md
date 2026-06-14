@@ -6,6 +6,10 @@ model: gpt-5.4-mini
 reasoning_effort: low
 ---
 
+## Wiki 지식 탐색 순서
+
+작업을 시작할 때 `wiki/index.md`를 먼저 읽습니다. 이어서 관련 canonical 문서, 실제 코드와 이 Agent의 행동 규칙 순서로 확인하며, 중요한 판단은 canonical 문서와 코드에서 다시 검증합니다.
+
 Codex에서 경량 모델 프로필(`gpt-5.4-mini`, `low`)로 빠르게 코드베이스를 탐색하는 전문 에이전트입니다.
 
 ---
@@ -24,7 +28,7 @@ Codex에서 경량 모델 프로필(`gpt-5.4-mini`, `low`)로 빠르게 코드�
 ### 1. 요청 분석
 - 사용자가 찾고자 하는 것이 무엇인지 파악
 - 파일명인지, 클래스명인지, 함수명인지, 패턴인지 구분
-- 도메인 개념이 포함되면 `.codex/docs/domain-glossary.md`의 공식 용어와 코드 표현 매핑 확인
+- 도메인 개념이 포함되면 `wiki/reference/domain-glossary.md`의 공식 용어와 코드 표현 매핑 확인
 - 코드 식별자를 도메인 용어로 임의 번역하지 않고, 같은 식별자의 모듈별 의미를 구분
 
 ### 2. 탐색 전략 수립
@@ -198,6 +202,6 @@ data에 구현체(GoalRepositoryImpl)가 있습니다.
 
 탐색 시 다음 문서를 참조하세요:
 
-- **프로젝트 구조**: `.codex/docs/hierarchy.md`
-- **아키텍처**: `.codex/docs/architecture.md`
-- **도메인 용어집**: `.codex/docs/domain-glossary.md`
+- **프로젝트 구조**: `wiki/reference/module-hierarchy.md`
+- **아키텍처**: `wiki/reference/architecture.md`
+- **도메인 용어집**: `wiki/reference/domain-glossary.md`

@@ -6,6 +6,10 @@ model: gpt-5.5
 reasoning_effort: high
 ---
 
+## Wiki 지식 탐색 순서
+
+작업을 시작할 때 `wiki/index.md`를 먼저 읽습니다. 이어서 관련 canonical 문서, 실제 코드와 이 Agent의 행동 규칙 순서로 확인하며, 중요한 판단은 canonical 문서와 코드에서 다시 검증합니다.
+
 **Codex 주력 모델 프로필**(`gpt-5.5`, `high`)로 복잡한 작업을 체계적으로 분해하고, 구현 순서를 결정하며, 영향 범위를 분석하는 전문가입니다.
 
 ---
@@ -41,8 +45,8 @@ reasoning_effort: high
 - 먼저 `Clarity Gate`로 무엇이 부족한지 분류한다
 - 차단 수준의 모호성이 있으면 직접 인터뷰하지 않고 `interviewer`로 넘긴다
 - `interviewer`가 작성한 `Feature Spec`을 기반으로 계획을 작성한다
-- 도메인 개념이 포함되면 `.codex/docs/domain-glossary.md`를 확인하고 계획과 handoff에 공식 용어를 사용한다
-- 테스트 계획은 `.codex/docs/test-strategy.md`를 공통 source of truth로 사용하고, 리스크에 맞는 테스트 레벨과 제외 범위를 명시한다
+- 도메인 개념이 포함되면 `wiki/reference/domain-glossary.md`를 확인하고 계획과 handoff에 공식 용어를 사용한다
+- 테스트 계획은 `wiki/reference/test-strategy.md`를 공통 source of truth로 사용하고, 리스크에 맞는 테스트 레벨과 제외 범위를 명시한다
 - 같은 코드 표현의 의미가 모듈마다 다르면 용어집의 문맥별 매핑을 기준으로 영향 범위를 나눈다
 
 ---
@@ -285,8 +289,8 @@ Feature Spec에 오해 위험이 있으면 계획 본문보다 먼저 `interview
 
 planner는 계획 승인 이후의 실행 워크플로우를 직접 수행하지 않고, 다음 문서의 흐름 중 적절한 조합을 제안합니다.
 
-- `.codex/docs/workflows.md`
-- `.codex/docs/routing-rules.md`
+- `wiki/operations/workflows.md`
+- `wiki/operations/routing-rules.md`
 
 계획서에는 다음 항목만 포함합니다.
 
@@ -333,11 +337,11 @@ analyst의 분석 결과를 바탕으로 구현 계획을 수립했습니다.
 
 ## 참고 문서
 
-- **프로젝트 개요**: `.codex/docs/project-overview.md`
-- **아키텍처 원칙**: `.codex/docs/architecture.md`
-- **모듈 구조**: `.codex/docs/hierarchy.md`
+- **프로젝트 개요**: `wiki/reference/project-overview.md`
+- **아키텍처 원칙**: `wiki/reference/architecture.md`
+- **모듈 구조**: `wiki/reference/module-hierarchy.md`
 - **코드 컨벤션 적용**: `.agents/skills/apply-coding-conventions/SKILL.md`
 - **로딩 UI 상태 모델링**: `.agents/skills/model-loadable-ui-state/SKILL.md` (관련 작업일 때만)
-- **도메인 용어집**: `.codex/docs/domain-glossary.md`
-- **테스트 전략**: `.codex/docs/test-strategy.md`
+- **도메인 용어집**: `wiki/reference/domain-glossary.md`
+- **테스트 전략**: `wiki/reference/test-strategy.md`
 - **작업 프로세스**: `.codex/agents/tier2/implementer.md`

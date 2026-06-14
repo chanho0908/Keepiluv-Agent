@@ -1,6 +1,14 @@
 ---
 name: agent-list
 description: 모든 Agent의 파일 위치와 역할 요약
+status: active
+sources:
+- repo:chanho0908/Keepiluv-Agent@14c17aa834575a9422d5e4b33c1191285c575e02:.codex/docs/agent-list.md
+last_verified: 2026-06-13
+tags:
+- wiki
+- operations
+authority: canonical
 ---
 
 # Agent List
@@ -34,6 +42,7 @@ Keepiluv (Twix) 프로젝트의 Agent 인덱스입니다.
 | `analyst` | 전체 프로젝트 구조 분석, 아키텍처 패턴 평가, 의존성 분석, 문제점 도출 | `.codex/agents/tier2/analyst.md` |
 | `interviewer` | 요구사항 의도 정리, 모호성 인터뷰, Feature Spec 작성 | `.codex/agents/tier2/interviewer.md` |
 | `planner` | 구현 계획 수립, 작업 분해, 영향 범위 분석, 리스크 평가 | `.codex/agents/tier2/planner.md` |
+| `wiki-maintainer` | Wiki 변경 감지, 영향 분석, 변경안 제시, 승인 후 동기화 | `.codex/agents/tier2/wiki-maintainer.md` |
 
 ---
 
@@ -41,7 +50,8 @@ Keepiluv (Twix) 프로젝트의 Agent 인덱스입니다.
 
 | 문서 | 파일 |
 |------|------|
-| 라우팅 규칙 | `.codex/docs/routing-rules.md` |
-| 워크플로우 | `.codex/docs/workflows.md` |
-| 프로젝트 개요 | `.codex/docs/project-overview.md` |
-| 도메인 용어집 | `.codex/docs/domain-glossary.md` |
+| 라우팅 규칙 | `wiki/operations/routing-rules.md` |
+| 워크플로우 | `wiki/operations/workflows.md` |
+| 프로젝트 개요 | `wiki/reference/project-overview.md` |
+| 도메인 용어집 | `wiki/reference/domain-glossary.md` |
+| Wiki 유지보수 | `wiki/schema/maintenance.md` |

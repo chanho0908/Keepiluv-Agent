@@ -12,7 +12,7 @@ reasoning_effort: high
 
 - 성능 개선 코드나 벤치마크 파일을 생성/수정하기 전 현재 브랜치가 작업 가능한 브랜치인지 확인한다
 - 메인 브랜치(`main`, `master`, `develop`)에서는 직접 파일을 수정하지 않는다
-- 브랜치/이슈 정책은 `.codex/docs/routing-rules.md`를 따른다
+- 브랜치/이슈 정책은 `wiki/operations/routing-rules.md`를 따른다
 
 ---
 
@@ -416,7 +416,7 @@ class App : Application() {
 
 ## 주의사항
 
-- 최적화 전 `.codex/docs/domain-glossary.md`에서 대상 상태와 사용자 행위의 의미를 확인하고, 성능 개선 과정에서 도메인 동작을 바꾸지 않는다
+- 최적화 전 `wiki/reference/domain-glossary.md`에서 대상 상태와 사용자 행위의 의미를 확인하고, 성능 개선 과정에서 도메인 동작을 바꾸지 않는다
 - 벤치마크명과 결과 설명에는 공식 도메인 용어를 사용한다
 - 벤치마크는 반드시 **release 빌드** 또는 **benchmark 빌드 타입**에서 실행 (디버그 빌드 수치는 무의미)
 - `@Immutable` / `@Stable`은 실제로 불변/안정적인 타입에만 적용 — 잘못된 어노테이션은 버그 유발

@@ -14,7 +14,7 @@ reasoning_effort: medium
 
 - diary, skill, agent 문서를 생성/수정하기 전 현재 브랜치가 작업 가능한 브랜치인지 확인한다
 - 메인 브랜치(`main`, `master`, `develop`)에서는 직접 파일을 수정하지 않는다
-- 브랜치/이슈 정책은 `.codex/docs/routing-rules.md`를 따른다
+- 브랜치/이슈 정책은 `wiki/operations/routing-rules.md`를 따른다
 
 ---
 
@@ -29,7 +29,7 @@ reasoning_effort: medium
 
 ## 회고 프로세스
 
-회고와 학습 규칙을 작성하기 전에 `.codex/docs/domain-glossary.md`를 확인합니다. 용어 혼동이 시행착오의 원인이었다면 임의의 새 용어를 만들지 않고 공식 용어 또는 미확정 정책으로 구분해 기록합니다.
+회고와 학습 규칙을 작성하기 전에 `wiki/reference/domain-glossary.md`를 확인합니다. 용어 혼동이 시행착오의 원인이었다면 임의의 새 용어를 만들지 않고 공식 용어 또는 미확정 정책으로 구분해 기록합니다.
 
 ### 1단계: 회고 대상 확인
 
@@ -158,7 +158,7 @@ reasoning_effort: medium
 | 반복해서 실행할 절차이며 사용 시점이 명확함 | `.agents/skills/<name>/SKILL.md` |
 | 기존 Skill을 수행할 때 필요한 상세 규칙과 예시 | 해당 Skill의 `references/` |
 | 시행착오의 원문, 배경, 근거 | `.codex/diary/` |
-| 프로젝트가 공식적으로 합의한 사실과 정책 | `.codex/docs/` |
+| 프로젝트가 공식적으로 합의한 사실과 정책 | `wiki/` |
 
 새 Skill은 명확한 사용 시점과 반복 가능한 절차가 모두 있을 때만 만든다. 단순 교훈, 일회성 실수, 이미 공식 문서에 있는 내용은 새 Skill로 만들지 않는다.
 
@@ -175,7 +175,7 @@ Skill을 만들거나 수정할 때는 공식 구조를 따른다.
 1. **작업 일기 읽기**: `.codex/diary/YYYY-MM-DD-{task-name}.md` 읽기
 2. **핵심 교훈 섹션 파싱**: "## 핵심 교훈" 섹션의 모든 항목 추출
 3. **근거 보존**: 교훈의 원문, 사용자 피드백, 실패 원인은 `.codex/diary/`에 남기기
-4. **공식성 판단**: 프로젝트가 합의한 사실이나 정책이면 `.codex/docs/`의 관련 문서에 반영 제안하기
+4. **공식성 판단**: 프로젝트가 합의한 사실이나 정책이면 `wiki/`의 관련 문서에 반영 제안하기
 5. **기존 Skill 확인**: 기존 Skill의 실행을 돕는 상세 규칙이면 해당 Skill의 `references/`에 반영 제안하기
 6. **새 Skill 판단**: 명확한 사용 시점과 반복 절차를 모두 설명할 수 있을 때만 새 Skill 생성 제안하기
 
@@ -188,7 +188,7 @@ Skill을 만들거나 수정할 때는 공식 구조를 따른다.
 | 분류 대상 | 반영 방법 |
 |-----------|-----------|
 | 원본 교훈과 실패 근거 | 시도, 피드백, 수정 결과를 `.codex/diary/`에 보존한다. |
-| 프로젝트 공식 사실과 정책 | 레이어 책임이 합의된 정책이면 `.codex/docs/architecture.md`에 반영하거나 기존 내용을 확인한다. |
+| 프로젝트 공식 사실과 정책 | 레이어 책임이 합의된 정책이면 `wiki/reference/architecture.md`에 반영하거나 기존 내용을 확인한다. |
 | 기존 Skill의 상세 규칙 | 구현 중 확인할 구체적인 포맷팅 규칙이면 `apply-coding-conventions`의 `references/`에 보완한다. |
 | 새 Skill | 별도의 명확한 사용 시점과 반복 절차가 없다면 만들지 않는다. 둘 다 있다면 `.agents/skills/<name>/SKILL.md` 생성을 제안한다. |
 

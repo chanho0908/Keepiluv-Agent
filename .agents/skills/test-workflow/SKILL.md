@@ -11,9 +11,9 @@ description: Keepiluv Android에서 위험에 맞는 가장 낮은 테스트 레
 
 - 사용자 요청 또는 승인된 planner의 `handoff_to_tester`
 - 테스트 대상 코드와 같은 모듈의 기존 테스트
-- `.codex/docs/test-strategy.md`의 테스트 레벨, 완료 기준, 제외 대상
-- `.codex/docs/domain-glossary.md`의 공식 도메인 용어
-- `.codex/docs/routing-rules.md`의 브랜치와 쓰기 작업 규칙
+- `wiki/reference/test-strategy.md`의 테스트 레벨, 완료 기준, 제외 대상
+- `wiki/reference/domain-glossary.md`의 공식 도메인 용어
+- `wiki/operations/routing-rules.md`의 브랜치와 쓰기 작업 규칙
 - 로딩·오류·재시도 UI가 범위에 포함되면 `.agents/skills/model-loadable-ui-state/SKILL.md`
 
 입력이 부족해 테스트 대상, 기대 동작, 성공 기준을 결정할 수 없으면 추측하지 말고 planner 또는 사용자에게 확인한다.
@@ -31,7 +31,7 @@ description: Keepiluv Android에서 위험에 맞는 가장 낮은 테스트 레
    - 테스트 파일은 대상과 같은 패키지의 `{module}/src/test/.../{Class}Test.kt`를 기본으로 한다. UI 테스트는 모듈의 기존 Android 테스트 구조를 따른다.
 
 3. **시나리오와 레벨 확정**
-   - `.codex/docs/test-strategy.md`에 따라 가장 낮고 효과적인 테스트 레벨을 선택한다.
+   - `wiki/reference/test-strategy.md`에 따라 가장 낮고 효과적인 테스트 레벨을 선택한다.
    - 검증할 위험, 정상·실패·경계 시나리오, 제외 범위, 실행 명령을 짧게 정리한다.
    - 낮은 레벨에서 충분히 검증한 규칙을 넓은 테스트에서 반복하지 않는다.
 
@@ -108,4 +108,4 @@ description: Keepiluv Android에서 위험에 맞는 가장 낮은 테스트 레
 - 실제 현재 시각, 테스트 실행 순서, 공유 mutable state, 실서버 상태에 의존하지 않는다.
 - 기계적인 DTO와 Domain 변환, 단순 프로퍼티, 프레임워크 자체 동작은 별도 요구가 없으면 테스트하지 않는다.
 - `AppResult`는 기존 `AppResult.Success`, `AppResult.Error` 패턴을 따른다.
-- 테스트 절차는 이 Skill을 따르되, 테스트 판단 기준은 항상 `.codex/docs/test-strategy.md`를 우선한다.
+- 테스트 절차는 이 Skill을 따르되, 테스트 판단 기준은 항상 `wiki/reference/test-strategy.md`를 우선한다.
