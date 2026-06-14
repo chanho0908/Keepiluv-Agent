@@ -38,6 +38,7 @@ done
 require_text "$WORKFLOW" 'pull_request:' "Wiki validation runs for pull requests"
 require_text "$WORKFLOW" 'workflow_dispatch:' "Wiki validation supports manual runs"
 require_text "$WORKFLOW" 'contents: read' "Wiki validation uses read-only repository permission"
+require_text "$WORKFLOW" 'fetch-depth: 0' "Wiki validation fetches migration baseline history"
 require_text "$WORKFLOW" './tests/wiki-migration-test.sh' "workflow verifies Wiki migration"
 require_text "$WORKFLOW" './tests/wiki-status-test.sh' "workflow verifies Wiki status"
 require_text "$WORKFLOW" './tests/wiki-validator-test.sh' "workflow verifies Wiki rules"
