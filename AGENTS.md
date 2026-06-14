@@ -8,7 +8,7 @@ This file provides guidance to Codex (Codex.ai/code) when working with code in t
 
 **Codex는 절대로 혼자서 코드를 작성하지 않습니다.**
 
-모든 작업은 전문화된 Agent에게 위임합니다. 구현 전에 항상 사용자 컨펌을 받고, 커밋은 승인 후에만 실행합니다.
+모든 작업은 전문화된 Agent에게 위임합니다. 명확한 구현 요청은 구현 승인으로 간주하고, 커밋과 PR은 별도 승인 후에만 실행합니다.
 
 이 문서는 오케스트레이션 정책의 **최상위 요약본**입니다.
 - 세부 라우팅 규칙: `wiki/operations/routing-rules.md`
@@ -33,7 +33,6 @@ This file provides guidance to Codex (Codex.ai/code) when working with code in t
 | "PR 생성" | pr-creator | 2 |
 | "테스트" | tester | 2 |
 | "최적화", "리컴포지션" | performance-optimizer | 2 |
-| "회고", "일기" | retrospective | 2 |
 | "리뷰", "doveletter" | code-reviewer | 2 |
 | "분석", "구조 분석" | analyst | 2 |
 | "의도 정리", "요구사항 정리", "인터뷰" | interviewer | 2 |
@@ -71,9 +70,11 @@ This file provides guidance to Codex (Codex.ai/code) when working with code in t
 
 ### 3. 승인 게이트
 
-- 계획이 필요한 작업: `planner` 결과를 먼저 보여주고 승인 후 구현
+- 명확한 `구현해줘`, `수정해줘`, `추가해줘` 요청은 구현 승인으로 간주
+- 계획이 필요한 작업: `planner` 결과를 먼저 보여주고 계획 승인 후 구현
+- 모호하거나 파괴적이거나 범위가 큰 요청만 구현 전에 별도 확인
 - 커밋: 항상 사용자 승인 후 실행
-- PR 생성: 상태 확인 후 실행
+- PR 생성과 push: 항상 사용자 승인 후 실행
 
 ### 4. 병렬 위임 원칙
 
@@ -115,7 +116,10 @@ This file provides guidance to Codex (Codex.ai/code) when working with code in t
 - `wiki/index.md`는 프로젝트 공식 지식의 유일한 시작점입니다.
 - 프로젝트 사실과 운영 정책은 `wiki/reference`, `wiki/operations`, `wiki/schema`에서 관리합니다.
 - 모든 Agent는 Wiki에서 관련 canonical 문서를 먼저 찾고 실제 코드와 행동 규칙으로 재검증합니다.
-- Wiki 의미 변경과 상태 기준 확정은 승인된 본작업 범위 안에서 `wiki-maintainer`가 수행합니다.
+- 승인된 본작업에서 생긴 장기 지식, Wiki와 코드의 불일치, 재사용 운영 규칙은 `wiki-maintainer`가 별도 Wiki 승인 없이 동기화합니다.
+- 관련 테스트와 validator를 통과한 뒤 기존 미승인 변경 혼입 여부를 확인하고, 안전한 경우에만 승인된 본작업 범위의 Wiki 검증 기준점을 자동 갱신합니다.
+- 본작업과 무관한 도메인/운영 정책 변경이나 새로운 의미 결정은 사용자 승인을 받습니다.
+- Wiki 명령은 `Keepiluv-Agent` 저장소 루트에서 실행합니다.
 
 ### 9. 작업 종료 시 지식 동기화
 
@@ -123,6 +127,7 @@ This file provides guidance to Codex (Codex.ai/code) when working with code in t
 - 장기 지식이 생겼다면 같은 작업에서 `wiki-maintainer`로 넘겨 Wiki를 함께 갱신합니다.
 - 원본 작업 PR 번호는 Wiki 출처로 기록하지 않습니다.
 - 일회성 구현 세부사항과 정책을 바꾸지 않는 단순 수정은 Wiki에 축적하지 않습니다.
+- Skill 생성이나 갱신은 자동 학습 결과로 수행하지 않으며, 사용자가 명시적으로 요청하거나 별도 승인한 작업에서 해당 Skill 절차를 따릅니다.
 
 ### 10. 사용자 설명 기준
 
@@ -173,12 +178,11 @@ This file provides guidance to Codex (Codex.ai/code) when working with code in t
 | 2 | `pr-creator` | Pull Request 생성 | `.codex/agents/tier2/pr-creator.md` |
 | 2 | `tester` | 테스트 코드 작성 | `.codex/agents/tier2/tester.md` |
 | 2 | `performance-optimizer` | 성능 최적화 | `.codex/agents/tier2/performance-optimizer.md` |
-| 2 | `retrospective` | 작업 회고, 스킬 자동 추출 | `.codex/agents/tier2/retrospective.md` |
 | 2 | `code-reviewer` | Dove Letter 기반 코드 리뷰 (READ-ONLY) | `.codex/agents/tier2/code-reviewer.md` |
 | 2 | `analyst` | 아키텍처 분석 (READ-ONLY) | `.codex/agents/tier2/analyst.md` |
 | 2 | `interviewer` | 요구사항 인터뷰, Feature Spec 작성 (READ-ONLY) | `.codex/agents/tier2/interviewer.md` |
 | 2 | `planner` | 구현 계획 수립 (READ-ONLY) | `.codex/agents/tier2/planner.md` |
-| 2 | `wiki-maintainer` | Wiki 변경 감지, 영향 분석, 승인 후 동기화 | `.codex/agents/tier2/wiki-maintainer.md` |
+| 2 | `wiki-maintainer` | 승인된 본작업의 Wiki 자동 동기화와 상태 관리 | `.codex/agents/tier2/wiki-maintainer.md` |
 
 ### Codex 모델 운영 기준
 

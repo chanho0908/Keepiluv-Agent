@@ -37,15 +37,36 @@ run_case() {
 
 mutate_legacy() { printf '%s\n' 'legacy .codex/docs/architecture.md' > "$1/untracked-note.md"; }
 mutate_deleted() { rm "$1/wiki/reference/project-overview.md"; }
-mutate_header() { printf 'wrong\theader\n' > "$1/wiki/state/source-manifest.tsv"; }
-mutate_hash() { printf 'path\tsha256\nAGENTS.md\tabc\n' > "$1/wiki/state/source-manifest.tsv"; }
-mutate_absolute() { printf 'path\tsha256\n/tmp/AGENTS.md\t%064d\n' 0 > "$1/wiki/state/source-manifest.tsv"; }
-mutate_traversal() { printf 'path\tsha256\n../AGENTS.md\t%064d\n' 0 > "$1/wiki/state/source-manifest.tsv"; }
-mutate_empty() { printf 'path\tsha256\n\t%064d\n' 0 > "$1/wiki/state/source-manifest.tsv"; }
-mutate_duplicate() { printf 'path\tsha256\nAGENTS.md\t%064d\nAGENTS.md\t%064d\n' 0 1 > "$1/wiki/state/source-manifest.tsv"; }
-mutate_unsorted() { printf 'path\tsha256\nwiki/reference/project-overview.md\t%064d\nAGENTS.md\t%064d\n' 0 1 > "$1/wiki/state/source-manifest.tsv"; }
+mutate_header() { printf 'wrong\theader\n' > "$1/wiki/state/wiki-verification-baseline.tsv"; }
+mutate_hash() { printf 'path\tsha256\nAGENTS.md\tabc\n' > "$1/wiki/state/wiki-verification-baseline.tsv"; }
+mutate_absolute() { printf 'path\tsha256\n/tmp/AGENTS.md\t%064d\n' 0 > "$1/wiki/state/wiki-verification-baseline.tsv"; }
+mutate_traversal() { printf 'path\tsha256\n../AGENTS.md\t%064d\n' 0 > "$1/wiki/state/wiki-verification-baseline.tsv"; }
+mutate_empty() { printf 'path\tsha256\n\t%064d\n' 0 > "$1/wiki/state/wiki-verification-baseline.tsv"; }
+mutate_duplicate() { printf 'path\tsha256\nAGENTS.md\t%064d\nAGENTS.md\t%064d\n' 0 1 > "$1/wiki/state/wiki-verification-baseline.tsv"; }
+mutate_unsorted() { printf 'path\tsha256\nwiki/reference/project-overview.md\t%064d\nAGENTS.md\t%064d\n' 0 1 > "$1/wiki/state/wiki-verification-baseline.tsv"; }
 mutate_empty_sources() {
   ruby -0pi -e 'sub("status: active\n", "status: active\nsources: []\n")' "$1/wiki/index.md"
+}
+mutate_reference_authority() {
+  ruby -0pi -e 'sub("authority: canonical", "authority: synthesized")' "$1/wiki/reference/project-overview.md"
+}
+mutate_operation_authority() {
+  ruby -0pi -e 'sub("authority: canonical", "authority: synthesized")' "$1/wiki/operations/routing-rules.md"
+}
+mutate_schema_authority() {
+  ruby -0pi -e 'sub("authority: canonical", "authority: synthesized")' "$1/wiki/schema/lint.md"
+}
+mutate_synthesized_source_authority() {
+  ruby -0pi -e 'sub("authority: canonical", "authority: synthesized")' "$1/wiki/schema/maintenance.md"
+}
+mutate_unlinked_reference() {
+  cp "$1/wiki/reference/project-overview.md" "$1/wiki/reference/unlinked-reference.md"
+}
+mutate_unlinked_operation() {
+  cp "$1/wiki/operations/routing-rules.md" "$1/wiki/operations/unlinked-operation.md"
+}
+mutate_unlinked_schema() {
+  cp "$1/wiki/schema/lint.md" "$1/wiki/schema/unlinked-schema.md"
 }
 
 baseline_output=$("$seed/scripts/validate-wiki.sh" 2>&1)
@@ -65,6 +86,13 @@ run_case empty-path empty mutate_empty
 run_case duplicate-path duplicate mutate_duplicate
 run_case unsorted-path sorted mutate_unsorted
 run_case empty-sources sources mutate_empty_sources
+run_case reference-authority 'must declare authority: canonical' mutate_reference_authority
+run_case operation-authority 'must declare authority: canonical' mutate_operation_authority
+run_case schema-authority 'must declare authority: canonical' mutate_schema_authority
+run_case synthesized-source-authority 'source_path must reference authority: canonical Markdown' mutate_synthesized_source_authority
+run_case unlinked-reference 'orphan candidate' mutate_unlinked_reference
+run_case unlinked-operation 'orphan candidate' mutate_unlinked_operation
+run_case unlinked-schema 'orphan candidate' mutate_unlinked_schema
 if [ "$failures" -ne 0 ]; then
   printf '\nWiki validator test failed with %s issue(s).\n' "$failures" >&2
   exit 1

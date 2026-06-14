@@ -21,17 +21,23 @@ authority: canonical
 - 레이어 사이 계약과 실제 사용자 행동은 필요한 범위에서 더 넓은 테스트로 검증한다.
 - 반복 실행해도 같은 결과가 나오는 안정적인 테스트를 유지한다.
 
-## 현재 기준선
+## 현재 테스트 현황
 
-현재 저장소에서 확인되는 테스트 기반은 다음과 같습니다.
+이 절의 현황은 작업 트리의 미추적 파일을 제외하고 Git에 추적된 파일만 기준으로 합니다.
 
-- JVM 단위 테스트: JUnit5, AssertJ, kotlinx-coroutines-test, Turbine, Kotlin Test
-- Android/Compose 테스트 의존성 및 `AndroidJUnitRunner` 설정
-- Domain 모델/UseCase 단위 테스트와 일부 ViewModel 테스트
-- Fake Repository를 사용한 기존 테스트 패턴
+### 구현된 테스트 기준선
 
-Compose UI 테스트와 앱 전체 E2E 테스트는 전략상 필요한 레벨이지만, 현재 저장소에 실질적인 시나리오가 구축되어 있다고 간주하지 않습니다.
-새 테스트를 계획할 때는 대상 모듈의 task, 실행 기기, 테스트 데이터와 서버 환경이 실제로 준비되어 있는지 먼저 확인합니다.
+- 현재 추적된 실제 테스트는 `domain` 모듈의 Domain 모델과 UseCase 단위 테스트뿐입니다.
+- Fake Repository를 사용하는 Domain 단위 테스트 패턴이 있습니다.
+- 추적된 ViewModel 로컬 단위 테스트, Repository/Room 통합 테스트, Compose instrumented 테스트, 앱 전체 E2E 테스트는 아직 없습니다.
+
+### 설정된 테스트 스택
+
+- JVM 및 Android 모듈의 로컬 단위 테스트: JUnit5, AssertJ, kotlinx-coroutines-test, Turbine, Kotlin Test
+- Android UI 테스트: JUnit4 기반 AndroidX Test와 Compose `ui-test-junit4`, `AndroidJUnitRunner`
+
+Android UI 테스트 의존성과 실행기 설정은 준비되어 있지만, 설정의 존재를 구현된 테스트 시나리오로 간주하지 않습니다.
+현재 CI의 `./gradlew test`는 각 모듈의 로컬 단위 테스트 task를 실행하며, 기기나 에뮬레이터가 필요한 Compose instrumented 테스트는 실행하지 않습니다.
 
 ## 테스트 대상과 종류 선택
 
@@ -44,6 +50,21 @@ Compose UI 테스트와 앱 전체 E2E 테스트는 전략상 필요한 레벨�
 | 앱의 대표 사용자 여정 | 소수의 E2E 테스트 | 로그인/연결, 목표 수행, 인증샷 등 실패 비용이 큰 여정 |
 
 이 표는 모든 기능에 모든 레벨의 테스트를 요구하지 않습니다. 같은 규칙을 여러 레벨에서 반복하기보다, 규칙은 낮은 레벨에서 자세히 검증하고 넓은 테스트에서는 연결과 대표 흐름만 확인합니다.
+
+## 다음 테스트 투자 우선순위
+
+현재 Domain 단위 테스트 다음 투자는 Repository/Room 통합 테스트를 우선합니다.
+
+우선 보호할 위험은 다음과 같습니다.
+
+1. 서버 응답과 로컬 저장 결과를 조합하는 Repository 동작
+2. Room에 저장하는 찌르기 기록과 `목표 ID + 목표 날짜` 복합키
+3. 인증 세션과 DataStore 저장·복원 경계
+4. 네트워크 실패가 `AppError` 등 앱에서 관찰 가능한 오류로 변환되는 경계
+
+여기서 Repository 통합 테스트는 Fake Service 또는 Ktor `MockEngine`과 실제 Repository 구현을 연결하고, 로컬 저장 경계가 포함되면 필요에 따라 Room 인메모리 DB를 사용하는 경계 테스트를 뜻합니다. 실서버 상태에는 의존하지 않습니다.
+
+Compose UI와 E2E 테스트는 핵심 화면과 대표 사용자 여정을 보호하는 장기 전략에 유지합니다. 다만 현재 구현과 CI 실행 환경이 없으므로 Repository/Room 통합 테스트보다 후순위이며, 도입 시 실행 기기, 테스트 데이터와 서버 대역을 별도 범위에서 준비합니다.
 
 ## 테스트 레벨 선택
 
@@ -74,7 +95,7 @@ Compose UI 테스트와 앱 전체 E2E 테스트는 전략상 필요한 레벨�
 ### 신규 도메인 규칙
 
 - 정상 동작, 실패 조건, 경계값을 검증한다.
-- 시간 기반 규칙은 현재 시각을 직접 참조하지 않고 제어 가능한 시간 입력을 사용한다.
+- 새 시간 로직과 새 테스트는 `Clock`, 고정 시간 또는 명시적인 시간 입력처럼 제어 가능한 시간을 우선 사용한다.
 
 ### ViewModel 변경
 
@@ -86,6 +107,7 @@ Compose UI 테스트와 앱 전체 E2E 테스트는 전략상 필요한 레벨�
 
 - DTO와 Domain 사이의 기계적인 변환 또는 단순 필드 매핑은 완료 조건에 포함하지 않는다.
 - 서버 또는 로컬 저장소 요청의 성공·실패가 앱의 관찰 가능한 결과로 전달되는지 검증한다.
+- 서버와 로컬 저장소를 조합하는 경우 Fake Service 또는 Ktor `MockEngine`과 실제 Repository를 사용하고, Room 동작 자체가 위험이면 인메모리 DB를 연결한다.
 
 ### 핵심 UI 변경
 
@@ -129,19 +151,49 @@ Compose UI 테스트와 앱 전체 E2E 테스트는 전략상 필요한 레벨�
 작은 작업은 planner를 생략할 수 있지만, tester는 테스트 레벨과 제외 이유를 스스로 명시합니다.
 tester의 반복 가능한 작성, 실행, 예외 처리, implementer handoff 절차는 `.agents/skills/test-workflow/SKILL.md`를 따릅니다.
 
-## 안정성과 검증
+## 시간 안정성 원칙
 
-- 테스트는 실행 순서, 실제 현재 시각, 공유 mutable state, 실서버 상태에 의존하지 않는다.
+### 새 코드와 새 테스트
+
+- 새 시간 로직은 `Clock`, 고정 시간 또는 호출자가 전달하는 명시적 시간 입력을 우선한다.
+- 새 테스트는 실제 현재 시각에 직접 의존하지 않고 경계 시각을 고정해 반복 실행 결과를 같게 만든다.
+
+### 기존 테스트
+
+- 실제 현재 시각을 사용하는 기존 테스트는 즉시 전체 교체를 완료 조건으로 강제하지 않는다.
+- 경계 오차를 허용해 비결정적 실패를 막고, 관련 코드를 변경할 때 제어 가능한 시간으로 점진 개선한다.
+- 장기 목표는 시간 기반 테스트가 실행 시각과 속도 차이에 영향받지 않도록 만드는 것입니다.
+
+## 실행과 검증
+
+- 테스트는 실행 순서, 공유 mutable state, 실서버 상태에 의존하지 않는다.
 - 코루틴과 Flow는 테스트 dispatcher와 명시적인 대기/수집을 사용한다.
 - 새 테스트는 가능하면 대상 테스트를 반복 실행해 비결정적 실패가 없는지 확인한다.
 - 먼저 좁은 명령으로 빠르게 검증한 뒤 영향 범위에 맞는 모듈 task를 실행한다.
 
+JVM 모듈의 로컬 단위 테스트는 `test` task를 사용합니다.
+
 ```bash
-./gradlew :{module}:test --tests "{TestClass}"
-./gradlew :{module}:test
+./gradlew :domain:test --tests 'com.twix.domain.usecase.PokeGoalUseCaseTest'
 ```
 
-Android/Compose UI 테스트는 대상 모듈과 기기가 준비된 경우에만 실행합니다.
+Android library 모듈의 로컬 단위 테스트는 build variant가 포함된 task를 사용합니다.
+
+```bash
+./gradlew :feature:photolog:detail:testDebugUnitTest --tests '<완전한 테스트 클래스명>'
+```
+
+현재 추적된 Android 로컬 단위 테스트가 없으므로 필터 예시의 클래스를 공식 현황으로 간주하지 않습니다. task 자체는 `--dry-run` 또는 필터 없는 `testDebugUnitTest`로 확인할 수 있습니다.
+
+전체 로컬 단위 테스트는 현재 CI와 같은 명령으로 실행합니다.
+
+```bash
+./gradlew test
+```
+
+이 명령은 JVM과 Android 모듈의 로컬 단위 테스트 task를 모아 실행하지만, Android 기기나 에뮬레이터에서 실행하는 Compose instrumented 테스트는 포함하지 않습니다.
+
+Compose instrumented 테스트는 JUnit4와 Compose `ui-test-junit4`를 사용하며, 대상 모듈과 실행 기기가 준비된 경우에만 별도로 실행합니다. 현재 CI에는 이 실행 환경이 없습니다.
 
 ```bash
 ./gradlew :{module}:connectedDebugAndroidTest

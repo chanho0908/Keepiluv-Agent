@@ -1,6 +1,6 @@
 ---
 name: project-overview
-description: Keepiluv (Twix) 핵심 스택과 자주 쓰는 패턴 요약
+description: Keepiluv (Twix) 서비스 목적, 핵심 스택과 주요 진입점
 status: active
 last_verified: 2026-06-14
 tags:
@@ -13,8 +13,8 @@ authority: canonical
 
 ## 서비스 개요
 
-Keepiluv는 커플이 함께 목표를 만들고, 날짜별로 목표를 인증하며, 서로의 인증샷에 반응하거나 아직 인증하지 않은 상대를 찔러 참여를 독려하는 서비스입니다.
-목표 수행 기록은 스탬프와 통계로 확인할 수 있습니다.
+Keepiluv는 커플이 함께 목표를 만들고, 목표 날짜별로 인증하며, 서로의 인증샷에 반응하거나 아직 인증하지 않은 짝꿍을 찔러 참여를 독려하는 서비스입니다.
+목표 수행 결과는 통계 조회 기준 월의 스탬프 통계와 목표 날짜별 인증 기록으로 확인할 수 있습니다.
 
 주요 사용자 흐름은 다음과 같습니다.
 
@@ -24,40 +24,38 @@ Keepiluv는 커플이 함께 목표를 만들고, 날짜별로 목표를 인증�
 4. 날짜를 선택해 그날의 목표를 확인한다.
 5. 목표 수행 후 인증샷을 등록한다.
 6. 짝꿍의 인증샷에 리액션을 남기거나, 미인증 상태라면 찌르기를 보낸다.
-7. 날짜와 목표별 달성 기록을 통계에서 확인한다.
+7. 통계 조회 기준 월을 선택해 스탬프 통계와 목표 날짜별 인증 기록을 확인한다.
 
 ## 핵심 스택
 
 | 영역 | 선택 |
 |------|------|
 | UI | Jetpack Compose |
-| Architecture | MVI + Clean Architecture |
+| Architecture | MVI + Clean Architecture 기반 구조 |
 | DI | Koin |
-| Network | Ktor Client |
+| Network | Ktor Client + Ktorfit/KSP |
 | Async | Coroutines + Flow |
 | Result | `AppResult`, `AppError` |
-| UI State | `LoadableState` |
+| UI State | 기본 로딩·오류는 `DefaultLoadableState`, 기존 콘텐츠 유지 화면은 `ContentLoadableState` |
 | Navigation | Compose Navigation + `NavGraphContributor` |
-| Test | JUnit, Kotest, Turbine, Fake Repository |
+| Test | JUnit 5, AssertJ, Turbine, coroutines-test/Kotlin Test |
 | Lint | ktlint |
 
-## 자주 쓰는 패턴
+## 구조 안내
 
-| 패턴 | 규칙                                           |
-|------|----------------------------------------------|
-| Repository | 인터페이스는 `domain`, 구현은 `data`                  |
-| Mapper | DTO → Domain 변환은 `.toDomain()` 계열로 분리        |
-| Error Handling | `safeApiCall` → `AppResult` → `LoadableState` |
-| Testing | `Mock 지양`, `Fake*Repository` 우선              |
-| Navigation | feature별 `NavGraphContributor` 사용            |
-| Deep Link | launch source / handler 분리                   |
-| Cross-Feature Sync | Event Bus 사용 가능                              |
-| Route Design | type-safe route 선호                           |
+Repository, Mapper, 상태 처리와 레이어 책임은 [아키텍처 원칙](architecture.md)을 기준으로 확인합니다.
+실제 모듈과 feature 배치는 [모듈 구조](module-hierarchy.md)를 따릅니다.
+Navigation은 feature별 `NavGraphContributor`로 그래프를 조립하고, 문자열 경로와 인자 이름·경로 생성은 `NavRoutes`에서 중앙 관리합니다.
 
 ## 자주 보는 위치
 
 | 목적 | 위치 |
 |------|------|
+| 앱 진입점과 조립 | `app/src/main/java/com/yapp/twix/` |
+| 공통 Navigation 경로와 그래프 조립 | `core/navigation/src/main/java/com/twix/navigation/` |
+| 네트워크 클라이언트와 API 서비스 | `core/network/src/main/java/com/twix/network/` |
+| 공통 MVI 상태와 ViewModel 기반 코드 | `core/ui/src/main/java/com/twix/ui/base/` |
+| 주요 홈·통계 화면 | `feature/main/src/main/java/com/twix/` |
 | 전체 아키텍처 원칙 | `wiki/reference/architecture.md` |
 | 모듈 / 디렉터리 구조 | `wiki/reference/module-hierarchy.md` |
 | 테스트 전략 / 레벨 선택 | `wiki/reference/test-strategy.md` |

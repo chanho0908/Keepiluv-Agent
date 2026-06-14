@@ -1,6 +1,6 @@
 ---
 status: active
-last_verified: 2026-06-14
+last_verified: 2026-06-15
 tags:
 - wiki
 - lint
@@ -20,10 +20,11 @@ authority: canonical
 - 출처 없는 주장, 서로 충돌하는 주장, 오래된 출처를 찾습니다.
 - Index에서 연결되지 않은 고아 페이지와 폐기된 페이지를 가리키는 링크를 찾습니다.
 - 비밀정보로 보이는 값과 금지된 링크 문법을 찾습니다.
-- 필수 canonical 문서와 `authority` 값이 올바른지 확인합니다.
-- synthesized 문서의 `source_paths`가 실제 파일을 가리키는지 확인합니다.
+- `wiki/reference`, `wiki/operations`, `wiki/schema`의 Markdown이 `authority: canonical`인지 확인합니다.
+- synthesized 문서의 `source_paths`가 실제 `authority: canonical` Markdown을 가리키는지 확인합니다.
+- `wiki/reference`, `wiki/operations`, `wiki/schema`의 Markdown이 Index에서 직접 탐색 가능한지 확인합니다.
 - 이전 지식 디렉터리나 이전 경로 참조가 남아 있지 않은지 확인합니다.
-- Manifest가 경로와 SHA-256 해시만 포함하며 경로순으로 정렬됐는지 확인합니다.
+- Wiki 검증 기준점이 경로와 SHA-256 해시만 포함하며 경로순으로 정렬됐는지 확인합니다.
 
 ## 실행
 
@@ -32,10 +33,10 @@ authority: canonical
 ./scripts/wiki-status.sh
 ```
 
-승인된 기준 상태를 확정할 때만 다음 명령을 사용합니다.
+관련 테스트와 validator 실행 후 승인 범위를 확인했을 때만 Wiki 검증 기준점을 갱신합니다.
 
 ```bash
 ./scripts/wiki-status.sh --accept --approved
 ```
 
-검사 통과는 내용이 공식 정책으로 승격되었다는 뜻이 아닙니다. 의미 검토와 Git 반영에는 별도 승인이 필요합니다.
+검사 통과는 내용이 공식 정책으로 승격되었다는 뜻이 아닙니다. 승인된 본작업 범위 밖의 의미 결정과 Git 반영에는 별도 승인이 필요합니다.

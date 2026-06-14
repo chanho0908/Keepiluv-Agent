@@ -38,7 +38,6 @@ done
 require_text "$WORKFLOW" 'pull_request:' "Wiki validation runs for pull requests"
 require_text "$WORKFLOW" 'workflow_dispatch:' "Wiki validation supports manual runs"
 require_text "$WORKFLOW" 'contents: read' "Wiki validation uses read-only repository permission"
-require_text "$WORKFLOW" 'fetch-depth: 0' "Wiki validation fetches migration baseline history"
 require_text "$WORKFLOW" './tests/wiki-migration-test.sh' "workflow verifies Wiki migration"
 require_text "$WORKFLOW" './tests/wiki-status-test.sh' "workflow verifies Wiki status"
 require_text "$WORKFLOW" './tests/wiki-validator-test.sh' "workflow verifies Wiki rules"
@@ -47,6 +46,12 @@ require_text "$IMPLEMENTER" '장기 지식' "implementer evaluates durable knowl
 require_text "$IMPLEMENTER" 'wiki-maintainer' "implementer hands durable knowledge to wiki-maintainer"
 require_text "$MAINTAINER" '작업 중 확인한 코드' "wiki maintainer uses current work evidence"
 require_text "$MAINTAINER" 'PR 번호' "wiki maintainer explicitly excludes PR numbers from Wiki sources"
+
+if grep -Fq 'fetch-depth: 0' "$WORKFLOW"; then
+  fail "Wiki validation must not require full Git history for migration invariants"
+else
+  pass "Wiki validation does not require full Git history"
+fi
 
 if rg -n 'OPENAI_API_KEY|openai/codex-action|api\.deepseek\.com|repository_dispatch|pr:PR-URL' \
   "$ROOT_DIR/.github" "$ROOT_DIR/wiki" "$ROOT_DIR/.agents/skills/wiki-maintainer" "$ROOT_DIR/.codex/agents/tier2/wiki-maintainer.md" \

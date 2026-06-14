@@ -1,6 +1,6 @@
 ---
 status: active
-last_verified: 2026-06-14
+last_verified: 2026-06-15
 tags:
 - wiki
 - operations
@@ -32,3 +32,21 @@ authority: canonical
 - 외부 LLM API 자동화를 제거하고 GitHub Actions는 Wiki 검증만 담당하도록 변경했습니다.
 - 과거 지식 저장소에서 이전했다는 표시를 Wiki의 `sources`에서 제거했습니다.
 - `sources`는 실제 외부 근거가 있을 때만 기록하는 선택 항목으로 변경했습니다.
+- 비개발자 안내서에 `sources`, 내부 링크, `source_paths`의 차이와 사용 예시를 추가했습니다.
+- 아키텍처 원칙과 실제 모듈·폴더 배치 문서의 책임 경계를 명확히 했습니다.
+- 프로젝트 개요를 실제 기술 구성과 공식 도메인 용어에 맞추고 서비스 흐름, 핵심 기술, 주요 진입점 중심으로 정리했습니다.
+- DTO·Mapper 배치, Repository 호출 경계, MVI 로딩 상태 계약의 기본 원칙과 제한된 허용 조건을 실제 코드 구조에 맞게 정리했습니다.
+- 테스트 전략의 Git 추적 기준선, 실행 환경별 명령, 시간 안정성 원칙과 Repository/Room 통합 테스트 우선순위를 정리했습니다.
+- 명확한 구현 요청을 구현 승인으로 간주하고, 계획이 필요한 작업은 계획 승인 후 진행하도록 승인 게이트를 개편했습니다.
+- 승인된 본작업의 장기 지식과 Wiki 불일치는 별도 Wiki 승인 없이 동기화하고, validator 통과 후 안전한 범위의 Manifest 상태를 자동 관리하도록 했습니다.
+- `retrospective` agent와 전용 라우팅을 제거하고 작업 종료 지식 동기화 책임을 `wiki-maintainer`로 통합했습니다.
+- Skill 생성과 갱신은 자동 학습 결과가 아니라 명시 요청 또는 별도 승인된 작업에서만 수행하도록 정리했습니다.
+- 상태 비교 파일의 공식 이름을 `wiki/state/wiki-verification-baseline.tsv`로 변경하고, 사용자와 운영 문서의 용어를 Wiki 검증 기준점(verification baseline)으로 통일했습니다. 기존 기준 데이터와 승인 상태는 그대로 보존했습니다.
+
+## 2026-06-15
+
+- 마이그레이션 테스트를 과거 원문 전체 보존 검사에서 이관 완료 불변식 검사로 축소하고 전용 legacy fixture를 제거했습니다.
+- canonical 권한, synthesized 출처 권한, Index 연결을 validator 규칙과 회귀 테스트로 보강했습니다.
+- 최초 승인 bootstrap에서 실제 validator를 통과하며 Wiki 검증 기준점을 생성하도록 status 흐름을 정렬했습니다.
+- Wiki 검증 기준점 갱신 순서를 관련 테스트, validator, 승인 범위 확인, 기준점 갱신으로 통일했습니다.
+- 안정적인 개념만 topic에 남기고 실행 세부사항은 canonical 문서로 연결했으며, architecture의 삭제 경로와 회고 이력 설명을 제거했습니다.
