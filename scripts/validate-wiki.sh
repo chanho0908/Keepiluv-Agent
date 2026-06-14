@@ -147,7 +147,7 @@ begin
   raise "is not valid UTF-8" unless content.valid_encoding?
   match = content.match(/\A---\r?\n(.*?)\r?\n---(?:\r?\n|\z)/m)
   raise "must start with closed YAML frontmatter" unless match
-  data = YAML.safe_load(match[1], [Date], [], false)
+  data = YAML.safe_load(match[1], permitted_classes: [Date], aliases: false)
   raise "frontmatter must be a YAML mapping" unless data.is_a?(Hash)
 
   status = data["status"]
