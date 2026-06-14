@@ -20,20 +20,18 @@ authority: canonical
 `sources`는 Obsidian Properties에서 배열로 인식되는 인용 문자열 목록으로 기록합니다.
 
 - `repo:` 형식은 현재 Vault가 속한 `chanho0908/Keepiluv-Agent` 저장소 내부 원본에만 사용합니다.
-- 원본 Android 저장소에서 병합된 PR은 `pr:PR-URL|merge:40자리-SHA|checked:YYYY-MM-DD` 형식으로 기록합니다.
 - Twix처럼 다른 저장소의 원본은 GitHub commit SHA가 포함된 고정 permalink를 `url:https://주소|checked:YYYY-MM-DD` 형식으로 기록합니다.
 - `main`, 다른 브랜치명, `HEAD`가 들어간 움직이는 GitHub URL은 출처로 사용하지 않습니다.
 
 ```yaml
 sources:
   - "repo:chanho0908/Keepiluv-Agent@de9f870146845f8fffa917f7c2c794bf70edb124:AGENTS.md"
-  - "pr:https://github.com/Keepiluv/Keepiluv-Android/pull/165|merge:2b74cd4d61e3a78360e83128968a8a8dc78760e8|checked:2026-06-14"
   - "url:https://github.com/chanho0908/Twix/blob/0123456789abcdef0123456789abcdef01234567/path/to/source.kt|checked:2026-06-12"
 ```
 
-내부 저장소 출처의 커밋에는 해당 경로가 실제로 존재해야 합니다. PR 출처는 병합된 PR만 사용하며 실제 병합 커밋 SHA를 고정합니다. 외부 GitHub permalink는 `/blob/` 다음에 40자리 commit SHA가 있어야 하며, 해당 SHA와 경로를 확인한 날짜를 함께 기록합니다. 아직 커밋되지 않은 생성 문서는 자기 자신을 출처로 기록하지 않고, 생성 사실을 본문이나 [Wiki Log](../log.md)에 설명합니다. 중요한 결론은 본문에서도 Vault 안의 원본 문서로 연결합니다.
+내부 저장소 출처의 커밋에는 해당 경로가 실제로 존재해야 합니다. 외부 GitHub permalink는 `/blob/` 다음에 40자리 commit SHA가 있어야 하며, 해당 SHA와 경로를 확인한 날짜를 함께 기록합니다. 아직 커밋되지 않은 생성 문서는 자기 자신을 출처로 기록하지 않고, 생성 사실을 본문이나 [Wiki Log](../log.md)에 설명합니다. 중요한 결론은 본문에서도 Vault 안의 원본 문서로 연결합니다.
 
-PR 제목과 설명만으로 정책을 확정하지 않습니다. 병합된 코드, 테스트, 리뷰 결론과 기존 canonical Wiki를 함께 비교합니다. 미병합 또는 닫힌 PR은 변경 예정이나 논의 자료로만 취급하며 공식 지식의 근거로 사용하지 않습니다.
+원본 작업의 PR 번호는 Wiki 출처로 기록하지 않습니다. 작업을 수행한 AI가 코드, 테스트, 기존 canonical 문서와 승인된 사용자 요구사항을 직접 확인해 지식 변경을 판단합니다. 외부 코드 위치를 장기 보존해야 할 때만 commit SHA로 고정된 파일 permalink를 사용합니다.
 
 다음처럼 시간이 지나면 내용이 바뀔 수 있는 URL은 금지합니다.
 

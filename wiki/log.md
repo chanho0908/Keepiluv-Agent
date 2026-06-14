@@ -28,7 +28,7 @@ authority: canonical
 
 ## 2026-06-14
 
-- `Keepiluv/Keepiluv-Android`의 `develop` 병합 PR을 Wiki 변경 근거로 사용하는 규칙을 추가했습니다.
-- PR URL, 병합 커밋과 확인일을 함께 기록하는 `pr:` 출처 형식을 도입했습니다.
-- 병합 PR을 정기 또는 수동으로 확인하고 Codex가 Wiki 수정 Draft PR을 만드는 GitHub Actions를 추가했습니다.
-- Codex 실행 작업과 저장소 쓰기 작업을 분리하고 모든 외부 Action을 커밋 SHA로 고정했습니다.
+- 작업을 수행한 Agent가 구현 종료 시 장기 지식 변경 여부를 판단하도록 운영 흐름을 정리했습니다.
+- 도메인 정책 변경, 반복 지식, Wiki와 코드의 불일치가 있으면 같은 작업에서 Wiki를 갱신하도록 했습니다.
+- 원본 작업 PR 번호를 Wiki 출처로 기록하지 않는 원칙을 명시했습니다.
+- 외부 LLM API 자동화를 제거하고 GitHub Actions는 Wiki 검증만 담당하도록 변경했습니다.

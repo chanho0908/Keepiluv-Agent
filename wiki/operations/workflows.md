@@ -201,6 +201,7 @@ tester의 구체적인 테스트 작성과 검증 절차는 `.agents/skills/test
 | `planner` | `tester` | 테스트 파일 후보, 기대 동작/실패 조건, 실행 명령, Mock/Fake 기준 |
 | `planner` | `implementer` | 레이어별 변경 범위, 구현 순서, strings/DI/navigation/build 변경, 충돌 위험 |
 | `tester` | `implementer` | 작성/수정 테스트 파일, 현재 실패 이유, 통과 조건, 최소 구현 메모 |
+| `implementer` | `wiki-maintainer` | 장기 지식으로 판단한 내용, 확인한 코드·테스트, 기존 Wiki와 달라진 점 |
 
 ## 운영 메모
 
@@ -209,6 +210,7 @@ tester의 구체적인 테스트 작성과 검증 절차는 `.agents/skills/test
 - 기본 원칙은 테스트 선행이지만, 테스트 작성이 구조적으로 어렵다면 예외적으로 후행 보강을 허용한다
 - 모든 handoff와 산출물은 `wiki/reference/domain-glossary.md`의 공식 용어를 사용한다
 - 코드 표현의 의미가 문맥별로 다르면 용어집의 모듈별 매핑을 확인하고, 정의되지 않은 의미는 사용자에게 확인한다
+- implementer는 구현과 검증을 마친 뒤 장기 지식 변경 여부를 판단하고, 필요한 경우 같은 작업에서 `wiki-maintainer`로 넘긴다
 
 ## 참고 문서
 
@@ -225,11 +227,12 @@ tester의 구체적인 테스트 작성과 검증 절차는 `.agents/skills/test
 
 `wiki-maintainer`
 
-1. `./scripts/wiki-status.sh`로 변경을 탐지한다.
-2. 관련 canonical 문서와 `source_paths`로 연결된 종합 문서를 비교한다.
-3. 변경안을 사용자에게 제시한다.
-4. 승인 후 Wiki, Index, Log를 갱신한다.
-5. `./scripts/wiki-status.sh --accept --approved`로 승인된 기준 상태를 기록한다.
-6. Wiki 관련 테스트와 검사를 실행한다.
+1. 본작업 Agent가 구현과 검증 후 장기 지식 변경 여부를 판단한다.
+2. 도메인 정책, 반복 지식, Wiki와 코드의 불일치, 재사용할 운영 규칙만 전달한다.
+3. 관련 canonical 문서와 `source_paths`로 연결된 종합 문서를 비교한다.
+4. 승인된 본작업 범위 안에서 Wiki, Index와 Log를 함께 갱신한다.
+5. 원본 작업 PR 번호는 Wiki 출처로 기록하지 않는다.
+6. `./scripts/wiki-status.sh --accept --approved`로 승인된 기준 상태를 기록한다.
+7. Wiki 관련 테스트와 검사를 실행한다.
 
-승인 전에는 Wiki 의미와 Manifest를 변경하지 않는다.
+커밋과 PR은 기존 승인 절차를 그대로 따른다.

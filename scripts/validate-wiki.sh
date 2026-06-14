@@ -194,18 +194,6 @@ begin
       else
         result("FAIL", "#{label} source does not exist at #{commit}:#{path}")
       end
-    elsif (pr_match = source.match(/\Apr:(https:\/\/github\.com\/([A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+)\/pull\/([1-9][0-9]*))\|merge:([0-9a-f]{40})\|checked:(\d{4}-\d{2}-\d{2})\z/))
-      source_url, repository, number, merge_commit, checked = pr_match.captures
-      begin
-        valid_checked = Date.iso8601(checked).strftime("%Y-%m-%d") == checked
-      rescue Date::Error
-        valid_checked = false
-      end
-      result(valid_checked ? "PASS" : "FAIL", "#{label} PR source checked date must be real: #{source}")
-      result(source_url == "https://github.com/#{repository}/pull/#{number}" ? "PASS" : "FAIL",
-             "#{label} PR source must use a canonical GitHub pull URL: #{source}")
-      result(merge_commit.match?(/\A[0-9a-f]{40}\z/) ? "PASS" : "FAIL",
-             "#{label} PR source must pin a 40-character merge commit: #{source}")
     elsif (url_match = source.match(/\Aurl:(https?:\/\/[^|\s]+)\|checked:(\d{4}-\d{2}-\d{2})\z/))
       source_url = url_match[1]
       checked = url_match[2]
@@ -229,7 +217,7 @@ begin
         result("FAIL", "#{label} URL source is invalid: #{source}")
       end
     else
-      result("FAIL", "#{label} source must use current-origin repo, merged PR, or url format: #{source}")
+      result("FAIL", "#{label} source must use current-origin repo or url format: #{source}")
     end
   end
 
