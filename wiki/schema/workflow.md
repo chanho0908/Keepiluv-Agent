@@ -1,7 +1,5 @@
 ---
 status: active
-sources:
-- repo:chanho0908/Keepiluv-Agent@de9f870146845f8fffa917f7c2c794bf70edb124:AGENTS.md
 last_verified: 2026-06-14
 tags:
 - wiki
@@ -14,14 +12,14 @@ authority: canonical
 ## Ingest
 
 1. 사람은 자료의 가치, 공개 가능 여부, 민감정보 포함 여부를 확인합니다.
-2. Codex는 Keepiluv-Agent 내부 원본을 `repo:chanho0908/Keepiluv-Agent@40자리-커밋:path`로 기록합니다. 외부 원본은 필요한 경우에만 commit SHA가 포함된 GitHub 고정 permalink로 기록합니다. 원본 작업의 PR 번호는 출처로 기록하지 않습니다.
+2. Codex는 외부 원본이 결론의 재확인에 필요할 때만 확인일이 포함된 URL을 기록합니다. 외부 GitHub 코드는 commit SHA가 포함된 고정 permalink를 사용하고, 원본 작업의 PR 번호는 출처로 기록하지 않습니다.
 3. Codex는 [Wiki Index](../index.md)에서 기존 topic을 찾아 새 사실을 연결하거나 새 topic 초안을 만듭니다.
 4. Codex는 원문 복사보다 결론, 관계, 적용 맥락을 종합하고 변경 후보를 보여줍니다.
 5. 사람이 의미와 출처를 승인한 뒤에만 Wiki 쓰기를 확정합니다.
 
 파일럿에서는 한 번에 원본 하나를 처리합니다. 의미가 달라지는 모든 변경은 사람의 승인이 필요합니다.
 
-내부 저장소 출처는 해당 커밋에서 경로가 실제로 존재하는지 확인합니다. 외부 저장소에 `repo:` 형식을 사용하거나 `main`, 브랜치명, `HEAD` 기반 URL을 출처로 사용하지 않습니다. 새로 생성해 아직 커밋되지 않은 Wiki 문서는 자기 자신을 출처로 삼지 않고 생성 사실을 본문과 log에 기록합니다.
+`sources`는 외부 근거가 필요할 때만 사용합니다. `main`, 브랜치명, `HEAD` 기반 GitHub URL은 출처로 사용하지 않습니다. 새 Wiki 문서는 자기 자신이나 과거 위치를 출처로 삼지 않고 생성 사실을 본문과 log에 기록합니다.
 
 ## Query
 

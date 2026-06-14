@@ -1,7 +1,5 @@
 ---
 status: active
-sources:
-- repo:chanho0908/Keepiluv-Agent@de9f870146845f8fffa917f7c2c794bf70edb124:AGENTS.md
 last_verified: 2026-06-14
 tags:
 - wiki
@@ -11,7 +9,7 @@ authority: canonical
 
 # Wiki Log
 
-이 문서는 Wiki에서 수행한 작업을 기록하기 위해 2026-06-12 파일럿에서 생성했습니다. 출처는 작업 기록 자체가 아니라 승인과 운영 원칙의 근거를 가리킵니다.
+이 문서는 Wiki에서 수행한 작업을 기록하기 위해 2026-06-12 파일럿에서 생성했습니다.
 
 ## 2026-06-12
 
@@ -32,3 +30,5 @@ authority: canonical
 - 도메인 정책 변경, 반복 지식, Wiki와 코드의 불일치가 있으면 같은 작업에서 Wiki를 갱신하도록 했습니다.
 - 원본 작업 PR 번호를 Wiki 출처로 기록하지 않는 원칙을 명시했습니다.
 - 외부 LLM API 자동화를 제거하고 GitHub Actions는 Wiki 검증만 담당하도록 변경했습니다.
+- 과거 지식 저장소에서 이전했다는 표시를 Wiki의 `sources`에서 제거했습니다.
+- `sources`는 실제 외부 근거가 있을 때만 기록하는 선택 항목으로 변경했습니다.

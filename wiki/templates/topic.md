@@ -1,8 +1,6 @@
 ---
 status: draft
-sources:
-- repo:chanho0908/Keepiluv-Agent@de9f870146845f8fffa917f7c2c794bf70edb124:AGENTS.md
-last_verified: 2026-06-12
+last_verified: 2026-06-14
 tags:
 - topic
 authority: canonical
@@ -10,7 +8,7 @@ authority: canonical
 
 # Topic 제목
 
-새 종합 문서를 만들 때 `authority`를 `synthesized`로 바꾸고 `source_paths`를 추가합니다. `sources`와 `last_verified`도 실제 값으로 교체합니다. 인용 문자열 형식은 [출처 정책](../schema/source-policy.md)을 따릅니다.
+새 종합 문서를 만들 때 `authority`를 `synthesized`로 바꾸고 `source_paths`를 추가합니다. `last_verified`를 실제 확인일로 바꾸고, 외부 근거가 있을 때만 [출처 정책](../schema/source-policy.md)에 맞는 `sources`를 추가합니다.
 
 ```yaml
 authority: synthesized

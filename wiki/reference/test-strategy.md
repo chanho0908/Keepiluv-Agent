@@ -2,9 +2,7 @@
 name: test-strategy
 description: Keepiluv (Twix) 리스크 기반 테스트 포트폴리오와 테스트 레벨 선택 기준
 status: active
-sources:
-- repo:chanho0908/Keepiluv-Agent@14c17aa834575a9422d5e4b33c1191285c575e02:.codex/docs/test-strategy.md
-last_verified: 2026-06-13
+last_verified: 2026-06-14
 tags:
 - wiki
 - reference

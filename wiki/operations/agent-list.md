@@ -2,9 +2,7 @@
 name: agent-list
 description: 모든 Agent의 파일 위치와 역할 요약
 status: active
-sources:
-- repo:chanho0908/Keepiluv-Agent@14c17aa834575a9422d5e4b33c1191285c575e02:.codex/docs/agent-list.md
-last_verified: 2026-06-13
+last_verified: 2026-06-14
 tags:
 - wiki
 - operations

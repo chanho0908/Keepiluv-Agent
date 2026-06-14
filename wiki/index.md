@@ -1,8 +1,6 @@
 ---
 status: active
-sources:
-- repo:chanho0908/Keepiluv-Agent@de9f870146845f8fffa917f7c2c794bf70edb124:AGENTS.md
-last_verified: 2026-06-12
+last_verified: 2026-06-14
 tags:
 - wiki
 - index

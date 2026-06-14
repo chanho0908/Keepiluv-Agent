@@ -2,10 +2,7 @@
 name: architecture
 description: MVI + Clean Architecture 핵심 원칙 요약
 status: active
-sources:
-- repo:chanho0908/Keepiluv-Agent@14c17aa834575a9422d5e4b33c1191285c575e02:.codex/docs/architecture.md
-- repo:chanho0908/Keepiluv-Agent@de9f870146845f8fffa917f7c2c794bf70edb124:.codex/diary/2026-05-15-loading-error-ui-collaboration-retrospective.md
-last_verified: 2026-06-13
+last_verified: 2026-06-14
 tags:
 - wiki
 - reference
@@ -92,7 +89,7 @@ authority: canonical
 
 - `.codex/diary/2026-05-15-loading-error-ui-collaboration-retrospective.md`
 
-삭제된 topic 자체는 커밋된 원본이 아니므로 `sources`에 넣지 않았습니다. `sources`에는 Git에서 확인 가능한 기존 문서와 회고의 커밋·경로만 보존합니다.
+삭제된 topic의 내용은 이 canonical 문서에 통합했습니다. Wiki 내부 문서의 이동 이력은 `sources`에 남기지 않습니다.
 
 ## 참고 문서
 

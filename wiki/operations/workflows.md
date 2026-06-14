@@ -2,9 +2,7 @@
 name: workflows
 description: 자주 쓰는 agent 조합 워크플로우 요약
 status: active
-sources:
-- repo:chanho0908/Keepiluv-Agent@14c17aa834575a9422d5e4b33c1191285c575e02:.codex/docs/workflows.md
-last_verified: 2026-06-13
+last_verified: 2026-06-14
 tags:
 - wiki
 - operations

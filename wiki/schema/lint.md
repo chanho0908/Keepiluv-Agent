@@ -1,8 +1,6 @@
 ---
 status: active
-sources:
-- repo:chanho0908/Keepiluv-Agent@de9f870146845f8fffa917f7c2c794bf70edb124:AGENTS.md
-last_verified: 2026-06-12
+last_verified: 2026-06-14
 tags:
 - wiki
 - lint
@@ -16,8 +14,8 @@ authority: canonical
 ## 필수 검사
 
 - 필수 디렉터리와 운영 문서가 존재하는지 확인합니다.
-- 각 topic에 `status`, `sources`, `last_verified`, `tags`가 있는지 확인합니다.
-- 출처가 인용 문자열 목록이며 저장소·경로·커밋 또는 URL·확인일로 추적되는지 확인합니다.
+- 각 문서에 `status`, `last_verified`, `tags`, `authority`가 있는지 확인합니다.
+- 선택 항목인 `sources`가 있으면 비어 있지 않은 인용 문자열 목록이며 고정된 근거로 추적되는지 확인합니다.
 - 표준 Markdown 링크가 깨지지 않았는지 확인합니다.
 - 출처 없는 주장, 서로 충돌하는 주장, 오래된 출처를 찾습니다.
 - Index에서 연결되지 않은 고아 페이지와 폐기된 페이지를 가리키는 링크를 찾습니다.
