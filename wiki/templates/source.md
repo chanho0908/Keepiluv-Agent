@@ -20,14 +20,12 @@ sources:
   # Twix 같은 외부 저장소의 commit 고정 permalink
   - "url:https://github.com/chanho0908/Twix/blob/0123456789abcdef0123456789abcdef01234567/path/to/source.kt|checked:2026-06-12"
 
-  # 원본 Android 저장소에서 develop에 병합된 PR
-  - "pr:https://github.com/Keepiluv/Keepiluv-Android/pull/165|merge:2b74cd4d61e3a78360e83128968a8a8dc78760e8|checked:2026-06-14"
 last_verified: 2026-06-12
 authority: canonical
 ```
 
 외부 GitHub URL의 `/blob/` 다음 값은 실제 40자리 commit SHA여야 합니다. `main`, 브랜치명, `HEAD` URL은 사용하지 않습니다.
-PR 출처는 `develop`에 실제로 병합된 PR과 그 병합 커밋을 함께 기록합니다.
+원본 작업의 PR 번호는 Wiki 출처로 기록하지 않습니다.
 
 ## 등록 이유
 

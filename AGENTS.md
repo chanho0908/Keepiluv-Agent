@@ -115,9 +115,16 @@ This file provides guidance to Codex (Codex.ai/code) when working with code in t
 - `wiki/index.md`는 프로젝트 공식 지식의 유일한 시작점입니다.
 - 프로젝트 사실과 운영 정책은 `wiki/reference`, `wiki/operations`, `wiki/schema`에서 관리합니다.
 - 모든 Agent는 Wiki에서 관련 canonical 문서를 먼저 찾고 실제 코드와 행동 규칙으로 재검증합니다.
-- Wiki 의미 변경과 상태 기준 확정은 사용자 승인 후 `wiki-maintainer`가 수행합니다.
+- Wiki 의미 변경과 상태 기준 확정은 승인된 본작업 범위 안에서 `wiki-maintainer`가 수행합니다.
 
-### 9. 사용자 설명 기준
+### 9. 작업 종료 시 지식 동기화
+
+- 구현 Agent는 작업과 검증을 마친 뒤 도메인 정책 변경, 반복 지식, Wiki와 코드의 불일치, 재사용할 운영 규칙이 생겼는지 판단합니다.
+- 장기 지식이 생겼다면 같은 작업에서 `wiki-maintainer`로 넘겨 Wiki를 함께 갱신합니다.
+- 원본 작업 PR 번호는 Wiki 출처로 기록하지 않습니다.
+- 일회성 구현 세부사항과 정책을 바꾸지 않는 단순 수정은 Wiki에 축적하지 않습니다.
+
+### 10. 사용자 설명 기준
 
 - 사용자에게 설명할 때는 비개발자도 이해할 수 있는 쉬운 한국어를 사용합니다.
 - 전문 용어가 필요하면 먼저 쉬운 말로 설명한 뒤 괄호 안에 전문 용어를 함께 적습니다.

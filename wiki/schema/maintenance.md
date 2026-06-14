@@ -11,21 +11,27 @@ authority: canonical
 
 # Wiki 자동 유지보수
 
-`wiki/`는 프로젝트의 유일한 공식 지식 베이스입니다. `wiki-maintainer`는 이 저장소의 공식 문서와 행동 규칙뿐 아니라 `Keepiluv/Keepiluv-Android`의 병합 PR을 확인해 관련 문서의 갱신안을 제안합니다.
+`wiki/`는 프로젝트의 유일한 공식 지식 베이스입니다. 작업을 수행한 Agent는 구현과 검증 과정에서 장기 지식이 생겼는지 판단하고, 필요한 경우 `wiki-maintainer`를 통해 같은 작업에서 Wiki를 함께 갱신합니다.
 
-## 원본 Android PR 연동
+## 자동 판단 기준
 
-GitHub Actions의 `Android PR Wiki Maintenance`가 다음 방식으로 실행됩니다.
+다음 중 하나에 해당하면 Wiki 갱신 대상으로 봅니다.
 
-- 매일 최근 이틀 동안 `develop`에 병합된 PR을 확인합니다.
-- 원본 저장소에서 `android-pr-merged` repository dispatch를 보내면 해당 PR을 즉시 확인합니다.
-- GitHub Actions 화면에서 PR 번호를 입력해 수동 실행할 수도 있습니다.
+- 도메인 정책이나 사용자 흐름의 의미가 변경됨
+- 여러 작업에서 반복되는 설명이나 판단 기준이 확인됨
+- 기존 Wiki가 실제 코드와 달라졌거나 빠진 내용을 발견함
+- 다음 작업부터 Agent나 Skill이 따라야 할 운영 규칙이 생김
 
-수집기는 PR 번호, 설명, 변경 파일, 병합일과 병합 커밋을 검증하고 `./scripts/android-pr-evidence.sh`로 근거 자료를 만듭니다. 미병합 PR, `develop` 외 대상 브랜치, 다른 저장소의 PR은 거부됩니다.
+일회성 구현 세부사항, 단순 UI 조정, 기존 정책을 바꾸지 않는 버그 수정은 축적하지 않습니다.
 
-Codex가 수정한 내용은 전용 `bot/wiki-maintenance-*` 브랜치의 Draft PR로만 올라갑니다. Codex 실행 작업에는 저장소 읽기 권한만 주고, API 키가 없는 별도 작업만 패치를 적용하고 Draft PR을 생성합니다.
+## 동기화 방식
 
-자동화를 사용하려면 Keepiluv-Agent 저장소의 Actions secret에 `OPENAI_API_KEY`를 등록해야 합니다. 키는 저장소 파일, PR 본문, 작업 로그에 기록하지 않습니다.
+1. 본작업 Agent가 구현과 검증을 완료합니다.
+2. 장기 지식 변경 여부를 판단합니다.
+3. 필요하면 `wiki-maintainer`가 작업 중 확인한 코드, 테스트, 기존 canonical 문서와 승인된 사용자 요구사항을 비교합니다.
+4. 승인된 본작업 범위 안에서 Wiki, Index와 Log를 함께 갱신합니다.
+5. 원본 작업 PR 번호는 Wiki 출처로 기록하지 않습니다.
+6. 외부 코드 위치를 장기 보존해야 할 때만 commit SHA가 고정된 파일 permalink를 사용합니다.
 
 ## 상태 확인
 
@@ -39,8 +45,8 @@ Codex가 수정한 내용은 전용 `bot/wiki-maintenance-*` 브랜치의 Draft 
 
 1. 상태 보고서와 영향을 받는 문서를 읽습니다.
 2. 공식 문서, 종합 문서, 실제 코드의 차이를 확인합니다.
-3. 수정, 신규 작성, 폐기 후보와 근거를 사용자에게 제시합니다.
-4. 사용자 승인 후에만 문서의 의미를 변경합니다.
+3. 수정, 신규 작성, 폐기 범위와 근거를 판단합니다.
+4. 승인된 본작업 범위 안에서 문서를 함께 변경합니다.
 5. Index와 Log를 함께 갱신합니다.
 6. 변경이 승인된 상태를 Manifest에 기록합니다.
 
@@ -60,14 +66,15 @@ Codex가 수정한 내용은 전용 `bot/wiki-maintenance-*` 브랜치의 Draft 
 - `AGENTS.md`
 - `.codex/agents/**/*.md`
 - `.agents/skills/**/*.md`, `.agents/skills/**/*.yaml`
-- `.github/codex/**/*.md`
 - `.github/workflows/**/*.yml`, `.github/workflows/**/*.yaml`
 
 `wiki/log.md`와 `wiki/state/`는 상태 비교에서 제외합니다. Manifest는 `path`와 `sha256`만 경로순으로 저장하며 실행 시각은 기록하지 않습니다.
 
 ## 승인과 버전 기록
 
-- 자동화가 만드는 Draft PR은 수정 근거인 Android PR 목록을 포함합니다.
-- canonical 문서와 Agent 행동 규칙은 사람이 내용을 확인한 뒤 병합합니다.
+- Wiki 수정은 본작업 변경과 함께 검토합니다.
+- canonical 문서와 Agent 행동 규칙은 커밋과 PR 승인 절차를 거쳐 병합합니다.
 - 병합된 Wiki PR과 Git 커밋이 공식 버전 이력입니다.
 - `wiki/log.md`는 사람이 읽기 쉬운 변경 요약이며 Git 이력을 대체하지 않습니다.
+
+GitHub Actions의 `Wiki Validation`은 LLM을 호출하지 않습니다. PR이나 수동 실행에서 Wiki 형식, 출처, 링크, Manifest와 마이그레이션 상태만 검사합니다.

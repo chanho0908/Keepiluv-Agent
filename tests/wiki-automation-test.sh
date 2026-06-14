@@ -3,8 +3,9 @@
 set -u
 
 ROOT_DIR=$(CDPATH= cd -- "$(dirname "$0")/.." && pwd)
-WORKFLOW="$ROOT_DIR/.github/workflows/android-pr-wiki-maintenance.yml"
-PROMPT="$ROOT_DIR/.github/codex/prompts/maintain-wiki-from-android-pr.md"
+WORKFLOW="$ROOT_DIR/.github/workflows/wiki-validation.yml"
+IMPLEMENTER="$ROOT_DIR/.codex/agents/tier2/implementer.md"
+MAINTAINER="$ROOT_DIR/.agents/skills/wiki-maintainer/SKILL.md"
 failures=0
 
 pass() { printf 'PASS: %s\n' "$1"; }
@@ -21,19 +22,39 @@ require_text() {
   fi
 }
 
-require_text "$WORKFLOW" 'workflow_dispatch:' "workflow supports manual runs"
-require_text "$WORKFLOW" 'repository_dispatch:' "workflow supports source repository events"
-require_text "$WORKFLOW" 'schedule:' "workflow scans for missed merged PRs"
-require_text "$WORKFLOW" 'contents: read' "Codex job starts with read-only repository token"
-require_text "$WORKFLOW" 'openai/codex-action@e0fdf01220eb9a88167c4898839d273e3f2609d1' "Codex action is pinned to a commit"
-require_text "$WORKFLOW" 'openai-api-key: ${{ secrets.OPENAI_API_KEY }}' "OpenAI key is passed only to Codex action"
-require_text "$WORKFLOW" 'pull-requests: write' "PR creation job has explicit pull request permission"
-require_text "$WORKFLOW" 'gh pr create --draft' "automation opens a Draft PR"
-require_text "$WORKFLOW" './tests/android-pr-evidence-test.sh' "automation verifies PR evidence behavior"
-require_text "$WORKFLOW" './scripts/validate-wiki.sh' "automation validates Wiki changes"
-require_text "$PROMPT" '미병합 PR' "prompt forbids unmerged PR evidence"
-require_text "$PROMPT" '직접 병합' "prompt forbids direct merge"
-require_text "$PROMPT" '신뢰되지 않은 입력' "prompt treats PR text as untrusted"
+for removed in \
+  "$ROOT_DIR/.github/workflows/android-pr-wiki-maintenance.yml" \
+  "$ROOT_DIR/.github/codex/prompts/maintain-wiki-from-android-pr.md" \
+  "$ROOT_DIR/scripts/android-pr-evidence.sh" \
+  "$ROOT_DIR/scripts/android_pr_evidence.rb" \
+  "$ROOT_DIR/tests/android-pr-evidence-test.sh"; do
+  if [ ! -e "$removed" ]; then
+    pass "obsolete Android PR automation is removed: ${removed#"$ROOT_DIR/"}"
+  else
+    fail "obsolete Android PR automation must be removed: ${removed#"$ROOT_DIR/"}"
+  fi
+done
+
+require_text "$WORKFLOW" 'pull_request:' "Wiki validation runs for pull requests"
+require_text "$WORKFLOW" 'workflow_dispatch:' "Wiki validation supports manual runs"
+require_text "$WORKFLOW" 'contents: read' "Wiki validation uses read-only repository permission"
+require_text "$WORKFLOW" 'fetch-depth: 0' "Wiki validation fetches migration baseline history"
+require_text "$WORKFLOW" './tests/wiki-migration-test.sh' "workflow verifies Wiki migration"
+require_text "$WORKFLOW" './tests/wiki-status-test.sh' "workflow verifies Wiki status"
+require_text "$WORKFLOW" './tests/wiki-validator-test.sh' "workflow verifies Wiki rules"
+require_text "$WORKFLOW" './scripts/validate-wiki.sh' "workflow runs the Wiki validator"
+require_text "$IMPLEMENTER" '장기 지식' "implementer evaluates durable knowledge"
+require_text "$IMPLEMENTER" 'wiki-maintainer' "implementer hands durable knowledge to wiki-maintainer"
+require_text "$MAINTAINER" '작업 중 확인한 코드' "wiki maintainer uses current work evidence"
+require_text "$MAINTAINER" 'PR 번호' "wiki maintainer explicitly excludes PR numbers from Wiki sources"
+
+if rg -n 'OPENAI_API_KEY|openai/codex-action|api\.deepseek\.com|repository_dispatch|pr:PR-URL' \
+  "$ROOT_DIR/.github" "$ROOT_DIR/wiki" "$ROOT_DIR/.agents/skills/wiki-maintainer" "$ROOT_DIR/.codex/agents/tier2/wiki-maintainer.md" \
+  >/dev/null 2>&1; then
+  fail "Wiki maintenance configuration must not require an external LLM API or PR evidence source"
+else
+  pass "Wiki maintenance configuration requires no external LLM API or PR evidence source"
+fi
 
 if [ -f "$WORKFLOW" ]; then
   unpinned=$(grep -E '^[[:space:]]*uses:' "$WORKFLOW" | grep -Ev '@[0-9a-f]{40}([[:space:]]|$)' || true)

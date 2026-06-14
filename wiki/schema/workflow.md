@@ -14,7 +14,7 @@ authority: canonical
 ## Ingest
 
 1. 사람은 자료의 가치, 공개 가능 여부, 민감정보 포함 여부를 확인합니다.
-2. Codex는 Keepiluv-Agent 내부 원본을 `repo:chanho0908/Keepiluv-Agent@40자리-커밋:path`로 기록합니다. 원본 Android 저장소의 병합 PR은 `pr:PR-URL|merge:40자리-SHA|checked:YYYY-MM-DD`, 그 밖의 외부 원본은 commit SHA가 포함된 GitHub 고정 permalink로 기록합니다.
+2. Codex는 Keepiluv-Agent 내부 원본을 `repo:chanho0908/Keepiluv-Agent@40자리-커밋:path`로 기록합니다. 외부 원본은 필요한 경우에만 commit SHA가 포함된 GitHub 고정 permalink로 기록합니다. 원본 작업의 PR 번호는 출처로 기록하지 않습니다.
 3. Codex는 [Wiki Index](../index.md)에서 기존 topic을 찾아 새 사실을 연결하거나 새 topic 초안을 만듭니다.
 4. Codex는 원문 복사보다 결론, 관계, 적용 맥락을 종합하고 변경 후보를 보여줍니다.
 5. 사람이 의미와 출처를 승인한 뒤에만 Wiki 쓰기를 확정합니다.
@@ -40,13 +40,12 @@ authority: canonical
 
 ## 자동 유지보수
 
-1. `Keepiluv/Keepiluv-Android`의 `develop` 브랜치에 병합된 PR과 `./scripts/wiki-status.sh`의 내부 변경을 읽기 전용으로 확인합니다.
-2. 원본 PR의 설명, 병합 커밋, 변경 파일과 테스트를 기존 canonical Wiki와 비교합니다.
-3. `IMPACT`로 표시된 종합 문서와 변경 원본을 비교합니다.
-4. `wiki-maintainer`가 수정, 신규 작성, 폐기 후보를 Draft PR로 제시합니다.
-5. 사람이 의미를 승인한 뒤에만 canonical Wiki 변경을 병합합니다.
-6. validator 통과 후 승인된 변경을 `./scripts/wiki-status.sh --accept --approved`로 Manifest에 기록합니다.
-7. [자동 유지보수 규칙](maintenance.md)과 [검사 기준](lint.md)에 따라 검증합니다.
+1. 작업을 수행한 Agent가 구현과 검증을 마친 뒤 장기 지식 변경 여부를 판단합니다.
+2. 도메인 정책 변경, 반복되는 지식, Wiki와 코드의 불일치 또는 재사용할 운영 규칙이 있으면 `wiki-maintainer`로 넘깁니다.
+3. `wiki-maintainer`는 작업 중 확인한 코드, 테스트, 기존 canonical 문서와 승인된 사용자 요구사항을 비교합니다.
+4. 승인된 본작업 범위 안에서 Wiki, Index와 Log를 함께 갱신합니다.
+5. validator 통과 후 승인된 변경을 `./scripts/wiki-status.sh --accept --approved`로 Manifest에 기록합니다.
+6. GitHub Actions는 LLM을 호출하지 않고 [검사 기준](lint.md)에 따라 Wiki 형식과 연결만 검증합니다.
 
 ## 역할과 승인 게이트
 
