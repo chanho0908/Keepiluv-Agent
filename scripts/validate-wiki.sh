@@ -96,29 +96,10 @@ find_legacy_references() {
           ;;
       esac
       LC_ALL=C grep -Iq . "$candidate" 2>/dev/null || continue
-      allowed_legacy=''
-      case "$relative" in
-        wiki/reference/project-overview.md) allowed_legacy='.codex/docs/project-overview.md' ;;
-        wiki/reference/architecture.md) allowed_legacy='.codex/docs/architecture.md' ;;
-        wiki/reference/module-hierarchy.md) allowed_legacy='.codex/docs/hierarchy.md' ;;
-        wiki/reference/domain-glossary.md) allowed_legacy='.codex/docs/domain-glossary.md' ;;
-        wiki/reference/test-strategy.md) allowed_legacy='.codex/docs/test-strategy.md' ;;
-        wiki/operations/routing-rules.md) allowed_legacy='.codex/docs/routing-rules.md' ;;
-        wiki/operations/workflows.md) allowed_legacy='.codex/docs/workflows.md' ;;
-        wiki/operations/agent-list.md) allowed_legacy='.codex/docs/agent-list.md' ;;
-      esac
       grep -nF '.codex/docs' "$candidate" 2>/dev/null | while IFS= read -r match; do
-        if [ -n "$allowed_legacy" ] && printf '%s\n' "$match" | grep -Eq "repo:[^[:space:]]+@[0-9a-fA-F]{40}:${allowed_legacy}\"?$"; then
-          continue
-        fi
         printf '%s:%s\n' "$relative" "$match"
       done
     done
-}
-
-current_repository_slug() {
-  remote_url=$(git -C "$ROOT_DIR" remote get-url origin 2>/dev/null || true)
-  printf '%s\n' "$remote_url" | sed -E 's#^git@github\.com:##; s#^https://github\.com/##; s#\.git$##'
 }
 
 validate_frontmatter() {
@@ -128,15 +109,13 @@ validate_frontmatter() {
     fail "$label frontmatter could not be parsed because Ruby is unavailable"
     return
   fi
-  current_repository=$(current_repository_slug)
-  yaml_results=$(ROOT_DIR="$ROOT_DIR" CURRENT_REPOSITORY="$current_repository" ruby - "$file" "$label" <<'RUBY'
+  yaml_results=$(ROOT_DIR="$ROOT_DIR" ruby - "$file" "$label" <<'RUBY'
 require "yaml"
 require "date"
 require "uri"
 
 file, label = ARGV
 root = ENV.fetch("ROOT_DIR")
-current_repository = ENV.fetch("CURRENT_REPOSITORY")
 
 def result(kind, message)
   puts "#{kind}:#{message}"
@@ -171,30 +150,12 @@ begin
   result(valid_date ? "PASS" : "FAIL", "#{label} last_verified must be a real YYYY-MM-DD date")
 
   sources = data["sources"]
-  valid_sources = sources.is_a?(Array) && !sources.empty? && sources.all? { |source| source.is_a?(String) && !source.empty? }
-  unless valid_sources
-    result("FAIL", "#{label} sources must be a non-empty string list")
-    exit
-  end
-  result("PASS", "#{label} sources is a non-empty string list")
+  valid_sources = sources.nil? || (sources.is_a?(Array) && !sources.empty? && sources.all? { |source| source.is_a?(String) && !source.empty? })
+  result(valid_sources ? "PASS" : "FAIL",
+         "#{label} sources must be omitted or a non-empty string list")
 
-  sources.each do |source|
-    if (repo_match = source.match(/\Arepo:([A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+)@([0-9a-fA-F]{40}):(.+)\z/))
-      repository, commit, path = repo_match.captures
-      if repository != current_repository
-        result("FAIL", "#{label} external repo source is forbidden; use a commit permalink URL with checked date: #{source}")
-        next
-      end
-      if path.start_with?("/") || path.split("/").include?("..")
-        result("FAIL", "#{label} repo source path must stay inside the repository: #{path}")
-        next
-      end
-      if system("git", "-C", root, "cat-file", "-e", "#{commit}:#{path}", out: File::NULL, err: File::NULL)
-        result("PASS", "#{label} source exists at #{commit}:#{path}")
-      else
-        result("FAIL", "#{label} source does not exist at #{commit}:#{path}")
-      end
-    elsif (url_match = source.match(/\Aurl:(https?:\/\/[^|\s]+)\|checked:(\d{4}-\d{2}-\d{2})\z/))
+  Array(sources).each do |source|
+    if (url_match = source.match(/\Aurl:(https?:\/\/[^|\s]+)\|checked:(\d{4}-\d{2}-\d{2})\z/))
       source_url = url_match[1]
       checked = url_match[2]
       begin
@@ -217,7 +178,7 @@ begin
         result("FAIL", "#{label} URL source is invalid: #{source}")
       end
     else
-      result("FAIL", "#{label} source must use current-origin repo or url format: #{source}")
+      result("FAIL", "#{label} source must use url:<address>|checked:YYYY-MM-DD format: #{source}")
     end
   end
 
@@ -392,56 +353,6 @@ done
 
 validate_manifest
 
-if [ "$ruby_available" -eq 1 ]; then
-  provenance_results=$(ROOT_DIR="$ROOT_DIR" ruby <<'RUBY'
-require "yaml"
-require "date"
-root = ENV.fetch("ROOT_DIR")
-mapping = {
-  "wiki/reference/project-overview.md" => ".codex/docs/project-overview.md",
-  "wiki/reference/architecture.md" => ".codex/docs/architecture.md",
-  "wiki/reference/module-hierarchy.md" => ".codex/docs/hierarchy.md",
-  "wiki/reference/domain-glossary.md" => ".codex/docs/domain-glossary.md",
-  "wiki/reference/test-strategy.md" => ".codex/docs/test-strategy.md",
-  "wiki/operations/routing-rules.md" => ".codex/docs/routing-rules.md",
-  "wiki/operations/workflows.md" => ".codex/docs/workflows.md",
-  "wiki/operations/agent-list.md" => ".codex/docs/agent-list.md"
-}
-mapping.each do |file, legacy|
-  path = File.join(root, file)
-  next unless File.file?(path)
-  content = File.read(path)
-  match = content.match(/\A---\r?\n(.*?)\r?\n---(?:\r?\n|\z)/m)
-  data = match && YAML.safe_load(match[1], permitted_classes: [Date], aliases: false)
-  sources = data.is_a?(Hash) ? data["sources"] : nil
-  authority = data.is_a?(Hash) ? data["authority"] : nil
-  puts "#{authority == 'canonical' ? 'PASS' : 'FAIL'}:#{file} must declare authority: canonical"
-  valid = sources.is_a?(Array) && sources.any? { |source| source.is_a?(String) && source.end_with?(":#{legacy}") }
-  puts "#{valid ? 'PASS' : 'FAIL'}:#{file} sources must preserve provenance to #{legacy}"
-end
-architecture = File.join(root, "wiki/reference/architecture.md")
-if File.file?(architecture)
-  content = File.read(architecture)
-  [
-    ".codex/docs/architecture.md",
-    "wiki/topics/architecture/mvi-state-and-collaboration.md",
-    ".codex/diary/2026-05-15-loading-error-ui-collaboration-retrospective.md"
-  ].each do |source|
-    puts "#{content.include?(source) ? 'PASS' : 'FAIL'}:wiki/reference/architecture.md provenance must include #{source}"
-  end
-end
-RUBY
-  )
-  while IFS= read -r provenance_result; do
-    case "$provenance_result" in
-      PASS:*) pass "${provenance_result#PASS:}" ;;
-      FAIL:*) fail "${provenance_result#FAIL:}" ;;
-    esac
-  done <<EOF
-$provenance_results
-EOF
-fi
-
 markdown_count=0
 if [ -d "$WIKI_DIR" ]; then
   while IFS= read -r markdown_file; do
@@ -509,9 +420,9 @@ fi
 
 legacy_references=$(find_legacy_references)
 if [ -n "$legacy_references" ]; then
-  fail "repository documents still reference .codex/docs outside canonical provenance:\n$legacy_references"
+  fail "repository documents still reference .codex/docs:\n$legacy_references"
 else
-  pass "tracked and untracked documents contain no legacy references outside canonical provenance"
+  pass "tracked and untracked documents contain no legacy references"
 fi
 
 if [ -d "$WIKI_DIR" ]; then

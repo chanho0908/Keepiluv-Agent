@@ -2,9 +2,7 @@
 name: hierarchy
 description: 모듈 구조와 feature 표준 형태 요약
 status: active
-sources:
-- repo:chanho0908/Keepiluv-Agent@14c17aa834575a9422d5e4b33c1191285c575e02:.codex/docs/hierarchy.md
-last_verified: 2026-06-13
+last_verified: 2026-06-14
 tags:
 - wiki
 - reference

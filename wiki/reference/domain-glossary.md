@@ -2,9 +2,7 @@
 name: domain-glossary
 description: Keepiluv 서비스 도메인 용어와 코드 표현
 status: active
-sources:
-- repo:chanho0908/Keepiluv-Agent@14c17aa834575a9422d5e4b33c1191285c575e02:.codex/docs/domain-glossary.md
-last_verified: 2026-06-13
+last_verified: 2026-06-14
 tags:
 - wiki
 - reference

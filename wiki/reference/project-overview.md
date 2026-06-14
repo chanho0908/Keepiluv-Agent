@@ -2,9 +2,7 @@
 name: project-overview
 description: Keepiluv (Twix) 핵심 스택과 자주 쓰는 패턴 요약
 status: active
-sources:
-- repo:chanho0908/Keepiluv-Agent@14c17aa834575a9422d5e4b33c1191285c575e02:.codex/docs/project-overview.md
-last_verified: 2026-06-13
+last_verified: 2026-06-14
 tags:
 - wiki
 - reference

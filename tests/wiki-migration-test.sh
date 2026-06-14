@@ -48,21 +48,7 @@ find_legacy_references() {
           ;;
       esac
       LC_ALL=C grep -Iq . "$candidate" 2>/dev/null || continue
-      allowed_legacy=''
-      case "$relative" in
-        wiki/reference/project-overview.md) allowed_legacy='.codex/docs/project-overview.md' ;;
-        wiki/reference/architecture.md) allowed_legacy='.codex/docs/architecture.md' ;;
-        wiki/reference/module-hierarchy.md) allowed_legacy='.codex/docs/hierarchy.md' ;;
-        wiki/reference/domain-glossary.md) allowed_legacy='.codex/docs/domain-glossary.md' ;;
-        wiki/reference/test-strategy.md) allowed_legacy='.codex/docs/test-strategy.md' ;;
-        wiki/operations/routing-rules.md) allowed_legacy='.codex/docs/routing-rules.md' ;;
-        wiki/operations/workflows.md) allowed_legacy='.codex/docs/workflows.md' ;;
-        wiki/operations/agent-list.md) allowed_legacy='.codex/docs/agent-list.md' ;;
-      esac
       grep -nF '.codex/docs' "$candidate" 2>/dev/null | while IFS= read -r match; do
-        if [ -n "$allowed_legacy" ] && printf '%s\n' "$match" | grep -Eq "repo:[^[:space:]]+@[0-9a-fA-F]{40}:${allowed_legacy}\"?$"; then
-          continue
-        fi
         printf '%s:%s\n' "$relative" "$match"
       done
     done
@@ -91,7 +77,7 @@ legacy_references=$(find_legacy_references "$ROOT_DIR")
 if [ -n "$legacy_references" ]; then
   fail "tracked files still reference the legacy docs path:\n$legacy_references"
 else
-  pass "tracked and untracked documents contain no legacy docs path references outside canonical provenance"
+  pass "tracked and untracked documents contain no legacy docs path references"
 fi
 
 while IFS="$TAB" read -r legacy_file relative_file required_patterns; do
@@ -170,38 +156,6 @@ RUBY
     fail "baseline source is unavailable: $BASELINE_COMMIT:$legacy_file"
   fi
 done < "$INVENTORY"
-
-while IFS="$TAB" read -r legacy_file relative_file _; do
-  [ -f "$ROOT_DIR/$relative_file" ] || continue
-  if FILE="$ROOT_DIR/$relative_file" LEGACY="$legacy_file" ruby <<'RUBY'
-require "yaml"
-require "date"
-content = File.read(ENV.fetch("FILE"))
-match = content.match(/\A---\r?\n(.*?)\r?\n---(?:\r?\n|\z)/m)
-exit 1 unless match
-data = YAML.safe_load(match[1], permitted_classes: [Date], aliases: false)
-sources = data.is_a?(Hash) ? data["sources"] : nil
-exit(sources.is_a?(Array) && sources.any? { |source| source.is_a?(String) && source.end_with?(":#{ENV.fetch("LEGACY")}") } ? 0 : 1)
-RUBY
-  then
-    pass "$relative_file records provenance to $legacy_file"
-  else
-    fail "$relative_file sources must reference the legacy path $legacy_file"
-  fi
-done < "$INVENTORY"
-
-if [ -f "$ROOT_DIR/wiki/reference/architecture.md" ]; then
-  for provenance in \
-    '.codex/docs/architecture.md' \
-    'wiki/topics/architecture/mvi-state-and-collaboration.md' \
-    '.codex/diary/2026-05-15-loading-error-ui-collaboration-retrospective.md'; do
-    if grep -Fq "$provenance" "$ROOT_DIR/wiki/reference/architecture.md"; then
-      pass "architecture provenance includes $provenance"
-    else
-      fail "architecture sources must include $provenance"
-    fi
-  done
-fi
 
 if [ -d "$ROOT_DIR/wiki/topics" ]; then
   while IFS= read -r topic; do

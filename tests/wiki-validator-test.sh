@@ -44,6 +44,9 @@ mutate_traversal() { printf 'path\tsha256\n../AGENTS.md\t%064d\n' 0 > "$1/wiki/s
 mutate_empty() { printf 'path\tsha256\n\t%064d\n' 0 > "$1/wiki/state/source-manifest.tsv"; }
 mutate_duplicate() { printf 'path\tsha256\nAGENTS.md\t%064d\nAGENTS.md\t%064d\n' 0 1 > "$1/wiki/state/source-manifest.tsv"; }
 mutate_unsorted() { printf 'path\tsha256\nwiki/reference/project-overview.md\t%064d\nAGENTS.md\t%064d\n' 0 1 > "$1/wiki/state/source-manifest.tsv"; }
+mutate_empty_sources() {
+  ruby -0pi -e 'sub("status: active\n", "status: active\nsources: []\n")' "$1/wiki/index.md"
+}
 
 baseline_output=$("$seed/scripts/validate-wiki.sh" 2>&1)
 if [ "$?" -eq 0 ]; then
@@ -61,6 +64,7 @@ run_case traversal-path repository-relative mutate_traversal
 run_case empty-path empty mutate_empty
 run_case duplicate-path duplicate mutate_duplicate
 run_case unsorted-path sorted mutate_unsorted
+run_case empty-sources sources mutate_empty_sources
 if [ "$failures" -ne 0 ]; then
   printf '\nWiki validator test failed with %s issue(s).\n' "$failures" >&2
   exit 1

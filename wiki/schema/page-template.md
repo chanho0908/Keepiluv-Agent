@@ -1,14 +1,14 @@
 ---
 status: draft
-sources:
-- repo:chanho0908/Keepiluv-Agent@de9f870146845f8fffa917f7c2c794bf70edb124:AGENTS.md
-last_verified: 2026-06-12
+last_verified: 2026-06-14
 tags:
 - template
 authority: canonical
 ---
 
 # 페이지 제목
+
+외부 자료를 근거로 작성한 경우에만 [출처 정책](source-policy.md)에 맞는 `sources`를 frontmatter에 추가합니다.
 
 ## 요약
 
