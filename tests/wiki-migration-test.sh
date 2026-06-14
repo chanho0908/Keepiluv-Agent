@@ -289,10 +289,11 @@ if [ "${WIKI_CLEAN_CHECKOUT_CHILD:-0}" != 1 ]; then
   else
     fail "migration test must pass from a clean checkout"
   fi
-  if "$checkout/scripts/validate-wiki.sh" >/dev/null 2>&1; then
+  validator_output=$("$checkout/scripts/validate-wiki.sh" 2>&1)
+  if [ "$?" -eq 0 ]; then
     pass "wiki validator passes from a clean checkout"
   else
-    fail "wiki validator must pass from a clean checkout"
+    fail "wiki validator must pass from a clean checkout:\n$validator_output"
   fi
 fi
 
