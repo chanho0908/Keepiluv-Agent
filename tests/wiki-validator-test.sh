@@ -68,12 +68,61 @@ mutate_unlinked_operation() {
 mutate_unlinked_schema() {
   cp "$1/wiki/schema/lint.md" "$1/wiki/schema/unlinked-schema.md"
 }
+write_candidate() {
+  repo=$1
+  use_count=${2:-1}
+  cat > "$repo/wiki/inbox/candidate.md" <<EOF
+---
+type: knowledge-candidate
+status: candidate
+created_at: 2026-06-15
+updated_at: 2026-06-15
+last_verified: 2026-06-15
+use_count: $use_count
+last_used_at: 2026-06-15
+used_in:
+  - task: archive-refresh-error-handling
+    used_at: 2026-06-15
+    context: implementation
+    evidence: existing content retention decision
+tags:
+  - inbox
+  - knowledge-candidate
+authority: none
+---
+
+# Candidate
+EOF
+}
+mutate_candidate_count() { write_candidate "$1" 2; }
+mutate_candidate_duplicate_task() {
+  write_candidate "$1" 2
+  ruby -0pi -e 'sub("    evidence: existing content retention decision\n", "    evidence: existing content retention decision\n  - task: archive-refresh-error-handling\n    used_at: 2026-06-15\n    context: test\n    evidence: regression test decision\n")' "$1/wiki/inbox/candidate.md"
+}
+mutate_candidate_bad_context() {
+  write_candidate "$1"
+  ruby -0pi -e 'sub("context: implementation", "context: search")' "$1/wiki/inbox/candidate.md"
+}
+mutate_promoted_without_target() {
+  write_candidate "$1"
+  ruby -0pi -e 'sub("status: candidate", "status: promoted\nresolution_reason: repeated use")' "$1/wiki/inbox/candidate.md"
+}
 
 baseline_output=$("$seed/scripts/validate-wiki.sh" 2>&1)
 if [ "$?" -eq 0 ]; then
   pass "validator passes in a fully tracked clean checkout"
 else
   fail "validator must pass in a fully tracked clean checkout: $baseline_output"
+fi
+
+valid_candidate_repo="$TMP_ROOT/valid-candidate"
+git clone -q "$seed" "$valid_candidate_repo"
+write_candidate "$valid_candidate_repo"
+valid_candidate_output=$("$valid_candidate_repo/scripts/validate-wiki.sh" 2>&1)
+if [ "$?" -eq 0 ]; then
+  pass "validator accepts a valid knowledge candidate"
+else
+  fail "validator must accept a valid knowledge candidate: $valid_candidate_output"
 fi
 
 run_case untracked-legacy legacy mutate_legacy
@@ -93,6 +142,10 @@ run_case synthesized-source-authority 'source_path must reference authority: can
 run_case unlinked-reference 'orphan candidate' mutate_unlinked_reference
 run_case unlinked-operation 'orphan candidate' mutate_unlinked_operation
 run_case unlinked-schema 'orphan candidate' mutate_unlinked_schema
+run_case candidate-count 'use_count must equal used_in item count' mutate_candidate_count
+run_case candidate-duplicate-task 'used_in tasks must identify independent unique work' mutate_candidate_duplicate_task
+run_case candidate-bad-context 'context must be plan, implementation, test, or review' mutate_candidate_bad_context
+run_case promoted-without-target 'promoted candidate must have repository-relative target_path' mutate_promoted_without_target
 if [ "$failures" -ne 0 ]; then
   printf '\nWiki validator test failed with %s issue(s).\n' "$failures" >&2
   exit 1

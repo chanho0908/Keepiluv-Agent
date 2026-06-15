@@ -45,6 +45,7 @@ Wiki 문서를 등록하고 검사하며, 승인된 본작업의 지식을 자�
 - [Wiki 검사 기준](schema/lint.md): Wiki 품질 점검 기준
 - [페이지 템플릿](schema/page-template.md): 공통 메타데이터와 본문 형식
 - [Source 템플릿](templates/source.md): 원본 등록 형식
+- [지식 후보 템플릿](templates/knowledge-candidate.md): 비공식 후보의 사용 근거와 승격·기각 기록 형식
 - [Topic 템플릿](templates/topic.md): 종합 지식 작성 형식
 - [Wiki 변경 기록](log.md): Wiki 운영 이력
 

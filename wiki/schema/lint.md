@@ -15,6 +15,10 @@ authority: canonical
 
 - 필수 디렉터리와 운영 문서가 존재하는지 확인합니다.
 - 각 문서에 `status`, `last_verified`, `tags`, `authority`가 있는지 확인합니다.
+- `wiki/inbox` Markdown의 `type`이 `source` 또는 `knowledge-candidate`인지 확인합니다.
+- 지식 후보의 날짜, 상태, 사용 근거 형식과 `use_count`/`used_in` 일치 여부를 확인합니다.
+- 같은 후보의 `used_in.task`가 중복되지 않고, `last_used_at`이 가장 최근 `used_at`과 일치하는지 확인합니다.
+- 승격 후보는 사유와 실제 canonical 대상 문서를, 기각 후보는 사유를 기록했는지 확인합니다.
 - 선택 항목인 `sources`가 있으면 비어 있지 않은 인용 문자열 목록이며 고정된 근거로 추적되는지 확인합니다.
 - 표준 Markdown 링크가 깨지지 않았는지 확인합니다.
 - 출처 없는 주장, 서로 충돌하는 주장, 오래된 출처를 찾습니다.
@@ -39,4 +43,4 @@ authority: canonical
 ./scripts/wiki-status.sh --accept --approved
 ```
 
-검사 통과는 내용이 공식 정책으로 승격되었다는 뜻이 아닙니다. 승인된 본작업 범위 밖의 의미 결정과 Git 반영에는 별도 승인이 필요합니다.
+검사 통과는 후보 내용이 공식 정책으로 승격되었다는 뜻이 아닙니다. 공식 승격은 Draft PR 사용자 리뷰를 거치며, 승인된 본작업 범위 밖의 의미 결정과 Git 반영에는 별도 승인이 필요합니다.

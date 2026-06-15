@@ -56,5 +56,6 @@ https://github.com/chanho0908/Twix/blob/HEAD/path/to/source.kt
 
 - 공식 프로젝트 지식과 운영 정책은 `authority: canonical`을 사용합니다.
 - 여러 공식 문서를 연결한 해설은 `authority: synthesized`와 비어 있지 않은 `source_paths`를 사용합니다.
+- `wiki/inbox`의 미정리 자료와 지식 후보는 비공식이므로 `authority: none`을 사용하며 canonical 판단 근거로 단독 사용하지 않습니다.
 - `source_paths`는 저장소 루트 기준 상대 경로이며 실제 파일이 존재해야 합니다.
 - 승인된 본작업에서 파생된 canonical 문서 동기화는 별도 Wiki 승인 없이 반영합니다. 본작업과 무관한 의미 변경이나 새로운 정책 결정은 사용자 승인 후에만 반영합니다.
