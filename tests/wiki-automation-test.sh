@@ -6,6 +6,8 @@ ROOT_DIR=$(CDPATH= cd -- "$(dirname "$0")/.." && pwd)
 WORKFLOW="$ROOT_DIR/.github/workflows/wiki-validation.yml"
 IMPLEMENTER="$ROOT_DIR/.codex/agents/tier2/implementer.md"
 MAINTAINER="$ROOT_DIR/.agents/skills/wiki-maintainer/SKILL.md"
+COMMITTER="$ROOT_DIR/.codex/agents/tier2/committer.md"
+PR_CREATOR="$ROOT_DIR/.codex/agents/tier2/pr-creator.md"
 failures=0
 
 pass() { printf 'PASS: %s\n' "$1"; }
@@ -46,6 +48,11 @@ require_text "$IMPLEMENTER" '장기 지식' "implementer evaluates durable knowl
 require_text "$IMPLEMENTER" 'wiki-maintainer' "implementer hands durable knowledge to wiki-maintainer"
 require_text "$MAINTAINER" '작업 중 확인한 코드' "wiki maintainer uses current work evidence"
 require_text "$MAINTAINER" 'PR 번호' "wiki maintainer explicitly excludes PR numbers from Wiki sources"
+require_text "$MAINTAINER" '별도 Git 승인 없이' "wiki maintainer automates approved Wiki Git completion"
+require_text "$MAINTAINER" '제품 기능 코드가 섞이면' "wiki maintainer preserves normal approval for product code"
+require_text "$COMMITTER" 'Wiki 전용 자동 Git 조건' "committer recognizes the Wiki-only approval exception"
+require_text "$PR_CREATOR" 'PR은 반드시 Draft' "PR creator requires Draft Wiki pull requests"
+require_text "$PR_CREATOR" '자동 병합하지 않음' "PR creator forbids automatic Wiki merges"
 
 if grep -Fq 'fetch-depth: 0' "$WORKFLOW"; then
   fail "Wiki validation must not require full Git history for migration invariants"

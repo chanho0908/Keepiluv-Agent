@@ -8,7 +8,7 @@ This file provides guidance to Codex (Codex.ai/code) when working with code in t
 
 **Codex는 절대로 혼자서 코드를 작성하지 않습니다.**
 
-모든 작업은 전문화된 Agent에게 위임합니다. 명확한 구현 요청은 구현 승인으로 간주하고, 커밋과 PR은 별도 승인 후에만 실행합니다.
+모든 작업은 전문화된 Agent에게 위임합니다. 명확한 구현 요청은 구현 승인으로 간주합니다. 일반 코드의 커밋과 PR은 별도 승인 후에만 실행하며, 승인된 Wiki 전용 작업은 검증 후 자동 Git 예외를 따릅니다.
 
 이 문서는 오케스트레이션 정책의 **최상위 요약본**입니다.
 - 세부 라우팅 규칙: `wiki/operations/routing-rules.md`
@@ -73,8 +73,12 @@ This file provides guidance to Codex (Codex.ai/code) when working with code in t
 - 명확한 `구현해줘`, `수정해줘`, `추가해줘` 요청은 구현 승인으로 간주
 - 계획이 필요한 작업: `planner` 결과를 먼저 보여주고 계획 승인 후 구현
 - 모호하거나 파괴적이거나 범위가 큰 요청만 구현 전에 별도 확인
-- 커밋: 항상 사용자 승인 후 실행
-- PR 생성과 push: 항상 사용자 승인 후 실행
+- 일반 코드 커밋: 항상 사용자 승인 후 실행
+- 일반 코드 PR 생성과 push: 항상 사용자 승인 후 실행
+- 예외: 승인된 본작업 범위에서 Wiki, Agent 지침, Wiki 검사 도구만 수정된 경우 `wiki-maintainer → committer → pr-creator`가 검사와 기준점 갱신 후 별도 Git 승인 없이 커밋, push, Draft PR 생성을 자동 수행
+- Wiki 자동 PR은 항상 Draft이며 AI가 병합하지 않음. 사용자가 Draft PR에 남긴 리뷰를 AI가 확인해 수정·답변하고, 최종 승인과 병합은 사용자가 수행
+- 제품 기능 코드가 섞이거나 본작업 밖의 새 의미 결정, 파괴적 변경, 불명확한 정책이 포함되면 Wiki 예외를 적용하지 않고 기존 승인 게이트를 따름
+- 관련 Wiki 변경은 작업 단위로 묶어 불필요한 PR 생성을 피함
 
 ### 4. 병렬 위임 원칙
 
@@ -102,7 +106,7 @@ This file provides guidance to Codex (Codex.ai/code) when working with code in t
 
 - 기존 작업 브랜치가 있으면 새 이슈/브랜치 생성 없이 진행 가능
 - 파일 1~2개 수준의 명확한 수정은 `planner`를 생략할 수 있음
-- 단, 커밋 승인 규칙은 항상 유지
+- 단, 일반 코드의 커밋 승인 규칙은 항상 유지
 
 ### 7. 도메인 용어 기준
 
@@ -118,6 +122,8 @@ This file provides guidance to Codex (Codex.ai/code) when working with code in t
 - 모든 Agent는 Wiki에서 관련 canonical 문서를 먼저 찾고 실제 코드와 행동 규칙으로 재검증합니다.
 - 승인된 본작업에서 생긴 장기 지식, Wiki와 코드의 불일치, 재사용 운영 규칙은 `wiki-maintainer`가 별도 Wiki 승인 없이 동기화합니다.
 - 관련 테스트와 validator를 통과한 뒤 기존 미승인 변경 혼입 여부를 확인하고, 안전한 경우에만 승인된 본작업 범위의 Wiki 검증 기준점을 자동 갱신합니다.
+- Wiki, Agent 지침, Wiki 검사 도구만 변경된 안전한 작업은 기준점 갱신 후 자동 커밋, push, Draft PR 생성과 리뷰 피드백 반영까지 이어집니다.
+- AI는 Wiki PR을 자동 병합하지 않으며 최종 승인과 병합은 사용자가 수행합니다.
 - 본작업과 무관한 도메인/운영 정책 변경이나 새로운 의미 결정은 사용자 승인을 받습니다.
 - Wiki 명령은 `Keepiluv-Agent` 저장소 루트에서 실행합니다.
 

@@ -50,3 +50,5 @@ authority: canonical
 - 최초 승인 bootstrap에서 실제 validator를 통과하며 Wiki 검증 기준점을 생성하도록 status 흐름을 정렬했습니다.
 - Wiki 검증 기준점 갱신 순서를 관련 테스트, validator, 승인 범위 확인, 기준점 갱신으로 통일했습니다.
 - 안정적인 개념만 topic에 남기고 실행 세부사항은 canonical 문서로 연결했으며, architecture의 삭제 경로와 회고 이력 설명을 제거했습니다.
+- 승인된 Wiki 전용 작업은 검사와 기준점 갱신 후 자동 커밋, push, Draft PR 생성으로 이어지도록 일반 코드 Git 승인 규칙과 예외를 분리했습니다.
+- 사용자가 Draft PR에 리뷰를 남기고 AI가 수정·답변하는 피드백 흐름과 자동 병합 금지 원칙을 추가했습니다.

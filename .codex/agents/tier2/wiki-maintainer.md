@@ -29,7 +29,10 @@ Keepiluv의 단일 공식 지식 베이스인 `wiki/`를 유지보수합니다.
 11. Wiki validator를 실행합니다.
 12. 작업 시작 전부터 존재한 미승인 변경이 승인 범위에 섞이지 않았는지 확인합니다.
 13. 안전한 경우에만 `./scripts/wiki-status.sh --accept --approved`로 Wiki 검증 기준점을 갱신합니다.
-14. automation, 마이그레이션, 상태, Wiki 검사와 `git diff --check` 결과를 보고합니다.
+14. Wiki, Agent 지침, Wiki 검사 도구만 변경되었으면 별도 Git 승인 없이 `committer`로 이번 작업 파일만 커밋하고 `pr-creator`로 push와 Draft PR 생성을 이어갑니다.
+15. Draft PR의 사용자 리뷰를 확인해 승인 범위 안의 수정과 답변을 수행하고, 다시 검사한 뒤 같은 PR에 반영합니다.
+16. 작업 단위로 관련 Wiki 변경을 묶어 불필요한 PR 생성을 피합니다.
+17. automation, 마이그레이션, 상태, Wiki 검사와 `git diff --check` 결과를 보고합니다.
 
 ## 금지 사항
 
@@ -39,4 +42,5 @@ Keepiluv의 단일 공식 지식 베이스인 `wiki/`를 유지보수합니다.
 - 승인된 본작업 밖의 변경을 Wiki 검증 기준점에 함께 확정하지 않습니다.
 - `--accept`를 단독으로 사용하거나 validator 실패를 우회하지 않습니다.
 - Skill 생성이나 갱신을 자동 학습 결과로 수행하지 않습니다.
-- 커밋, push, PR은 각각의 승인 절차 없이 실행하지 않습니다.
+- 제품 기능 코드가 섞인 변경에 Wiki 전용 자동 Git 예외를 적용하지 않습니다.
+- Wiki PR을 Ready로 만들거나 자동 병합하지 않습니다.

@@ -21,7 +21,10 @@ description: 승인된 본작업에서 공식 Wiki나 Agent/Skill 변경을 감�
 14. 안전한 경우에만 `./scripts/wiki-status.sh --accept --approved`로 Wiki 검증 기준점을 갱신한다.
 15. 다른 미승인 변경이 함께 확정될 수 있으면 갱신하지 않고 이유를 보고한다.
 16. Skill 생성이나 갱신은 사용자의 명시적 요청 또는 별도 승인된 작업에서 해당 Skill 절차로 수행한다.
-17. automation, 마이그레이션, 상태, Wiki 검사와 diff 검사 결과를 보고한다.
+17. Wiki, Agent 지침, Wiki 검사 도구만 변경되었으면 별도 Git 승인 없이 이번 작업 파일을 커밋하고 push와 Draft PR 생성을 이어간다.
+18. Draft PR의 사용자 리뷰를 확인해 승인 범위 안에서 수정·답변하고, 재검증 후 같은 PR에 반영한다.
+19. 제품 기능 코드가 섞이면 기존 커밋·PR 승인 절차를 따르고, Wiki PR은 자동 병합하지 않는다.
+20. 작업 단위로 관련 Wiki 변경을 묶고 automation, 마이그레이션, 상태, Wiki 검사와 diff 검사 결과를 보고한다.
 
 공식 문서는 `authority: canonical`, 종합 문서는 `authority: synthesized`와 존재하는 `source_paths`를 사용한다.
 `--accept --approved`는 관련 테스트 전체를 대신하지 않는다. 외부 workflow와 Agent가 선행 테스트를 책임지며, `--accept` 단독 실행, 필수 canonical 누락, validator 실패 상태에서는 Wiki 검증 기준점을 변경하지 않는다.

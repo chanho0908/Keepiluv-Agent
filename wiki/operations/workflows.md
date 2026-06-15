@@ -140,6 +140,9 @@ tester의 구체적인 테스트 작성과 검증 절차는 `.agents/skills/test
 - 커밋 승인 범위에는 stage 대상 파일과 커밋 메시지 후보가 포함된다
 - PR이 필요한 작업: `pr-creator` 전 상태 확인
 - PR 승인 범위에는 push 여부, base 브랜치, 제목, 본문 초안이 포함된다
+- 예외: 승인된 본작업에서 Wiki, Agent 지침, Wiki 검사 도구만 바뀌면 검사와 기준점 갱신 후 별도 Git 승인 없이 커밋, push, Draft PR 생성을 진행한다
+- Wiki 전용 Draft PR은 사용자 리뷰를 AI가 수정·답변하는 피드백 루프를 따르며, 최종 승인과 병합은 사용자가 수행한다
+- 제품 기능 코드가 섞이면 Wiki 예외를 적용하지 않는다
 
 ## 실행 단계
 
@@ -170,6 +173,8 @@ tester의 구체적인 테스트 작성과 검증 절차는 `.agents/skills/test
 
 1. 사용자 승인 후 `committer`로 커밋을 생성한다
 2. 사용자 승인 후 `pr-creator`로 Pull Request를 생성한다
+
+Wiki 전용 자동 흐름에서는 `wiki-maintainer` 검증과 기준점 갱신이 끝난 뒤 `committer → pr-creator`를 별도 Git 승인 없이 실행하고 항상 Draft PR을 생성한다. AI는 리뷰 코멘트를 반영할 수 있지만 자동 병합하지 않는다.
 
 ## Handoff 표준
 
@@ -219,4 +224,4 @@ tester의 구체적인 테스트 작성과 검증 절차는 `.agents/skills/test
 10. 안전한 경우에만 `./scripts/wiki-status.sh --accept --approved`로 Wiki 검증 기준점을 갱신한다.
 11. 다른 미승인 변경이 함께 확정될 수 있으면 갱신을 생략하고 이유를 보고한다.
 
-커밋과 PR은 기존 승인 절차를 그대로 따른다.
+Wiki, Agent 지침, Wiki 검사 도구만 변경된 작업은 검사와 기준점 갱신 후 자동 커밋, push, Draft PR 생성과 리뷰 피드백 반영까지 이어진다. 제품 기능 코드가 섞이면 기존 승인 절차를 따르며, AI는 자동 병합하지 않는다.
