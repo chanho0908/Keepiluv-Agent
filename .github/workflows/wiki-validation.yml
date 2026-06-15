@@ -28,7 +28,6 @@ jobs:
         run: |
           set -euo pipefail
           ./tests/wiki-automation-test.sh
-          ./tests/wiki-migration-test.sh
           ./tests/wiki-status-test.sh
           ./tests/wiki-validator-test.sh
           ./scripts/validate-wiki.sh

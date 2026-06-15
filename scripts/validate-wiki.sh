@@ -91,7 +91,7 @@ find_legacy_references() {
     -type f -print | while IFS= read -r candidate; do
       relative=${candidate#"$ROOT_DIR/"}
       case "$relative" in
-        tests/wiki-migration-test.sh|tests/wiki-validator-test.sh|scripts/validate-wiki.sh)
+        tests/wiki-validator-test.sh|scripts/validate-wiki.sh)
           continue
           ;;
       esac
