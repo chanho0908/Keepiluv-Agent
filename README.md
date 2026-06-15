@@ -1,289 +1,185 @@
 # Keepiluv-Agent
 
-Keepiluv-Agent는 Keepiluv Android 프로젝트에서 Codex를 팀처럼 운용하기 위한
-**에이전트 오케스트레이션 문서 세트**입니다.
+**Keepiluv(Twix)에 관한 프로젝트 지식과 AI 작업 규칙을 한곳에서 관리하는 저장소입니다.**
 
-핵심 목표는 세 가지입니다.
+Keepiluv는 커플이 함께 목표를 만들고, 날짜별로 인증하며, 서로의 참여를 응원하는 Android 서비스입니다. 이 저장소에는 앱 코드가 아니라 다음 두 가지가 들어 있습니다.
 
-- 사용자의 요청을 의도에 맞는 전문 agent로 라우팅한다.
-- 모호한 요구사항은 먼저 `Feature Spec`으로 정리한다.
-- 테스트, 구현, 리뷰, 커밋, PR을 분리해 책임과 승인 지점을 명확히 한다.
+- Keepiluv를 만들고 운영할 때 기준이 되는 **공식 Wiki**
+- Codex가 여러 전문 Agent와 함께 안전하게 일하기 위한 **작업 규칙**
 
----
+개발 지식이 없어도 이 저장소를 이해하고 사용할 수 있습니다. 처음 방문했다면 [비개발자를 위한 Wiki 안내서](wiki/guide.md)를 읽거나, [Wiki 시작 화면](wiki/index.md)에서 궁금한 문서를 찾아보세요.
 
-## 작동 원리 한눈에 보기
+## 왜 필요한가요?
 
-```mermaid
-flowchart TD
-    U["User Request"] --> A["AGENTS.md<br/>최상위 오케스트레이션 정책"]
+프로젝트를 오래 운영하다 보면 중요한 정보가 코드, 대화, 회의 메모, 개인의 기억에 흩어집니다. 그 결과 사람과 AI가 같은 질문을 되풀이하거나 서로 다른 기준으로 판단할 수 있습니다.
 
-    A --> R["routing-rules.md<br/>어떤 agent가 맡을지 판단"]
-    A --> W["workflows.md<br/>agent 실행 순서 조합"]
-    A --> L["agent-list.md<br/>agent 인덱스"]
+이 저장소는 다음 내용을 한곳에 모아 그 문제를 줄입니다.
 
-    R --> D{"요청 의도"}
+- Keepiluv가 어떤 서비스인지, 사용자가 어떤 과정을 경험하는지
+- 기능을 만들 때 지켜야 할 구조, 용어와 테스트 기준
+- 어떤 AI Agent가 어떤 작업을 맡는지
+- 계획, 구현, 검토, 커밋과 Pull Request를 어떤 순서로 진행하는지
+- 새 자료와 작업 중 발견한 지식을 어떻게 검토하고 공식 지식으로 확정하는지
 
-    D -->|위치/사용처 찾기| EX["explore"]
-    D -->|요구사항이 모호함| IN["interviewer"]
-    D -->|구조 판단/문제 진단| AN["analyst"]
-    D -->|구현 계획 필요| PL["planner"]
-    D -->|테스트 작성| TE["tester"]
-    D -->|코드 구현| IM["implementer"]
-    D -->|품질 검토| CR["code-reviewer"]
-    D -->|성능 개선| PO["performance-optimizer"]
-    D -->|Wiki 자동 동기화| WM["wiki-maintainer"]
-    D -->|Git 마무리| CO["committer"]
-    D -->|PR 생성| PR["pr-creator"]
+## 사람과 AI가 나누어 하는 일
 
-    IN --> FS["Feature Spec"]
-    FS --> PL
-    PL --> TE
-    TE --> IM
-    IM --> CR
-    IM --> WM
-    IM --> CO
-    CO --> PR
-```
-
----
-
-## 핵심 흐름
-
-### 1. 모호한 요구사항이 있을 때
-
-`interviewer`가 먼저 의도를 정리한 뒤 `planner`로 넘깁니다.
-
-```mermaid
-sequenceDiagram
-    participant User
-    participant Router as routing-rules.md
-    participant Interviewer as interviewer
-    participant Planner as planner
-
-    User->>Router: "UI 개선해줘"
-    Router->>Interviewer: 목표/범위/완료 기준이 열려 있음
-    Interviewer->>User: 최대 3개 질문
-    User-->>Interviewer: 답변
-    Interviewer->>Interviewer: Feature Spec 작성
-    Interviewer->>Planner: Feature Spec 전달
-    Planner->>Planner: 구현 계획과 handoff 작성
-```
-
-`interviewer`의 출력은 구현 계획이 아니라 `Feature Spec`입니다.
-
-```markdown
-# Feature Spec
-
-## 목적
-## 범위
-## 제외
-## 완료 기준
-## 가정
-## 미해결 질문
-## 다음 권장 라우팅
-```
-
-### 2. 요구사항이 명확할 때
-
-명확한 작업은 바로 `planner → tester → implementer` 흐름으로 진행합니다.
-
-```mermaid
-flowchart LR
-    P["planner<br/>계획과 handoff"] --> A{"사용자 승인"}
-    A -->|승인| T["tester<br/>성공 기준을 테스트로 고정"]
-    T --> I["implementer<br/>테스트를 만족하는 구현"]
-    I --> Q{"품질 확인 필요?"}
-    Q -->|예| R["code-reviewer"]
-    Q -->|아니오| G["Git 마무리 대기"]
-    R --> G
-```
-
-### 3. Git 마무리
-
-커밋과 PR은 구현 agent가 직접 처리하지 않습니다.
-
-```mermaid
-flowchart LR
-    I["implementer 완료"] --> C1{"커밋 승인"}
-    C1 -->|승인| C["committer"]
-    C --> P1{"PR 승인"}
-    P1 -->|승인| PR["pr-creator"]
-```
-
----
-
-## Agent 책임 지도
-
-```mermaid
-flowchart TB
-    subgraph T1["Tier 1: 경량 작업"]
-        EX["explore<br/>READ ONLY<br/>파일/사용처 탐색"]
-        WR["writer<br/>WRITE<br/>문서 작성/정리"]
-    end
-
-    subgraph T2A["Tier 2: 의도/설계/분석"]
-        IN["interviewer<br/>READ ONLY<br/>Feature Spec 작성"]
-        AN["analyst<br/>READ ONLY<br/>구조 분석"]
-        PL["planner<br/>READ ONLY<br/>구현 계획과 handoff"]
-    end
-
-    subgraph T2B["Tier 2: 실행/검증"]
-        TE["tester<br/>WRITE<br/>테스트 작성"]
-        IM["implementer<br/>WRITE<br/>코드 구현"]
-        PO["performance-optimizer<br/>WRITE<br/>성능 개선"]
-        CR["code-reviewer<br/>READ ONLY<br/>품질 검토"]
-    end
-
-    subgraph T2C["Tier 2: 마무리/지식 관리"]
-        CO["committer<br/>BASH<br/>커밋 생성"]
-        PR["pr-creator<br/>BASH<br/>PR 생성"]
-        WM["wiki-maintainer<br/>WRITE/BASH<br/>Wiki 자동 동기화"]
-    end
-
-    IN --> PL
-    AN --> PL
-    PL --> TE
-    TE --> IM
-    IM --> CR
-    IM --> CO
-    CO --> PR
-    IM --> WM
-```
-
-| Agent | 책임 | 직접 하지 않는 일 |
-|---|---|---|
-| `interviewer` | 모호한 요청 인터뷰, Feature Spec 작성 | 구현 계획, 테스트 설계, 코드 수정 |
-| `planner` | 구현 계획, 영향 범위, tester/implementer handoff | 사용자 인터뷰, 파일 수정, 코드 실행 |
-| `tester` | 성공 기준을 테스트로 고정 | 운영 코드 구현 |
-| `implementer` | 테스트를 만족하는 최소 구현 | 커밋, PR 생성 |
-| `code-reviewer` | 품질/아키텍처/성능 리뷰 | 파일 수정 |
-| `committer` | 승인된 파일만 stage 후 커밋 | 구현, PR 생성 |
-| `pr-creator` | 승인 후 push 및 PR 생성 | 구현, 커밋 메시지 결정 |
-| `wiki-maintainer` | 승인된 본작업의 장기 지식과 Wiki 상태 동기화 | 본작업 밖의 새 의미 결정, 커밋 |
-
----
-
-## Clarity Gate
-
-요청이 모호하면 바로 계획하지 않습니다.
-
-```mermaid
-flowchart TD
-    S["요청 수신"] --> G{"계획 가능한가?"}
-
-    G -->|위치/사용처가 모호함| EX["explore"]
-    G -->|구조 판단이 필요함| AN["analyst"]
-    G -->|목표/범위/완료 기준이 모호함| IN["interviewer"]
-    G -->|구현 세부사항만 남음| PL["planner 또는 implementer handoff"]
-
-    IN --> FS["Feature Spec"]
-    FS --> PL2["planner"]
-```
-
-`interviewer`가 확인하는 축은 다음 네 가지입니다.
-
-- **Goal**: 무엇을 만들거나 바꾸는가
-- **Intent**: 왜 필요한가
-- **Scope**: 어디까지 포함하고 제외하는가
-- **Success Criteria**: 완료 여부를 어떻게 검증하는가
-
----
-
-## 주요 워크플로우
-
-| 상황 | 흐름 |
+| 사람 | AI(Codex와 Agent) |
 |---|---|
-| 단순 탐색 | `explore` |
+| 자료가 공개 가능한지 확인합니다. | 기존 Wiki, 코드와 테스트를 찾아 비교합니다. |
+| 새로운 정책이나 의미를 결정합니다. | 승인받은 범위 안에서 문서를 정리하고 서로 연결합니다. |
+| Draft PR에서 바뀐 내용을 검토합니다. | 링크, 형식, 출처와 변경 상태를 검사합니다. |
+| 최종 내용을 승인하고 병합합니다. | 검토용 Draft PR을 만들고 리뷰 의견을 반영합니다. |
+
+AI는 자료 정리와 검사를 돕습니다. 하지만 새로운 제품 정책을 스스로 확정하거나 Pull Request를 자동으로 병합하지는 않습니다.
+
+## 지식은 어떻게 쌓이나요?
+
+새 정보가 곧바로 공식 지식이 되는 것은 아닙니다. 먼저 `wiki/inbox`에 보관하고, 근거와 실제 쓰임을 확인한 뒤 공식 Wiki에 반영합니다.
+
+```mermaid
+flowchart LR
+    A["새 자료 또는 작업 중 발견"] --> B["wiki/inbox<br/>검토 대기"]
+    B --> C["기존 Wiki·코드·테스트와 비교"]
+    C --> D{"공식 지식으로<br/>반영할 근거가 충분한가?"}
+    D -->|아직 부족함| B
+    D -->|충분함| E["공식 Wiki 갱신"]
+    E --> F["검사 후 Draft PR 생성"]
+    F --> G["사람이 리뷰하고 최종 병합"]
+
+    classDef input fill:#E8F1FF,stroke:#2563EB,color:#1E3A8A,stroke-width:1.5px
+    classDef review fill:#FFF4D6,stroke:#D97706,color:#78350F,stroke-width:1.5px
+    classDef decision fill:#F3E8FF,stroke:#7E22CE,color:#581C87,stroke-width:1.5px
+    classDef official fill:#DCFCE7,stroke:#16A34A,color:#14532D,stroke-width:1.5px
+    classDef human fill:#FFE4E6,stroke:#E11D48,color:#881337,stroke-width:1.5px
+
+    class A input
+    class B,C review
+    class D decision
+    class E,F official
+    class G human
+```
+
+### Inbox에 들어가는 두 종류
+
+| 종류 | 쉬운 뜻 | 예시 |
+|---|---|---|
+| `type: source` | 아직 정리하지 않은 새 자료 | 회의 메모, 참고 링크 |
+| `type: knowledge-candidate` | 작업 중 발견한 비공식 지식 후보 | 여러 기능에서 다시 활용할 가능성이 있는 판단 기준 |
+
+지식 후보는 검색되거나 읽혔다는 이유만으로 중요하다고 판단하지 않습니다. 서로 다른 작업의 계획, 구현, 테스트, 리뷰에서 실제 판단 근거로 쓰였을 때만 사용 이력을 남깁니다.
+
+- 제품 정책, 사용자 흐름, 데이터 안전 규칙은 사용 횟수와 관계없이 바로 승격을 검토할 수 있습니다.
+- 일반 후보는 서로 다른 작업에서 2회 이상 사용되면 공식 지식으로 승격할지 검토합니다.
+- 조건을 충족해도 자동으로 승격하지 않습니다. 공식 Wiki 변경은 Draft PR에서 사람이 확인합니다.
+
+자세한 기준은 [Wiki 자동 유지보수](wiki/schema/maintenance.md)와 [지식 후보 템플릿](wiki/templates/knowledge-candidate.md)에 있습니다.
+
+## 문서의 신뢰 표시
+
+각 Wiki 문서 위쪽에는 `authority`라는 관리 표시가 있습니다.
+
+| 표시 | 쉬운 의미 | 사용 방법 |
+|---|---|---|
+| `canonical` | 검토된 공식 기준 | 프로젝트 사실과 운영 정책을 판단할 때 우선합니다. |
+| `synthesized` | 공식 기준을 연결한 쉬운 해설 | 내용을 이해하는 데 사용하며, 충돌하면 `canonical`을 우선합니다. |
+| `none` | 아직 공식이 아닌 자료나 후보 | 참고만 하고, 이것만으로 정책이나 사실을 확정하지 않습니다. |
+
+필요할 때는 실제 코드, 테스트, 승인된 사용자 요구사항도 함께 확인합니다. 근거가 부족한 내용은 추측으로 확정하지 않고 `확인 필요`로 남깁니다.
+
+## 처음에는 무엇을 보면 되나요?
+
+| 궁금한 내용 | 먼저 볼 문서 |
+|---|---|
+| 이 저장소를 어떻게 사용하는지 | [Wiki 안내서](wiki/guide.md) |
+| 전체 문서 목록과 이동 경로 | [Wiki 시작 화면](wiki/index.md) |
+| Keepiluv가 어떤 서비스인지 | [프로젝트 개요](wiki/reference/project-overview.md) |
+| 공식 용어의 뜻 | [도메인 용어집](wiki/reference/domain-glossary.md) |
+| AI가 어떤 순서로 일하는지 | [Agent 작업 워크플로우](wiki/operations/workflows.md) |
+| 어떤 Agent가 어떤 일을 하는지 | [Agent 목록](wiki/operations/agent-list.md) |
+| 새 자료와 지식을 반영하는 과정 | [Wiki 운영 흐름](wiki/schema/workflow.md) |
+| Wiki 자동 갱신과 승격 기준 | [Wiki 자동 유지보수](wiki/schema/maintenance.md) |
+
+## 폴더 안내
+
+| 위치 | 보관하는 내용 |
+|---|---|
+| `wiki/reference` | 서비스, 구조, 용어, 테스트에 관한 공식 지식 |
+| `wiki/operations` | Agent를 선택하는 기준, 작업 순서와 승인 규칙 |
+| `wiki/schema` | Wiki를 추가하고 검사하며 갱신하는 규칙 |
+| `wiki/topics` | 여러 공식 문서를 연결한 쉬운 해설 |
+| `wiki/inbox` | 미정리 자료와 비공식 지식 후보 |
+| `wiki/sources` | 외부 자료의 주소와 확인 정보 |
+| `wiki/decisions` | 중요한 결정과 그 이유 |
+| `wiki/templates` | 새 문서를 작성할 때 사용하는 양식 |
+| `.codex/agents` | 각 전문 Agent의 역할과 행동 규칙 |
+| `.agents/skills` | 코드와 작업에 적용하는 상세 절차 |
+| `AGENTS.md` | 전체 운영 정책의 최상위 요약 |
+
+## 안전 원칙
+
+이 저장소는 공개될 수 있으므로 다음 원칙을 지킵니다.
+
+- 비밀번호, 인증 토큰, 개인키와 서비스 비밀값을 저장하지 않습니다.
+- 개인정보, 고객 정보와 공개되지 않은 사내 기밀을 저장하지 않습니다.
+- 외부 글 전체를 허락 없이 복사하지 않고, 필요한 경우 주소와 핵심 요약만 남깁니다.
+- 공식 지식의 변경은 검사와 Draft PR 리뷰를 거칩니다.
+- AI는 Draft PR을 자동으로 병합하지 않습니다. 최종 승인과 병합은 사람이 합니다.
+- 후보 지식(`authority: none`)만으로 제품 사실이나 운영 정책을 확정하지 않습니다.
+
+공개해도 되는지 확실하지 않다면 저장하기 전에 민감정보 검사를 요청하고, 사람이 한 번 더 확인해야 합니다. 자세한 내용은 [출처 정책](wiki/schema/source-policy.md)을 참고하세요.
+
+## Agent 작업 방식
+
+Codex는 요청의 목적에 맞는 담당 Agent를 정합니다. 여러 역할이 필요하면 정해진 순서에 따라 다음 Agent에게 작업을 넘깁니다.
+
+```mermaid
+flowchart LR
+    U["사용자 요청"] --> R["의도와 범위 확인"]
+    R --> P["계획"]
+    P --> T["테스트"]
+    T --> I["구현"]
+    I --> V["리뷰와 Wiki 동기화"]
+    V --> C["커밋"]
+    C --> PR["Pull Request"]
+
+    classDef request fill:#E8F1FF,stroke:#2563EB,color:#1E3A8A,stroke-width:1.5px
+    classDef design fill:#F3E8FF,stroke:#7E22CE,color:#581C87,stroke-width:1.5px
+    classDef execution fill:#DCFCE7,stroke:#16A34A,color:#14532D,stroke-width:1.5px
+    classDef review fill:#FFF4D6,stroke:#D97706,color:#78350F,stroke-width:1.5px
+    classDef git fill:#FFE4E6,stroke:#E11D48,color:#881337,stroke-width:1.5px
+
+    class U request
+    class R,P design
+    class T,I execution
+    class V review
+    class C,PR git
+```
+
+대표 흐름은 다음과 같습니다.
+
+| 상황 | Agent 흐름 |
+|---|---|
+| 위치나 사용처 찾기 | `explore` |
 | 모호한 요구사항 정리 | `interviewer → planner` |
-| 일반 기능 | `planner → tester → implementer` |
+| 일반 기능 구현 | `planner → tester → implementer` |
 | 빠른 버그 수정 | `explore → tester → implementer` |
 | 구조 개선 | `analyst → planner → tester → implementer` |
-| 품질 우선 작업 | `planner → tester → implementer → code-reviewer` |
-| 성능 최적화 | `performance-optimizer` |
-| 커밋 | `committer` |
-| PR 생성 | `pr-creator` |
+| 품질 검토 | `code-reviewer` |
 | Wiki 지식 동기화 | `implementer → wiki-maintainer` |
+| Git 마무리 | `committer → pr-creator` |
 
----
+구현 범위가 분명한 요청은 해당 범위의 구현을 승인한 것으로 봅니다. 별도 계획이 필요한 작업은 계획을 먼저 보여주고 승인을 받은 뒤 시작합니다. 일반 코드의 커밋과 PR 생성에는 각각 사람의 승인이 필요합니다. 승인된 Wiki 전용 작업은 검사 후 Draft PR까지 자동으로 준비할 수 있지만, 최종 병합은 언제나 사람이 수행합니다.
 
-## 승인 게이트
+세부 기준은 [최상위 운영 정책](AGENTS.md), [Agent 라우팅 규칙](wiki/operations/routing-rules.md), [Agent 작업 워크플로우](wiki/operations/workflows.md)에서 확인할 수 있습니다.
 
-```mermaid
-stateDiagram-v2
-    [*] --> Request
-    Request --> Interview: 요구사항이 모호함
-    Request --> Plan: 요구사항이 명확함
-    Interview --> Plan: Feature Spec 작성
-    Plan --> PlanApproval: 계획 제시
-    PlanApproval --> Test: 사용자 승인
-    Test --> Implement
-    Implement --> Review
-    Review --> CommitApproval
-    CommitApproval --> Commit: 사용자 승인
-    Commit --> PRApproval
-    PRApproval --> PullRequest: 사용자 승인
-    PullRequest --> [*]
-```
+## 기준 문서
 
-승인 규칙:
-
-- 명확한 구현/수정/추가 요청은 해당 범위의 구현 승인으로 간주한다.
-- 계획이 필요한 작업은 `planner` 결과를 보여주고 계획 승인 후 진행한다.
-- 모호하거나 파괴적이거나 범위가 큰 요청만 구현 전에 별도 확인한다.
-- 파일을 변경할 수 있는 agent는 작업 전 브랜치 상태를 확인한다.
-- 메인 브랜치에서는 직접 파일을 수정하지 않는다.
-- 승인된 본작업에서 생긴 장기 지식과 Wiki 불일치는 `wiki-maintainer`가 별도 Wiki 승인 없이 동기화한다.
-- 커밋은 사용자 승인 후 `committer`가 수행한다.
-- PR 생성과 push는 사용자 승인 후 `pr-creator`가 수행한다.
-
----
-
-## 문서 구조
-
-```mermaid
-flowchart TD
-    A["AGENTS.md<br/>최상위 요약"] --> R["wiki/operations/routing-rules.md<br/>agent 선택 기준"]
-    A --> W["wiki/operations/workflows.md<br/>agent 조합 흐름"]
-    A --> L["wiki/operations/agent-list.md<br/>agent 목록"]
-
-    L --> AG[".codex/agents/**<br/>각 agent의 실제 동작"]
-    R --> AG
-    W --> AG
-
-    AG --> S[".agents/skills/**<br/>공식 코딩/작업 Skill"]
-    AG --> H[".codex/hooks.json<br/>가드레일"]
-```
-
-읽는 순서:
-
-1. `AGENTS.md`
-2. `wiki/operations/routing-rules.md`
-3. `wiki/operations/workflows.md`
-4. `wiki/operations/agent-list.md`
-5. `.codex/agents/**`
-
----
-
-## Source Of Truth
-
-| 주제 | 기준 문서 |
+| 주제 | 기준 |
 |---|---|
-| 최상위 정책 | `AGENTS.md` |
-| 라우팅 판단 | `wiki/operations/routing-rules.md` |
-| 실행 흐름 조합 | `wiki/operations/workflows.md` |
-| Agent 목록 | `wiki/operations/agent-list.md` |
-| 요구사항 인터뷰/Feature Spec | `.codex/agents/tier2/interviewer.md` |
-| 구현 계획 | `.codex/agents/tier2/planner.md` |
-| 브랜치/이슈/구현 준비 | `wiki/operations/routing-rules.md`, `.codex/agents/tier2/implementer.md` |
-| 커밋 | `.codex/agents/tier2/committer.md` |
-| PR | `.codex/agents/tier2/pr-creator.md` |
-
----
-
-## Quick Commands
-
-```bash
-/commit        # 커밋만 생성
-/pr            # PR만 생성
-/impl          # 계획 → 승인 → 테스트 → 구현
-```
+| 전체 운영 정책 | `AGENTS.md` |
+| 프로젝트 공식 지식의 시작점 | `wiki/index.md` |
+| Agent 선택 기준 | `wiki/operations/routing-rules.md` |
+| Agent 실행 순서 | `wiki/operations/workflows.md` |
+| Wiki 운영 흐름 | `wiki/schema/workflow.md` |
+| Wiki 자동 유지보수 | `wiki/schema/maintenance.md` |
+| 각 Agent의 실제 행동 | `.codex/agents/**` |
