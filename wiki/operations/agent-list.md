@@ -2,7 +2,7 @@
 name: agent-list
 description: 모든 Agent의 파일 위치와 역할 요약
 status: active
-last_verified: 2026-06-14
+last_verified: 2026-06-15
 tags:
 - wiki
 - operations
@@ -35,12 +35,11 @@ Keepiluv (Twix) 프로젝트의 Agent 인덱스입니다.
 | `pr-creator` | Pull Request 생성, PR 본문 작성, 브랜치 푸시 | `.codex/agents/tier2/pr-creator.md` |
 | `tester` | 단위 테스트 작성, ViewModel/Repository/Domain 테스트, 테스트 패턴 정리 | `.codex/agents/tier2/tester.md` |
 | `performance-optimizer` | Compose 리컴포지션 최적화, 메모리 누수 탐지, 렌더링 성능 개선, 벤치마크 작성 | `.codex/agents/tier2/performance-optimizer.md` |
-| `retrospective` | 작업 회고 작성, 시행착오 분석, 스킬 자동 추출, 에이전트 문서 개선 제안 | `.codex/agents/tier2/retrospective.md` |
 | `code-reviewer` | Dove Letter 기반 전문 코드 리뷰, Compose 내부 동작 분석, 아키텍처 위반 탐지, 성능 이슈 확인 | `.codex/agents/tier2/code-reviewer.md` |
 | `analyst` | 전체 프로젝트 구조 분석, 아키텍처 패턴 평가, 의존성 분석, 문제점 도출 | `.codex/agents/tier2/analyst.md` |
 | `interviewer` | 요구사항 의도 정리, 모호성 인터뷰, Feature Spec 작성 | `.codex/agents/tier2/interviewer.md` |
 | `planner` | 구현 계획 수립, 작업 분해, 영향 범위 분석, 리스크 평가 | `.codex/agents/tier2/planner.md` |
-| `wiki-maintainer` | Wiki 변경 감지, 영향 분석, 변경안 제시, 승인 후 동기화 | `.codex/agents/tier2/wiki-maintainer.md` |
+| `wiki-maintainer` | 승인된 본작업의 Wiki 변경 감지, 영향 분석, 자동 동기화와 Wiki 검증 기준점 관리 | `.codex/agents/tier2/wiki-maintainer.md` |
 
 ---
 

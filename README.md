@@ -31,7 +31,7 @@ flowchart TD
     D -->|코드 구현| IM["implementer"]
     D -->|품질 검토| CR["code-reviewer"]
     D -->|성능 개선| PO["performance-optimizer"]
-    D -->|회고/학습 추출| RE["retrospective"]
+    D -->|Wiki 자동 동기화| WM["wiki-maintainer"]
     D -->|Git 마무리| CO["committer"]
     D -->|PR 생성| PR["pr-creator"]
 
@@ -40,6 +40,7 @@ flowchart TD
     PL --> TE
     TE --> IM
     IM --> CR
+    IM --> WM
     IM --> CO
     CO --> PR
 ```
@@ -133,10 +134,10 @@ flowchart TB
         CR["code-reviewer<br/>READ ONLY<br/>품질 검토"]
     end
 
-    subgraph T2C["Tier 2: 마무리/학습"]
+    subgraph T2C["Tier 2: 마무리/지식 관리"]
         CO["committer<br/>BASH<br/>커밋 생성"]
         PR["pr-creator<br/>BASH<br/>PR 생성"]
-        RE["retrospective<br/>WRITE<br/>회고와 스킬 추출"]
+        WM["wiki-maintainer<br/>WRITE/BASH<br/>Wiki 자동 동기화"]
     end
 
     IN --> PL
@@ -146,7 +147,7 @@ flowchart TB
     IM --> CR
     IM --> CO
     CO --> PR
-    IM --> RE
+    IM --> WM
 ```
 
 | Agent | 책임 | 직접 하지 않는 일 |
@@ -158,7 +159,7 @@ flowchart TB
 | `code-reviewer` | 품질/아키텍처/성능 리뷰 | 파일 수정 |
 | `committer` | 승인된 파일만 stage 후 커밋 | 구현, PR 생성 |
 | `pr-creator` | 승인 후 push 및 PR 생성 | 구현, 커밋 메시지 결정 |
-| `retrospective` | 회고, diary, 스킬 추출 | 자동 실행, 구현 |
+| `wiki-maintainer` | 승인된 본작업의 장기 지식과 Wiki 상태 동기화 | 본작업 밖의 새 의미 결정, 커밋 |
 
 ---
 
@@ -201,7 +202,7 @@ flowchart TD
 | 성능 최적화 | `performance-optimizer` |
 | 커밋 | `committer` |
 | PR 생성 | `pr-creator` |
-| 작업 회고 | `retrospective` |
+| Wiki 지식 동기화 | `implementer → wiki-maintainer` |
 
 ---
 
@@ -226,9 +227,12 @@ stateDiagram-v2
 
 승인 규칙:
 
-- 계획이 필요한 작업은 `planner` 결과를 보여준 뒤 진행한다.
+- 명확한 구현/수정/추가 요청은 해당 범위의 구현 승인으로 간주한다.
+- 계획이 필요한 작업은 `planner` 결과를 보여주고 계획 승인 후 진행한다.
+- 모호하거나 파괴적이거나 범위가 큰 요청만 구현 전에 별도 확인한다.
 - 파일을 변경할 수 있는 agent는 작업 전 브랜치 상태를 확인한다.
 - 메인 브랜치에서는 직접 파일을 수정하지 않는다.
+- 승인된 본작업에서 생긴 장기 지식과 Wiki 불일치는 `wiki-maintainer`가 별도 Wiki 승인 없이 동기화한다.
 - 커밋은 사용자 승인 후 `committer`가 수행한다.
 - PR 생성과 push는 사용자 승인 후 `pr-creator`가 수행한다.
 

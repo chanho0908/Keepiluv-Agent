@@ -44,42 +44,42 @@ require_file() {
   fi
 }
 
-validate_manifest() {
-  manifest="$ROOT_DIR/wiki/state/source-manifest.tsv"
-  [ -f "$manifest" ] || return
+validate_verification_baseline() {
+  baseline="$ROOT_DIR/wiki/state/wiki-verification-baseline.tsv"
+  [ -f "$baseline" ] || return
   if [ "$ruby_available" -ne 1 ]; then
-    fail "wiki/state/source-manifest.tsv could not be validated because Ruby is unavailable"
+    fail "wiki/state/wiki-verification-baseline.tsv could not be validated because Ruby is unavailable"
     return
   fi
-  manifest_output=$(mktemp "${TMPDIR:-/tmp}/validate-wiki-manifest.XXXXXX") || {
-    fail "could not create temporary file for manifest validation"
+  baseline_output=$(mktemp "${TMPDIR:-/tmp}/validate-wiki-baseline.XXXXXX") || {
+    fail "could not create temporary file for verification baseline validation"
     return
   }
-  if ruby - "$manifest" >"$manifest_output" 2>&1 <<'RUBY'
+  if ruby - "$baseline" >"$baseline_output" 2>&1 <<'RUBY'
 file = ARGV.fetch(0)
 lines = File.readlines(file, chomp: true)
-abort "manifest must start with exact path<TAB>sha256 header" unless lines.shift == "path\tsha256"
+abort "verification baseline must start with exact path<TAB>sha256 header" unless lines.shift == "path\tsha256"
 paths = []
 lines.each_with_index do |line, index|
   path, digest, extra = line.split("\t", -1)
-  abort "manifest row #{index + 2} must contain exactly two columns" if extra || path.nil? || digest.nil?
-  abort "manifest row #{index + 2} path must not be empty" if path.empty?
-  abort "manifest row #{index + 2} path must be repository-relative" if path.start_with?("/") || path.split("/").include?("..")
-  abort "manifest row #{index + 2} sha256 must be 64 lowercase hex characters" unless digest.match?(/\A[0-9a-f]{64}\z/)
-  abort "manifest contains duplicate path: #{path}" if paths.include?(path)
+  abort "verification baseline row #{index + 2} must contain exactly two columns" if extra || path.nil? || digest.nil?
+  abort "verification baseline row #{index + 2} path must not be empty" if path.empty?
+  abort "verification baseline row #{index + 2} path must be repository-relative" if path.start_with?("/") || path.split("/").include?("..")
+  abort "verification baseline row #{index + 2} sha256 must be 64 lowercase hex characters" unless digest.match?(/\A[0-9a-f]{64}\z/)
+  abort "verification baseline contains duplicate path: #{path}" if paths.include?(path)
   paths << path
 end
-abort "manifest paths must be sorted" unless paths == paths.sort
-puts "manifest header, rows, safe paths, hashes, uniqueness, and sorting are valid"
+abort "verification baseline paths must be sorted" unless paths == paths.sort
+puts "verification baseline header, rows, safe paths, hashes, uniqueness, and sorting are valid"
 RUBY
   then
-    manifest_result=$(cat "$manifest_output")
-    rm -f "$manifest_output"
-    pass "$manifest_result"
+    baseline_result=$(cat "$baseline_output")
+    rm -f "$baseline_output"
+    pass "$baseline_result"
   else
-    manifest_result=$(cat "$manifest_output")
-    rm -f "$manifest_output"
-    fail "$manifest_result"
+    baseline_result=$(cat "$baseline_output")
+    rm -f "$baseline_output"
+    fail "$baseline_result"
   fi
 }
 
@@ -91,7 +91,7 @@ find_legacy_references() {
     -type f -print | while IFS= read -r candidate; do
       relative=${candidate#"$ROOT_DIR/"}
       case "$relative" in
-        tests/wiki-migration-test.sh|tests/wiki-validator-test.sh|scripts/validate-wiki.sh|tests/fixtures/legacy-doc-inventory.tsv)
+        tests/wiki-migration-test.sh|tests/wiki-validator-test.sh|scripts/validate-wiki.sh)
           continue
           ;;
       esac
@@ -187,6 +187,12 @@ begin
   result(valid_authority ? "PASS" : "FAIL",
          "#{label} authority must be canonical or synthesized")
 
+  canonical_scope = label.match?(%r{\Awiki/(reference|operations|schema)/.*\.md\z})
+  if canonical_scope
+    result(authority == "canonical" ? "PASS" : "FAIL",
+           "#{label} must declare authority: canonical")
+  end
+
   if authority == "synthesized"
     source_paths = data["source_paths"]
     valid_source_paths = source_paths.is_a?(Array) && !source_paths.empty? &&
@@ -195,8 +201,24 @@ begin
            "#{label} synthesized page must have non-empty repository-relative source_paths")
     if valid_source_paths
       source_paths.each do |path|
-        result(File.file?(File.join(root, path)) ? "PASS" : "FAIL",
-               "#{label} source_path must exist: #{path}")
+        source_file = File.join(root, path)
+        exists = File.file?(source_file)
+        result(exists ? "PASS" : "FAIL", "#{label} source_path must exist: #{path}")
+        next unless exists
+
+        canonical_markdown = File.extname(path) == ".md"
+        if canonical_markdown
+          source_content = File.read(source_file)
+          source_match = source_content.match(/\A---\r?\n(.*?)\r?\n---(?:\r?\n|\z)/m)
+          if source_match
+            source_data = YAML.safe_load(source_match[1], permitted_classes: [Date], aliases: false)
+            canonical_markdown = source_data.is_a?(Hash) && source_data["authority"] == "canonical"
+          else
+            canonical_markdown = false
+          end
+        end
+        result(canonical_markdown ? "PASS" : "FAIL",
+               "#{label} source_path must reference authority: canonical Markdown: #{path}")
       end
     end
   end
@@ -337,7 +359,13 @@ require_directory wiki/state
 require_file wiki/index.md
 require_file wiki/log.md
 require_file wiki/schema/page-template.md
-require_file wiki/state/source-manifest.tsv
+if [ -f "$ROOT_DIR/wiki/state/wiki-verification-baseline.tsv" ]; then
+  pass "wiki/state/wiki-verification-baseline.tsv file exists"
+elif [ "${WIKI_STATUS_BOOTSTRAP_ACCEPT:-0}" = 1 ]; then
+  pass "wiki/state/wiki-verification-baseline.tsv is allowed to be absent during approved bootstrap acceptance"
+else
+  fail "wiki/state/wiki-verification-baseline.tsv file is missing"
+fi
 
 for canonical_file in \
   wiki/reference/project-overview.md \
@@ -351,7 +379,7 @@ for canonical_file in \
   require_file "$canonical_file"
 done
 
-validate_manifest
+validate_verification_baseline
 
 markdown_count=0
 if [ -d "$WIKI_DIR" ]; then
@@ -400,14 +428,14 @@ EOF
     case "$relative_candidate" in
       topics/*|reference/*|operations/*|schema/*|templates/*|log.md)
         if printf '%s' "$decoded_index_targets" | grep -Fqx "$relative_candidate"; then
-          pass "wiki/index.md links operational document $relative_candidate"
+          pass "wiki/index.md links document $relative_candidate"
         else
           fail "orphan candidate not linked directly from wiki/index.md: $relative_candidate"
         fi
         ;;
     esac
   done <<EOF
-$(find "$WIKI_DIR/topics" "$WIKI_DIR/schema" "$WIKI_DIR/templates" -type f -name '*.md' -print 2>/dev/null | sort)
+$(find "$WIKI_DIR/topics" "$WIKI_DIR/reference" "$WIKI_DIR/operations" "$WIKI_DIR/schema" "$WIKI_DIR/templates" -type f -name '*.md' -print 2>/dev/null | sort)
 $WIKI_DIR/log.md
 EOF
 fi

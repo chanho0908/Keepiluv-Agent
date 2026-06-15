@@ -39,7 +39,6 @@ Codex에서 경량 모델 프로필(`gpt-5.4-mini`, `low`)로 빠르게 프로�
 - CHANGELOG.md: 버전별 변경사항
 - CONTRIBUTING.md: 기여 가이드
 - 가이드 문서: 특정 기능 설명
-- 작업 회고/diary 작성 요청은 `retrospective`가 owner
 
 ### 2. 정보 수집
 - 기존 문서가 있다면 Read로 읽기
@@ -251,11 +250,6 @@ git log --oneline --since="2026-05-01"
 ---
 
 ## 다른 에이전트와의 협업
-
-### retrospective (Tier 2)
-**회고 문서 형식 보조:**
-- retrospective가 작업 회고와 diary 작성의 owner
-- writer는 명시적으로 요청된 경우에만 마크다운 형식 정리를 보조
 
 ### implementer (Tier 2)
 **코드 문서화:**

@@ -2,7 +2,7 @@
 name: workflows
 description: 자주 쓰는 agent 조합 워크플로우 요약
 status: active
-last_verified: 2026-06-14
+last_verified: 2026-06-15
 tags:
 - wiki
 - operations
@@ -34,7 +34,6 @@ tester의 구체적인 테스트 작성과 검증 절차는 `.agents/skills/test
 | 예외적 테스트 후행 보강 | `implementer → tester` | 테스트 작성이 구조적으로 어렵거나 초기 재현이 불가능할 때만 |
 | 구현 후 커밋 | `implementer → committer` | 코드 변경 후 승인된 커밋이 필요할 때 |
 | 커밋 후 PR | `committer → pr-creator` | Git 마무리 단계 |
-| 명시적 회고 후 기록 | `retrospective` | 사용자가 회고를 직접 요청했을 때 |
 
 ## 추천 워크플로우
 
@@ -95,25 +94,6 @@ tester의 구체적인 테스트 작성과 검증 절차는 `.agents/skills/test
 - 먼저 스펙/가이드가 필요할 때
 - 문서와 구현을 같이 남겨야 할 때
 
-### 7. 작업 완료 후 회고
-
-`retrospective`
-
-언제:
-- 사용자가 `"회고해줘"`, `"retrospective"`, `"작업 일기 남겨줘"`처럼 회고를 명시적으로 요청했을 때
-
-규칙:
-- 회고는 자동 시작하지 않는다
-- 사용자가 회고를 요청한 시점에만 `retrospective`를 실행한다
-- `retrospective`가 시작되면 이후 과정은 자동으로 수행한다:
-  1. 회고 내용 정리
-  2. `.codex/diary/YYYY-MM-DD-{task-name}.md` 기록
-  3. 반복 절차와 사용 시점이 모두 명확할 때만 `.agents/skills/<name>/SKILL.md` 생성 또는 갱신
-  4. 기존 Skill의 상세 규칙은 해당 `references/`, 공식 사실과 정책은 `wiki/reference/` 또는 관련 canonical Wiki 문서에 반영
-
-예:
-- `"이번 작업 회고해줘"`
-
 ## 병렬 실행 규칙
 
 병렬 실행 가능:
@@ -146,11 +126,12 @@ tester의 구체적인 테스트 작성과 검증 절차는 `.agents/skills/test
 | Compose 품질 확인 | `tester → implementer → code-reviewer` |
 | 긴급 버그 수정 | `explore → tester → implementer` |
 | PR까지 마무리 | `implementer → committer → pr-creator` |
-| 작업 완료 후 회고 요청 | `retrospective` |
 
 ## 승인 포인트
 
-- 계획 문서가 필요한 작업: `planner` 뒤 승인
+- 명확한 구현/수정/추가 요청은 해당 범위의 구현 승인으로 간주
+- 계획 문서가 필요한 작업: `planner` 뒤 계획 승인
+- 모호하거나 파괴적이거나 범위가 큰 요청만 구현 전에 별도 확인
 - 요구사항 인터뷰가 필요한 작업: `interviewer`가 Feature Spec을 작성한 뒤 planner로 전달
 - 계획 문서는 코드 레벨 설계서가 아니라 승인 가능한 작업 흐름 문서로 작성한다
 - 파일명, 함수명, API명은 필요한 경우에만 기술 메모나 handoff 항목으로 분리한다
@@ -159,7 +140,9 @@ tester의 구체적인 테스트 작성과 검증 절차는 `.agents/skills/test
 - 커밋 승인 범위에는 stage 대상 파일과 커밋 메시지 후보가 포함된다
 - PR이 필요한 작업: `pr-creator` 전 상태 확인
 - PR 승인 범위에는 push 여부, base 브랜치, 제목, 본문 초안이 포함된다
-- 회고는 사용자의 명시적 요청이 있을 때만 시작하고, 시작 후 diary 기록과 필요한 Skill·문서 갱신은 자동 진행
+- 예외: 승인된 본작업에서 Wiki, Agent 지침, Wiki 검사 도구만 바뀌면 검사와 기준점 갱신 후 별도 Git 승인 없이 커밋, push, Draft PR 생성을 진행한다
+- Wiki 전용 Draft PR은 사용자 리뷰를 AI가 수정·답변하는 피드백 루프를 따르며, 최종 승인과 병합은 사용자가 수행한다
+- 제품 기능 코드가 섞이면 Wiki 예외를 적용하지 않는다
 
 ## 실행 단계
 
@@ -191,6 +174,8 @@ tester의 구체적인 테스트 작성과 검증 절차는 `.agents/skills/test
 1. 사용자 승인 후 `committer`로 커밋을 생성한다
 2. 사용자 승인 후 `pr-creator`로 Pull Request를 생성한다
 
+Wiki 전용 자동 흐름에서는 `wiki-maintainer` 검증과 기준점 갱신이 끝난 뒤 `committer → pr-creator`를 별도 Git 승인 없이 실행하고 항상 Draft PR을 생성한다. AI는 리뷰 코멘트를 반영할 수 있지만 자동 병합하지 않는다.
+
 ## Handoff 표준
 
 | From | To | 전달 내용 |
@@ -209,6 +194,8 @@ tester의 구체적인 테스트 작성과 검증 절차는 `.agents/skills/test
 - 모든 handoff와 산출물은 `wiki/reference/domain-glossary.md`의 공식 용어를 사용한다
 - 코드 표현의 의미가 문맥별로 다르면 용어집의 모듈별 매핑을 확인하고, 정의되지 않은 의미는 사용자에게 확인한다
 - implementer는 구현과 검증을 마친 뒤 장기 지식 변경 여부를 판단하고, 필요한 경우 같은 작업에서 `wiki-maintainer`로 넘긴다
+- `wiki-maintainer`는 승인된 본작업에서 생긴 장기 지식과 Wiki 불일치를 별도 Wiki 승인 없이 동기화하고 관련 테스트, validator, 승인 범위 확인 후 Wiki 검증 기준점을 갱신한다
+- 본작업과 무관한 새 의미 결정은 사용자 승인을 받으며, Skill 생성/갱신은 명시 요청 또는 별도 승인된 작업에서만 수행한다
 
 ## 참고 문서
 
@@ -228,9 +215,13 @@ tester의 구체적인 테스트 작성과 검증 절차는 `.agents/skills/test
 1. 본작업 Agent가 구현과 검증 후 장기 지식 변경 여부를 판단한다.
 2. 도메인 정책, 반복 지식, Wiki와 코드의 불일치, 재사용할 운영 규칙만 전달한다.
 3. 관련 canonical 문서와 `source_paths`로 연결된 종합 문서를 비교한다.
-4. 승인된 본작업 범위 안에서 Wiki, Index와 Log를 함께 갱신한다.
+4. 승인된 본작업 범위 안에서 Wiki, Index와 Log를 별도 Wiki 승인 없이 함께 갱신한다.
 5. 원본 작업 PR 번호는 Wiki 출처로 기록하지 않는다.
-6. `./scripts/wiki-status.sh --accept --approved`로 승인된 기준 상태를 기록한다.
-7. Wiki 관련 테스트와 검사를 실행한다.
+6. `Keepiluv-Agent` 저장소 루트에서 Wiki validator와 관련 테스트를 실행한다.
+7. 관련 테스트를 실행한다.
+8. Wiki validator를 실행한다.
+9. 작업 시작 전부터 존재한 다른 미승인 변경이 승인 범위에 섞이지 않았는지 확인한다.
+10. 안전한 경우에만 `./scripts/wiki-status.sh --accept --approved`로 Wiki 검증 기준점을 갱신한다.
+11. 다른 미승인 변경이 함께 확정될 수 있으면 갱신을 생략하고 이유를 보고한다.
 
-커밋과 PR은 기존 승인 절차를 그대로 따른다.
+Wiki, Agent 지침, Wiki 검사 도구만 변경된 작업은 검사와 기준점 갱신 후 자동 커밋, push, Draft PR 생성과 리뷰 피드백 반영까지 이어진다. 제품 기능 코드가 섞이면 기존 승인 절차를 따르며, AI는 자동 병합하지 않는다.

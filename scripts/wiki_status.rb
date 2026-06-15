@@ -8,7 +8,7 @@ require "date"
 require "pathname"
 
 ROOT = File.expand_path("..", __dir__)
-MANIFEST = File.join(ROOT, "wiki/state/source-manifest.tsv")
+BASELINE = File.join(ROOT, "wiki/state/wiki-verification-baseline.tsv")
 TRACKED_FILES = ["AGENTS.md"].freeze
 TRACKED_GLOBS = [
   "wiki/reference/**/*.md",
@@ -45,22 +45,22 @@ def current_sources
   paths.to_h { |path| [path, Digest::SHA256.file(File.join(ROOT, path)).hexdigest] }
 end
 
-def read_manifest
-  return {} unless File.file?(MANIFEST)
+def read_baseline
+  return {} unless File.file?(BASELINE)
 
-  lines = File.readlines(MANIFEST, chomp: true)
-  abort "invalid manifest header" if lines.empty?
-  abort "invalid manifest header" unless lines.shift == "path\tsha256"
+  lines = File.readlines(BASELINE, chomp: true)
+  abort "invalid verification baseline header" if lines.empty?
+  abort "invalid verification baseline header" unless lines.shift == "path\tsha256"
 
   rows = lines.map do |line|
     path, digest, extra = line.split("\t", -1)
-    abort "invalid manifest row: path must be repository-relative and non-empty" if extra || path.nil? || !safe_relative_path?(path)
-    abort "invalid manifest row: sha256 must be 64 lowercase hex characters" unless digest&.match?(/\A[0-9a-f]{64}\z/)
+    abort "invalid verification baseline row: path must be repository-relative and non-empty" if extra || path.nil? || !safe_relative_path?(path)
+    abort "invalid verification baseline row: sha256 must be 64 lowercase hex characters" unless digest&.match?(/\A[0-9a-f]{64}\z/)
     [path, digest]
   end
   paths = rows.map(&:first)
-  abort "invalid manifest: duplicate path" unless paths.uniq.length == paths.length
-  abort "invalid manifest: paths must be sorted" unless paths == paths.sort
+  abort "invalid verification baseline: duplicate path" unless paths.uniq.length == paths.length
+  abort "invalid verification baseline: paths must be sorted" unless paths == paths.sort
   rows.to_h
 end
 
@@ -103,12 +103,12 @@ def print_status(previous, current)
   end
 end
 
-def write_manifest(sources)
-  FileUtils.mkdir_p(File.dirname(MANIFEST))
+def write_baseline(sources)
+  FileUtils.mkdir_p(File.dirname(BASELINE))
   content = (["path\tsha256"] + sources.map { |path, digest| "#{path}\t#{digest}" }).join("\n") + "\n"
-  return if File.file?(MANIFEST) && File.read(MANIFEST) == content
+  return if File.file?(BASELINE) && File.read(BASELINE) == content
 
-  File.write(MANIFEST, content)
+  File.write(BASELINE, content)
 end
 
 def validate_acceptance!
@@ -117,7 +117,9 @@ def validate_acceptance!
 
   validator = File.join(ROOT, "scripts/validate-wiki.sh")
   abort "wiki validator is missing or not executable" unless File.executable?(validator)
-  output, status = Open3.capture2e(validator)
+  environment = {}
+  environment["WIKI_STATUS_BOOTSTRAP_ACCEPT"] = "1" unless File.file?(BASELINE)
+  output, status = Open3.capture2e(environment, validator)
   abort "wiki validation failed:\n#{output}" unless status.success?
 end
 
@@ -128,10 +130,10 @@ abort "usage: wiki-status.sh [--accept --approved]" unless valid_arguments
 abort "--accept requires explicit --approved" if accept && !approved
 abort "--approved is only valid with --accept" if approved && !accept
 
-previous = read_manifest
+previous = read_baseline
 current = current_sources
 print_status(previous, current)
 if accept
   validate_acceptance!
-  write_manifest(current)
+  write_baseline(current)
 end
