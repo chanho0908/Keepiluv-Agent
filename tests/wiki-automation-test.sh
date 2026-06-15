@@ -40,7 +40,6 @@ done
 require_text "$WORKFLOW" 'pull_request:' "Wiki validation runs for pull requests"
 require_text "$WORKFLOW" 'workflow_dispatch:' "Wiki validation supports manual runs"
 require_text "$WORKFLOW" 'contents: read' "Wiki validation uses read-only repository permission"
-require_text "$WORKFLOW" './tests/wiki-migration-test.sh' "workflow verifies Wiki migration"
 require_text "$WORKFLOW" './tests/wiki-status-test.sh' "workflow verifies Wiki status"
 require_text "$WORKFLOW" './tests/wiki-validator-test.sh' "workflow verifies Wiki rules"
 require_text "$WORKFLOW" './scripts/validate-wiki.sh' "workflow runs the Wiki validator"
@@ -55,7 +54,7 @@ require_text "$PR_CREATOR" 'PR은 반드시 Draft' "PR creator requires Draft Wi
 require_text "$PR_CREATOR" '자동 병합하지 않음' "PR creator forbids automatic Wiki merges"
 
 if grep -Fq 'fetch-depth: 0' "$WORKFLOW"; then
-  fail "Wiki validation must not require full Git history for migration invariants"
+  fail "Wiki validation must not require full Git history"
 else
   pass "Wiki validation does not require full Git history"
 fi

@@ -47,6 +47,7 @@ authority: canonical
 
 - 마이그레이션 테스트를 과거 원문 전체 보존 검사에서 이관 완료 불변식 검사로 축소하고 전용 legacy fixture를 제거했습니다.
 - canonical 권한, synthesized 출처 권한, Index 연결을 validator 규칙과 회귀 테스트로 보강했습니다.
+- 이관 완료 불변식이 일반 Wiki validator와 회귀 테스트로 보장됨을 확인하고 마이그레이션 전용 테스트와 workflow 호출을 제거했습니다.
 - 최초 승인 bootstrap에서 실제 validator를 통과하며 Wiki 검증 기준점을 생성하도록 status 흐름을 정렬했습니다.
 - Wiki 검증 기준점 갱신 순서를 관련 테스트, validator, 승인 범위 확인, 기준점 갱신으로 통일했습니다.
 - 안정적인 개념만 topic에 남기고 실행 세부사항은 canonical 문서로 연결했으며, architecture의 삭제 경로와 회고 이력 설명을 제거했습니다.
