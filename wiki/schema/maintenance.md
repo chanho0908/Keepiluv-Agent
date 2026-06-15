@@ -24,14 +24,48 @@ authority: canonical
 
 일회성 구현 세부사항, 단순 UI 조정, 기존 정책을 바꾸지 않는 버그 수정은 축적하지 않습니다.
 
+## Inbox 지식 후보
+
+`wiki/inbox`는 미정리 새 자료와 아직 공식화되지 않은 지식 후보의 공통 대기 공간입니다.
+
+- `type: source`: 회의 메모, 참고 링크처럼 아직 정리하지 않은 새 자료
+- `type: knowledge-candidate`: 작업 중 발견했지만 canonical 문서로 확정하지 않은 재사용 지식
+
+지식 후보는 비공식이며 `authority: none`을 사용합니다. 후보만으로 제품 사실이나 운영 정책을 확정할 수 없고, 기존 canonical 문서와 코드·테스트·승인된 사용자 요구사항을 함께 확인해야 합니다.
+
+### 후보 메타데이터
+
+모든 `knowledge-candidate`는 다음 항목을 기록합니다.
+
+- `created_at`: 후보를 처음 기록한 날짜
+- `updated_at`: 후보 내용이나 사용 근거를 마지막으로 바꾼 날짜
+- `use_count`: 실제 판단에 사용한 서로 다른 작업 수
+- `last_used_at`: 가장 최근 사용 근거의 날짜. 사용 이력이 없으면 `null`
+- `used_in`: 독립된 작업별 `task`, `used_at`, `context`, `evidence` 목록
+
+`context`는 `plan`, `implementation`, `test`, `review` 중 하나입니다. 검색 결과에 포함되거나 내용을 단순 열람한 경우는 사용으로 세지 않습니다. 계획·구현·테스트·리뷰의 판단 근거로 실제 적용했을 때만 기록하며, 같은 작업에서는 여러 번 적용해도 최대 한 번만 셉니다. `use_count`는 중복 없는 `used_in.task` 개수와 항상 같아야 합니다.
+
+### 승격과 기각
+
+- 제품 정책, 사용자 흐름, 데이터 안전 규칙은 `use_count`와 무관하게 즉시 승격 검토할 수 있습니다.
+- 일반 후보는 독립 작업 2회 이상에서 사용됐을 때 승격 검토합니다.
+- 조건 충족은 검토 시작 신호이며 자동 승격 승인이 아닙니다.
+- 승격하면 `status: promoted`, `resolution_reason`, `target_path`를 기록합니다. `target_path`는 반영된 canonical 문서를 가리킵니다.
+- 기각하면 `status: rejected`, `resolution_reason`을 기록하고 `target_path`는 비워 둡니다.
+- 공식 Wiki 승격은 기존 Wiki 전용 Draft PR을 만들고 사용자가 리뷰·최종 승인하는 흐름을 따릅니다.
+
+형식은 [지식 후보 템플릿](../templates/knowledge-candidate.md)을 사용합니다.
+
 ## 동기화 방식
 
 1. 본작업 Agent가 구현과 검증을 완료합니다.
 2. 장기 지식 변경 여부를 판단합니다.
 3. 필요하면 `wiki-maintainer`가 작업 중 확인한 코드, 테스트, 기존 canonical 문서와 승인된 사용자 요구사항을 비교합니다.
-4. 승인된 본작업 범위 안에서 Wiki, Index와 Log를 별도 Wiki 승인 없이 함께 갱신합니다.
-5. 원본 작업 PR 번호는 Wiki 출처로 기록하지 않습니다.
-6. 외부 코드 위치를 장기 보존해야 할 때만 commit SHA가 고정된 파일 permalink를 사용합니다.
+4. 즉시 공식화하지 않는 재사용 지식은 inbox 후보로 만들거나 기존 후보의 독립 작업 근거를 갱신합니다.
+5. 승격 또는 기각한 후보는 상태, 사유와 대상 문서를 기록합니다.
+6. 승인된 본작업 범위 안에서 Wiki, Index와 Log를 별도 Wiki 승인 없이 함께 갱신합니다.
+7. 원본 작업 PR 번호는 Wiki 출처로 기록하지 않습니다.
+8. 외부 코드 위치를 장기 보존해야 할 때만 commit SHA가 고정된 파일 permalink를 사용합니다.
 
 ## 상태 확인
 

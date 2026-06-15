@@ -182,10 +182,116 @@ begin
     end
   end
 
+  inbox_scope = label.match?(%r{\Awiki/inbox/.*\.md\z})
   authority = data["authority"]
-  valid_authority = ["canonical", "synthesized"].include?(authority)
+  valid_authority = ["canonical", "synthesized"].include?(authority) || (inbox_scope && authority == "none")
   result(valid_authority ? "PASS" : "FAIL",
-         "#{label} authority must be canonical or synthesized")
+         "#{label} authority must be canonical or synthesized, or none for inbox items")
+
+  if inbox_scope
+    inbox_type = data["type"]
+    result(["source", "knowledge-candidate"].include?(inbox_type) ? "PASS" : "FAIL",
+           "#{label} type must be source or knowledge-candidate")
+    result(authority == "none" ? "PASS" : "FAIL",
+           "#{label} inbox item must declare authority: none")
+
+    date_value = lambda do |key|
+      value = data[key]
+      value.is_a?(Date) && value.strftime("%Y-%m-%d") == value.to_s ? value : nil
+    end
+    created_at = date_value.call("created_at")
+    updated_at = date_value.call("updated_at")
+    result(created_at ? "PASS" : "FAIL", "#{label} created_at must be a real YYYY-MM-DD date")
+    result(updated_at ? "PASS" : "FAIL", "#{label} updated_at must be a real YYYY-MM-DD date")
+    if created_at && updated_at
+      result(updated_at >= created_at ? "PASS" : "FAIL",
+             "#{label} updated_at must not be earlier than created_at")
+    end
+
+    if inbox_type == "knowledge-candidate"
+      candidate_status = data["status"]
+      result(["candidate", "promoted", "rejected"].include?(candidate_status) ? "PASS" : "FAIL",
+             "#{label} knowledge-candidate status must be candidate, promoted, or rejected")
+
+      use_count = data["use_count"]
+      valid_use_count = use_count.is_a?(Integer) && use_count >= 0
+      result(valid_use_count ? "PASS" : "FAIL", "#{label} use_count must be a non-negative integer")
+
+      used_in = data["used_in"]
+      valid_used_in = used_in.is_a?(Array)
+      result(valid_used_in ? "PASS" : "FAIL", "#{label} used_in must be a list")
+      tasks = []
+      used_dates = []
+      if valid_used_in
+        used_in.each_with_index do |usage, index|
+          valid_usage = usage.is_a?(Hash)
+          result(valid_usage ? "PASS" : "FAIL", "#{label} used_in item #{index + 1} must be a mapping")
+          next unless valid_usage
+
+          task = usage["task"]
+          used_at = usage["used_at"]
+          context = usage["context"]
+          evidence = usage["evidence"]
+          valid_task = task.is_a?(String) && !task.strip.empty?
+          valid_used_at = used_at.is_a?(Date)
+          valid_context = ["plan", "implementation", "test", "review"].include?(context)
+          valid_evidence = evidence.is_a?(String) && !evidence.strip.empty?
+          result(valid_task ? "PASS" : "FAIL", "#{label} used_in item #{index + 1} task must be non-empty")
+          result(valid_used_at ? "PASS" : "FAIL", "#{label} used_in item #{index + 1} used_at must be a real YYYY-MM-DD date")
+          result(valid_context ? "PASS" : "FAIL", "#{label} used_in item #{index + 1} context must be plan, implementation, test, or review")
+          result(valid_evidence ? "PASS" : "FAIL", "#{label} used_in item #{index + 1} evidence must be non-empty")
+          tasks << task if valid_task
+          used_dates << used_at if valid_used_at
+        end
+        result(tasks.uniq.length == tasks.length ? "PASS" : "FAIL",
+               "#{label} used_in tasks must identify independent unique work")
+      end
+
+      if valid_use_count && valid_used_in
+        result(use_count == used_in.length ? "PASS" : "FAIL",
+               "#{label} use_count must equal used_in item count")
+      end
+
+      last_used_at = data["last_used_at"]
+      if valid_use_count && use_count.zero?
+        result(last_used_at.nil? ? "PASS" : "FAIL",
+               "#{label} last_used_at must be null when use_count is 0")
+      elsif valid_use_count && use_count.positive?
+        valid_last_used_at = last_used_at.is_a?(Date)
+        result(valid_last_used_at ? "PASS" : "FAIL",
+               "#{label} last_used_at must be a real YYYY-MM-DD date when used")
+        if valid_last_used_at && valid_used_in && used_dates.length == used_in.length && !used_dates.empty?
+          result(last_used_at == used_dates.max ? "PASS" : "FAIL",
+                 "#{label} last_used_at must equal the latest used_in.used_at")
+        end
+      end
+
+      resolution_reason = data["resolution_reason"]
+      target_path = data["target_path"]
+      if candidate_status == "promoted"
+        valid_reason = resolution_reason.is_a?(String) && !resolution_reason.strip.empty?
+        valid_target = target_path.is_a?(String) && !target_path.empty? && !target_path.start_with?("/") && !target_path.split("/").include?("..")
+        result(valid_reason ? "PASS" : "FAIL", "#{label} promoted candidate must have resolution_reason")
+        result(valid_target ? "PASS" : "FAIL", "#{label} promoted candidate must have repository-relative target_path")
+        if valid_target
+          target_file = File.join(root, target_path)
+          target_canonical = File.file?(target_file) && File.extname(target_path) == ".md"
+          if target_canonical
+            target_content = File.read(target_file)
+            target_match = target_content.match(/\A---\r?\n(.*?)\r?\n---(?:\r?\n|\z)/m)
+            target_data = target_match && YAML.safe_load(target_match[1], permitted_classes: [Date], aliases: false)
+            target_canonical = target_data.is_a?(Hash) && target_data["authority"] == "canonical"
+          end
+          result(target_canonical ? "PASS" : "FAIL",
+                 "#{label} promoted target_path must reference authority: canonical Markdown: #{target_path}")
+        end
+      elsif candidate_status == "rejected"
+        valid_reason = resolution_reason.is_a?(String) && !resolution_reason.strip.empty?
+        result(valid_reason ? "PASS" : "FAIL", "#{label} rejected candidate must have resolution_reason")
+        result(target_path.nil? ? "PASS" : "FAIL", "#{label} rejected candidate target_path must be null")
+      end
+    end
+  end
 
   canonical_scope = label.match?(%r{\Awiki/(reference|operations|schema)/.*\.md\z})
   if canonical_scope

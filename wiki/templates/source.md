@@ -8,6 +8,22 @@ authority: canonical
 
 # 원본 제목
 
+`wiki/inbox`에 미정리 새 자료를 등록할 때는 아래 frontmatter를 사용합니다. inbox 항목은 공식 지식이 아닙니다.
+
+```yaml
+---
+type: source
+status: pending
+created_at: 2026-06-15
+updated_at: 2026-06-15
+last_verified: 2026-06-15
+tags:
+  - inbox
+  - source
+authority: none
+---
+```
+
 외부 자료를 근거로 새 문서를 만들 때만 아래 예시를 frontmatter에 추가하고 실제 출처와 확인일로 바꿉니다.
 
 ```yaml
